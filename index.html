@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediaTools Pro | All-in-One Media Tools</title>
-    <meta name="description" content="MediaTools Pro offers image, video, audio, PDF, QR, and design tools in one simple platform." />
+    <meta
+      name="description"
+      content="MediaTools Pro offers image, video, audio, PDF, QR, and design tools in one simple platform."
+    />
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
@@ -15,187 +18,250 @@
           <a href="index.html">Home</a>
           <a href="pages/about.html">About</a>
           <a href="pages/contact.html">Contact</a>
-          <a href="pages/privacy.html">Privacy</a>
-          <a href="pages/terms.html">Terms</a>
-          <a href="pages/faq.html">FAQs</a>
+          <a href="pages/faq.html">FAQ</a>
         </nav>
-        <button class="theme-toggle" type="button" aria-label="Toggle dark and light mode">🌙 Dark Mode</button>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="Toggle dark and light mode"
+          aria-pressed="false"
+        >
+          🌙 Dark Mode
+        </button>
       </div>
     </header>
 
     <main>
       <section class="hero container">
-        <h1>Professional All-in-One Media Tools Website</h1>
-        <p>Fast, secure, and beginner-friendly tools for images, videos, audio, PDFs, design, QR codes, and more.</p>
+        <p class="hero-tag">Powerful tools, built for speed</p>
+        <h1>Professional media tools for modern creators</h1>
+        <p>
+          Edit images, video, audio, PDFs, design assets, and QR codes with a simple workflow that works on every
+          device.
+        </p>
+
         <label class="search-wrap" for="tool-search">
           <span class="visually-hidden">Search tools</span>
-          <input id="tool-search" type="search" placeholder="Search any tool..." />
+          <input id="tool-search" type="search" placeholder="Search tools like Image Resizer, GIF Maker, QR..." />
         </label>
       </section>
 
       <section class="tools-section container" aria-labelledby="tools-heading">
         <div class="section-title-row">
-          <h2 id="tools-heading">Explore All Tools</h2>
-          <p class="section-subtitle">Click any tool to open its dedicated page.</p>
+          <h2 id="tools-heading">Explore tools by category</h2>
+          <p class="section-subtitle">Live search instantly filters cards to help you find the right tool.</p>
         </div>
-        <div class="tools-grid" id="tools-grid">
-          <article class="tool-card" data-tool-name="image resizer">
-            <h3>Image Resizer</h3>
-            <p>Resize one image or many images at once while keeping quality under control.</p>
-            <a class="btn btn-small" href="tools/image-resizer.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="image quality tool">
-            <h3>Image Quality Tool</h3>
-            <p>Adjust quality settings to reduce file size or improve visual clarity for web and social media.</p>
-            <a class="btn btn-small" href="tools/image-quality-tool.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="image rotate & flip">
-            <h3>Image Rotate & Flip</h3>
-            <p>Rotate photos and flip orientation instantly for correct alignment and layout.</p>
-            <a class="btn btn-small" href="tools/image-rotate-flip.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="image aspect ratio converter">
-            <h3>Image Aspect Ratio Converter</h3>
-            <p>Convert images to popular aspect ratios like 1:1, 4:3, 16:9, and more.</p>
-            <a class="btn btn-small" href="tools/image-aspect-ratio-converter.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="image format converter">
-            <h3>Image Format Converter</h3>
-            <p>Convert image formats between JPG, PNG, WEBP, and more for compatibility and performance.</p>
-            <a class="btn btn-small" href="tools/image-format-converter.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="image metadata viewer">
-            <h3>Image Metadata Viewer</h3>
-            <p>View hidden image information such as size, format, and metadata details quickly.</p>
-            <a class="btn btn-small" href="tools/image-metadata-viewer.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="image crop tool">
-            <h3>Image Crop Tool</h3>
-            <p>Crop images to remove unwanted parts and focus on what matters most.</p>
-            <a class="btn btn-small" href="tools/image-crop-tool.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="youtube thumbnail downloader">
-            <h3>YouTube Thumbnail Downloader</h3>
-            <p>Download HD YouTube thumbnails from video URLs in just one click.</p>
-            <a class="btn btn-small" href="tools/youtube-thumbnail-downloader.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="youtube thumbnail resizer">
-            <h3>YouTube Thumbnail Resizer</h3>
-            <p>Resize YouTube thumbnails to exact dimensions for uploads and sharing.</p>
-            <a class="btn btn-small" href="tools/youtube-thumbnail-resizer.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="video resizer">
-            <h3>Video Resizer</h3>
-            <p>Resize videos for social media, websites, and messaging platforms.</p>
-            <a class="btn btn-small" href="tools/video-resizer.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="video aspect ratio converter">
-            <h3>Video Aspect Ratio Converter</h3>
-            <p>Change video aspect ratios for reels, stories, widescreen, and other formats.</p>
-            <a class="btn btn-small" href="tools/video-aspect-ratio-converter.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="video compressor">
-            <h3>Video Compressor</h3>
-            <p>Compress large videos to save storage and speed up sharing.</p>
-            <a class="btn btn-small" href="tools/video-compressor.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="video converter">
-            <h3>Video Converter</h3>
-            <p>Convert videos between common formats such as MP4, MOV, and AVI.</p>
-            <a class="btn btn-small" href="tools/video-converter.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="audio converter">
-            <h3>Audio Converter</h3>
-            <p>Convert audio files between MP3, WAV, AAC, and more formats.</p>
-            <a class="btn btn-small" href="tools/audio-converter.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="audio compressor">
-            <h3>Audio Compressor</h3>
-            <p>Reduce audio file size while maintaining clear sound quality.</p>
-            <a class="btn btn-small" href="tools/audio-compressor.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="photo to pdf">
-            <h3>Photo to PDF</h3>
-            <p>Combine one or more photos into a clean PDF document.</p>
-            <a class="btn btn-small" href="tools/photo-to-pdf.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="pdf to photo">
-            <h3>PDF to Photo</h3>
-            <p>Extract PDF pages as images for easier editing and sharing.</p>
-            <a class="btn btn-small" href="tools/pdf-to-photo.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="color tool">
-            <h3>Color Tool</h3>
-            <p>Pick, preview, and copy color values like HEX and RGB with ease.</p>
-            <a class="btn btn-small" href="tools/color-tool.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="color palette extractor">
-            <h3>Color Palette Extractor</h3>
-            <p>Extract beautiful color palettes from uploaded images for design projects.</p>
-            <a class="btn btn-small" href="tools/color-palette-extractor.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="photo filters">
-            <h3>Photo Filters</h3>
-            <p>Apply quick visual filters to improve mood, tone, and style.</p>
-            <a class="btn btn-small" href="tools/photo-filters.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="meme generator">
-            <h3>Meme Generator</h3>
-            <p>Create funny memes by adding text over your images instantly.</p>
-            <a class="btn btn-small" href="tools/meme-generator.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="qr code generator">
-            <h3>QR Code Generator</h3>
-            <p>Generate QR codes for links, text, contact info, and more.</p>
-            <a class="btn btn-small" href="tools/qr-code-generator.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="qr code scanner">
-            <h3>QR Code Scanner</h3>
-            <p>Scan QR codes from image uploads and read embedded data quickly.</p>
-            <a class="btn btn-small" href="tools/qr-code-scanner.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="watermark adder">
-            <h3>Watermark Adder</h3>
-            <p>Add text or image watermarks to protect your media files.</p>
-            <a class="btn btn-small" href="tools/watermark-adder.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="gif maker">
-            <h3>GIF Maker</h3>
-            <p>Create GIFs from images in seconds for social and marketing use.</p>
-            <a class="btn btn-small" href="tools/gif-maker.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="background remover">
-            <h3>Background Remover</h3>
-            <p>Remove image backgrounds quickly using our trusted external AI partner.</p>
-            <a class="btn btn-small" href="tools/background-remover.html">Open Tool</a>
-          </article>
-          <article class="tool-card" data-tool-name="watermark remover">
-            <h3>Watermark Remover</h3>
-            <p>Remove watermarks using an external AI tool for advanced edits.</p>
-            <a class="btn btn-small" href="tools/watermark-remover.html">Open Tool</a>
-          </article>
-        </div>
+
+        <p id="no-results" class="no-results" hidden>No tools found for your search. Try another keyword.</p>
+
+        <section class="tool-category" data-category="Image Tools" aria-labelledby="image-tools-title">
+          <h3 class="category-title" id="image-tools-title">Image Tools</h3>
+          <div class="tools-grid">
+            <article class="tool-card" data-tool-name="image resizer">
+              <h4><span class="tool-icon">🖼️</span>Image Resizer</h4>
+              <p>Resize one image or many images at once while keeping quality under control.</p>
+              <a class="btn btn-small" href="tools/image-resizer.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="image quality tool">
+              <h4><span class="tool-icon">✨</span>Image Quality Tool</h4>
+              <p>Adjust quality settings to reduce file size or improve visual clarity for web and social media.</p>
+              <a class="btn btn-small" href="tools/image-quality-tool.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="image rotate flip">
+              <h4><span class="tool-icon">🔄</span>Image Rotate &amp; Flip</h4>
+              <p>Rotate photos and flip orientation instantly for correct alignment and layout.</p>
+              <a class="btn btn-small" href="tools/image-rotate-flip.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="image aspect ratio converter">
+              <h4><span class="tool-icon">📐</span>Image Aspect Ratio Converter</h4>
+              <p>Convert images to popular aspect ratios like 1:1, 4:3, 16:9, and more.</p>
+              <a class="btn btn-small" href="tools/image-aspect-ratio-converter.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="image format converter">
+              <h4><span class="tool-icon">🧩</span>Image Format Converter</h4>
+              <p>Convert image formats between JPG, PNG, WEBP, and more for compatibility and performance.</p>
+              <a class="btn btn-small" href="tools/image-format-converter.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="image metadata viewer">
+              <h4><span class="tool-icon">🧾</span>Image Metadata Viewer</h4>
+              <p>View hidden image information such as size, format, and metadata details quickly.</p>
+              <a class="btn btn-small" href="tools/image-metadata-viewer.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="image crop tool">
+              <h4><span class="tool-icon">✂️</span>Image Crop Tool</h4>
+              <p>Crop images to remove unwanted parts and focus on what matters most.</p>
+              <a class="btn btn-small" href="tools/image-crop-tool.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="background remover">
+              <h4><span class="tool-icon">🧠</span>Background Remover</h4>
+              <p>Remove image backgrounds quickly using our trusted external AI partner.</p>
+              <a class="btn btn-small" href="tools/background-remover.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="watermark remover">
+              <h4><span class="tool-icon">🪄</span>Watermark Remover</h4>
+              <p>Remove watermarks using an external AI tool for advanced edits.</p>
+              <a class="btn btn-small" href="tools/watermark-remover.html">Open Tool</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="tool-category" data-category="Video Tools" aria-labelledby="video-tools-title">
+          <h3 class="category-title" id="video-tools-title">Video Tools</h3>
+          <div class="tools-grid">
+            <article class="tool-card" data-tool-name="video resizer">
+              <h4><span class="tool-icon">🎬</span>Video Resizer</h4>
+              <p>Resize videos for social media, websites, and messaging platforms.</p>
+              <a class="btn btn-small" href="tools/video-resizer.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="video aspect ratio converter">
+              <h4><span class="tool-icon">📺</span>Video Aspect Ratio Converter</h4>
+              <p>Change video aspect ratios for reels, stories, widescreen, and other formats.</p>
+              <a class="btn btn-small" href="tools/video-aspect-ratio-converter.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="video compressor">
+              <h4><span class="tool-icon">📦</span>Video Compressor</h4>
+              <p>Compress large videos to save storage and speed up sharing.</p>
+              <a class="btn btn-small" href="tools/video-compressor.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="video converter">
+              <h4><span class="tool-icon">🔁</span>Video Converter</h4>
+              <p>Convert videos between common formats such as MP4, MOV, and AVI.</p>
+              <a class="btn btn-small" href="tools/video-converter.html">Open Tool</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="tool-category" data-category="Audio Tools" aria-labelledby="audio-tools-title">
+          <h3 class="category-title" id="audio-tools-title">Audio Tools</h3>
+          <div class="tools-grid">
+            <article class="tool-card" data-tool-name="audio converter">
+              <h4><span class="tool-icon">🎵</span>Audio Converter</h4>
+              <p>Convert audio files between MP3, WAV, AAC, and more formats.</p>
+              <a class="btn btn-small" href="tools/audio-converter.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="audio compressor">
+              <h4><span class="tool-icon">🎚️</span>Audio Compressor</h4>
+              <p>Reduce audio file size while maintaining clear sound quality.</p>
+              <a class="btn btn-small" href="tools/audio-compressor.html">Open Tool</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="tool-category" data-category="PDF Tools" aria-labelledby="pdf-tools-title">
+          <h3 class="category-title" id="pdf-tools-title">PDF Tools</h3>
+          <div class="tools-grid">
+            <article class="tool-card" data-tool-name="photo to pdf">
+              <h4><span class="tool-icon">📄</span>Photo to PDF</h4>
+              <p>Combine one or more photos into a clean PDF document.</p>
+              <a class="btn btn-small" href="tools/photo-to-pdf.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="pdf to photo">
+              <h4><span class="tool-icon">🖨️</span>PDF to Photo</h4>
+              <p>Extract PDF pages as images for easier editing and sharing.</p>
+              <a class="btn btn-small" href="tools/pdf-to-photo.html">Open Tool</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="tool-category" data-category="Design Tools" aria-labelledby="design-tools-title">
+          <h3 class="category-title" id="design-tools-title">Design Tools</h3>
+          <div class="tools-grid">
+            <article class="tool-card" data-tool-name="color tool">
+              <h4><span class="tool-icon">🎨</span>Color Tool</h4>
+              <p>Pick, preview, and copy color values like HEX and RGB with ease.</p>
+              <a class="btn btn-small" href="tools/color-tool.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="color palette extractor">
+              <h4><span class="tool-icon">🧪</span>Color Palette Extractor</h4>
+              <p>Extract beautiful color palettes from uploaded images for design projects.</p>
+              <a class="btn btn-small" href="tools/color-palette-extractor.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="photo filters">
+              <h4><span class="tool-icon">🌈</span>Photo Filters</h4>
+              <p>Apply quick visual filters to improve mood, tone, and style.</p>
+              <a class="btn btn-small" href="tools/photo-filters.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="meme generator">
+              <h4><span class="tool-icon">😂</span>Meme Generator</h4>
+              <p>Create funny memes by adding text over your images instantly.</p>
+              <a class="btn btn-small" href="tools/meme-generator.html">Open Tool</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="tool-category" data-category="QR Tools" aria-labelledby="qr-tools-title">
+          <h3 class="category-title" id="qr-tools-title">QR Tools</h3>
+          <div class="tools-grid">
+            <article class="tool-card" data-tool-name="qr code generator">
+              <h4><span class="tool-icon">🔳</span>QR Code Generator</h4>
+              <p>Generate QR codes for links, text, contact info, and more.</p>
+              <a class="btn btn-small" href="tools/qr-code-generator.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="qr code scanner">
+              <h4><span class="tool-icon">📷</span>QR Code Scanner</h4>
+              <p>Scan QR codes from image uploads and read embedded data quickly.</p>
+              <a class="btn btn-small" href="tools/qr-code-scanner.html">Open Tool</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="tool-category" data-category="Other Tools" aria-labelledby="other-tools-title">
+          <h3 class="category-title" id="other-tools-title">Other Tools</h3>
+          <div class="tools-grid">
+            <article class="tool-card" data-tool-name="youtube thumbnail downloader">
+              <h4><span class="tool-icon">⬇️</span>YouTube Thumbnail Downloader</h4>
+              <p>Download HD YouTube thumbnails from video URLs in just one click.</p>
+              <a class="btn btn-small" href="tools/youtube-thumbnail-downloader.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="youtube thumbnail resizer">
+              <h4><span class="tool-icon">📏</span>YouTube Thumbnail Resizer</h4>
+              <p>Resize YouTube thumbnails to exact dimensions for uploads and sharing.</p>
+              <a class="btn btn-small" href="tools/youtube-thumbnail-resizer.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="watermark adder">
+              <h4><span class="tool-icon">🛡️</span>Watermark Adder</h4>
+              <p>Add text or image watermarks to protect your media files.</p>
+              <a class="btn btn-small" href="tools/watermark-adder.html">Open Tool</a>
+            </article>
+            <article class="tool-card" data-tool-name="gif maker">
+              <h4><span class="tool-icon">🎞️</span>GIF Maker</h4>
+              <p>Create GIFs from images in seconds for social and marketing use.</p>
+              <a class="btn btn-small" href="tools/gif-maker.html">Open Tool</a>
+            </article>
+          </div>
+        </section>
       </section>
 
       <section class="why-section container" aria-labelledby="why-heading">
-        <h2 id="why-heading">Why choose our tools?</h2>
+        <h2 id="why-heading">Why choose MediaTools Pro?</h2>
         <div class="why-grid">
-          <article><h3>Easy to Use</h3><p>Simple interfaces built for beginners and professionals alike.</p></article>
-          <article><h3>All-in-One Platform</h3><p>Access image, video, audio, PDF, and design tools in one place.</p></article>
-          <article><h3>Time Saving Workflow</h3><p>Quick tool actions help you finish tasks faster and stay productive.</p></article>
-          <article><h3>Modern & Responsive</h3><p>Enjoy a smooth experience on desktop, tablet, and mobile devices.</p></article>
-          <article><h3>Privacy Focused</h3><p>Your files are handled securely with straightforward user controls.</p></article>
+          <article><h3>⚡ Fast processing</h3><p>Tools are optimized to save time and keep your workflow moving.</p></article>
+          <article><h3>🔒 Secure &amp; private</h3><p>Your files stay protected with a privacy-first experience.</p></article>
+          <article><h3>💸 Free tools</h3><p>Access practical tools at no cost whenever you need them.</p></article>
+          <article><h3>📦 No software installation</h3><p>Everything runs in your browser with no setup required.</p></article>
+          <article><h3>📱 Works on mobile and desktop</h3><p>Use MediaTools Pro across phones, tablets, and computers.</p></article>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div class="container footer-links">
-        <a href="pages/about.html">About</a>
-        <a href="pages/contact.html">Contact</a>
-        <a href="pages/privacy.html">Privacy Policy</a>
-        <a href="pages/terms.html">Terms</a>
-        <a href="pages/faq.html">FAQs</a>
+      <div class="container footer-layout">
+        <div class="footer-brand">
+          <a href="index.html" class="logo footer-logo">MediaTools Pro</a>
+          <p>Professional media utilities for creators, marketers, and teams.</p>
+        </div>
+        <div class="footer-links">
+          <a href="pages/about.html">About</a>
+          <a href="pages/contact.html">Contact</a>
+          <a href="pages/privacy.html">Privacy</a>
+          <a href="pages/terms.html">Terms</a>
+          <a href="pages/faq.html">FAQ</a>
+        </div>
+        <div class="footer-social" aria-label="Social links">
+          <a href="#" aria-label="X (placeholder)">X</a>
+          <a href="#" aria-label="LinkedIn (placeholder)">LinkedIn</a>
+          <a href="#" aria-label="YouTube (placeholder)">YouTube</a>
+        </div>
       </div>
       <p class="container copyright">© 2026 MediaTools Pro. All rights reserved.</p>
     </footer>
