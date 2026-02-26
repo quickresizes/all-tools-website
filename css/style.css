@@ -441,6 +441,10 @@ a {
   font-weight: 600;
 }
 
+.converter-select-wrap {
+  margin-top: 1rem;
+}
+
 .crop-controls .upload-box {
   margin-bottom: 1rem;
 }
