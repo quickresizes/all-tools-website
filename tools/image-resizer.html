@@ -25,33 +25,44 @@
     <main class="page-main container">
       <section class="tool-layout">
         <article class="tool-panel">
-          <h1>Image Resizer</h1>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
-          
+          <h1>Image Resizer (Single)</h1>
+          <p class="meta-text">Upload one image, set a width and height, then resize and download it in your browser.</p>
+
           <div class="upload-box">
-            <label for="file-upload">Upload your file</label>
-            <input id="file-upload" class="file-input" type="file" />
+            <label for="image-upload">Upload image</label>
+            <input id="image-upload" class="file-input" type="file" accept="image/*" />
           </div>
-          <div>
-            <label for="format-select">Select option</label>
-            <select id="format-select" class="select-input">
-              <option>Default</option>
-              <option>High Quality</option>
-              <option>Small Size</option>
-            </select>
+
+          <div class="dimension-grid">
+            <div>
+              <label for="resize-width">Width (px)</label>
+              <input id="resize-width" class="select-input" type="number" min="1" placeholder="e.g. 800" />
+            </div>
+            <div>
+              <label for="resize-height">Height (px)</label>
+              <input id="resize-height" class="select-input" type="number" min="1" placeholder="e.g. 600" />
+            </div>
           </div>
-          <button class="btn" type="button">Process Now</button>
+
+          <div class="tool-actions">
+            <button id="resize-btn" class="btn" type="button">Resize Image</button>
+            <button id="download-btn" class="btn btn-secondary" type="button" disabled>Download Resized Image</button>
+          </div>
+
+          <p id="resize-message" class="meta-text" role="status" aria-live="polite"></p>
         </article>
 
         <aside class="tool-panel tool-description">
-          <h2>Why this tool is useful</h2>
-          <p>Resize one image or many images at once while keeping quality under control.</p>
-          <h3>Key Features</h3>
+          <h2>Preview</h2>
+          <p class="meta-text">Your resized image will appear below.</p>
+          <div class="preview-wrap">
+            <canvas id="preview-canvas" class="preview-canvas" aria-label="Resized image preview"></canvas>
+          </div>
+          <h3>How it works</h3>
           <ul>
-            <li>Simple workflow suitable for beginners.</li>
-            <li>Modern interface optimized for desktop and mobile.</li>
-            <li>Quick action button for faster processing.</li>
-            <li>Clean layout with focused controls.</li>
+            <li>Everything stays in your browser (client-side only).</li>
+            <li>No upload to any server.</li>
+            <li>Fast and simple for beginners.</li>
           </ul>
         </aside>
       </section>
