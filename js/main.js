@@ -158,3 +158,121 @@ downloadButton?.addEventListener("click", () => {
   downloadLink.download = `${sourceFileName}-resized.png`;
   downloadLink.click();
 });
+
+const cropUploadInput = document.getElementById("crop-image-upload");
+const cropXInput = document.getElementById("crop-x");
+const cropYInput = document.getElementById("crop-y");
+const cropWidthInput = document.getElementById("crop-width");
+const cropHeightInput = document.getElementById("crop-height");
+const cropButton = document.getElementById("crop-button");
+const cropDownloadButton = document.getElementById("crop-download-button");
+const cropCanvas = document.getElementById("crop-canvas");
+const cropMessage = document.getElementById("crop-message");
+
+let cropSourceImage = null;
+let cropFileName = "cropped-image";
+
+const setCropMessage = (message) => {
+  if (cropMessage) {
+    cropMessage.textContent = message;
+  }
+};
+
+const clampNumber = (value, min, max) => Math.min(Math.max(value, min), max);
+
+const cropImageOnCanvas = () => {
+  if (!cropSourceImage || !cropCanvas || !cropXInput || !cropYInput || !cropWidthInput || !cropHeightInput) {
+    return;
+  }
+
+  const rawX = Number.parseInt(cropXInput.value, 10);
+  const rawY = Number.parseInt(cropYInput.value, 10);
+  const rawWidth = Number.parseInt(cropWidthInput.value, 10);
+  const rawHeight = Number.parseInt(cropHeightInput.value, 10);
+
+  if (!Number.isInteger(rawX) || !Number.isInteger(rawY) || !Number.isInteger(rawWidth) || !Number.isInteger(rawHeight)) {
+    setCropMessage("Please enter valid whole numbers for crop values.");
+    if (cropDownloadButton) cropDownloadButton.disabled = true;
+    return;
+  }
+
+  const cropX = clampNumber(rawX, 0, cropSourceImage.width - 1);
+  const cropY = clampNumber(rawY, 0, cropSourceImage.height - 1);
+  const maxWidth = cropSourceImage.width - cropX;
+  const maxHeight = cropSourceImage.height - cropY;
+  const cropWidth = clampNumber(rawWidth, 1, maxWidth);
+  const cropHeight = clampNumber(rawHeight, 1, maxHeight);
+
+  cropXInput.value = String(cropX);
+  cropYInput.value = String(cropY);
+  cropWidthInput.value = String(cropWidth);
+  cropHeightInput.value = String(cropHeight);
+
+  const context = cropCanvas.getContext("2d");
+  cropCanvas.width = cropWidth;
+  cropCanvas.height = cropHeight;
+  context.clearRect(0, 0, cropWidth, cropHeight);
+  context.drawImage(cropSourceImage, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
+  if (cropDownloadButton) {
+    cropDownloadButton.disabled = false;
+  }
+
+  setCropMessage(`Done! Cropped area: ${cropWidth} × ${cropHeight}px from (${cropX}, ${cropY}).`);
+};
+
+cropUploadInput?.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    setCropMessage("Please upload a valid image file.");
+    if (cropDownloadButton) cropDownloadButton.disabled = true;
+    return;
+  }
+
+  cropFileName = file.name.replace(/\.[^.]+$/, "") || "cropped-image";
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const loadedImage = new Image();
+    loadedImage.onload = () => {
+      cropSourceImage = loadedImage;
+
+      if (cropXInput) cropXInput.value = "0";
+      if (cropYInput) cropYInput.value = "0";
+      if (cropWidthInput) cropWidthInput.value = String(loadedImage.width);
+      if (cropHeightInput) cropHeightInput.value = String(loadedImage.height);
+
+      cropImageOnCanvas();
+      setCropMessage("Image uploaded. Adjust values if needed, then click Crop Image.");
+    };
+
+    loadedImage.src = reader.result;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+cropButton?.addEventListener("click", () => {
+  if (!cropSourceImage) {
+    setCropMessage("Please upload an image first.");
+    return;
+  }
+
+  cropImageOnCanvas();
+});
+
+cropDownloadButton?.addEventListener("click", () => {
+  if (!cropCanvas || cropDownloadButton.disabled) {
+    return;
+  }
+
+  const downloadLink = document.createElement("a");
+  downloadLink.href = cropCanvas.toDataURL("image/png");
+  downloadLink.download = `${cropFileName}-cropped.png`;
+  downloadLink.click();
+});

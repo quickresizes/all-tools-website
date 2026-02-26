@@ -441,6 +441,14 @@ a {
   font-weight: 600;
 }
 
+.crop-controls .upload-box {
+  margin-bottom: 1rem;
+}
+
+.crop-controls .meta-text {
+  margin: 0.9rem 0 0;
+}
+
 .dimension-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
