@@ -22,48 +22,54 @@
       </div>
     </header>
 
-        <main class="page-main container">
+    <main class="page-main container">
       <section class="tool-panel tool-top">
-        <h1>Image Resizer</h1>
-        <p class="meta-text">Resize one image or many images at once while keeping quality under control.</p>
+        <h1>Image Resizer (Single)</h1>
+        <p class="meta-text">Upload one image, enter a new width and height, then resize and download it in your browser.</p>
       </section>
 
       <section class="tool-panel tool-middle">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <h2>Resize Your Image</h2>
+        <p class="meta-text">Everything works client-side. Your image is processed only in this browser tab.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="resizer-grid">
+          <div class="resizer-controls">
+            <div class="upload-box">
+              <label for="image-upload">Upload image</label>
+              <input id="image-upload" class="file-input" type="file" accept="image/*" />
+            </div>
 
+            <div class="dimension-grid">
+              <div>
+                <label for="resize-width">Width (px)</label>
+                <input id="resize-width" class="text-input" type="number" min="1" placeholder="e.g. 800" />
+              </div>
+              <div>
+                <label for="resize-height">Height (px)</label>
+                <input id="resize-height" class="text-input" type="number" min="1" placeholder="e.g. 600" />
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button id="resize-button" class="btn" type="button">Resize Image</button>
+              <button id="download-button" class="btn btn-secondary" type="button" disabled>Download Resized Image</button>
+            </div>
+
+            <p id="resizer-message" class="meta-text" aria-live="polite">Upload an image to get started.</p>
+          </div>
+
+          <div class="preview-card">
+            <h3>Preview</h3>
+            <canvas id="resizer-canvas" class="preview-canvas" aria-label="Resized image preview"></canvas>
+          </div>
+        </div>
       </section>
 
       <section class="tool-panel tool-about">
         <h2>About this tool</h2>
-        <p>Image Resizer is designed to help you work faster with dependable results. Resize one image or many images at once while keeping quality under control.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Image Resizer is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
-      </section>
-
-      <section class="tool-panel tool-features">
-        <h2>Features</h2>
-        <ul>
-          <li>Focused workflow for image resizer tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
-        </ul>
+        <p>This Image Resizer makes it easy for beginners to quickly resize one image at a time.</p>
+        <p>You can choose exact pixel dimensions, preview the result, and download it instantly.</p>
+        <p>No backend is used—your file stays on your device for better privacy.</p>
       </section>
     </main>
 

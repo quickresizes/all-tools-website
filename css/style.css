@@ -143,7 +143,8 @@ a {
 
 .search-wrap input,
 .file-input,
-.select-input {
+.select-input,
+.text-input {
   width: 100%;
   padding: 0.95rem 1rem;
   border-radius: 12px;
@@ -155,7 +156,8 @@ a {
 
 .search-wrap input:focus,
 .file-input:focus,
-.select-input:focus {
+.select-input:focus,
+.text-input:focus {
   outline: 2px solid color-mix(in srgb, var(--primary) 35%, transparent);
   border-color: var(--primary);
 }
@@ -424,6 +426,71 @@ a {
   overflow: hidden;
 }
 
+
+
+.resizer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.resizer-controls label {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.dimension-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.btn-secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.preview-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem;
+  background: var(--surface-2);
+}
+
+.preview-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+}
+
+.preview-canvas {
+  width: 100%;
+  min-height: 220px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: repeating-conic-gradient(from 45deg, #0000 0 25%, color-mix(in srgb, var(--border) 45%, transparent) 0 50%) 50% / 20px 20px;
+}
 @media (max-width: 950px) {
   .tools-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -440,11 +507,16 @@ a {
   .tool-layout {
     grid-template-columns: 1fr;
   }
+
+  .resizer-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 650px) {
   .tools-grid,
-  .why-grid {
+  .why-grid,
+  .dimension-grid {
     grid-template-columns: 1fr;
   }
 }
