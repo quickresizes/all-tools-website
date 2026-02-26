@@ -330,6 +330,8 @@ a {
 
 .page-main {
   padding: 3rem 0;
+  display: grid;
+  gap: 1rem;
 }
 
 .page-card,
@@ -367,6 +369,41 @@ a {
 .tool-description ul {
   margin-top: 0;
   padding-left: 1.2rem;
+}
+
+.tool-top h1 {
+  margin-bottom: 0.35rem;
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+}
+
+.tool-top .meta-text {
+  margin: 0;
+  max-width: 760px;
+}
+
+.tool-middle h2,
+.tool-about h2,
+.tool-features h2 {
+  margin-bottom: 0.8rem;
+}
+
+.tool-about p {
+  margin: 0 0 0.85rem;
+  color: var(--muted);
+}
+
+.tool-about p:last-child {
+  margin-bottom: 0;
+}
+
+.tool-features ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+}
+
+.tool-features li + li {
+  margin-top: 0.45rem;
 }
 
 .external-note {
