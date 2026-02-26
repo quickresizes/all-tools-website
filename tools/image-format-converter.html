@@ -29,23 +29,38 @@
       </section>
 
       <section class="tool-panel tool-middle">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <h2>Convert Your Image</h2>
+        <p class="meta-text">Upload one image, pick a format, then convert and download it. Everything runs in your browser.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="resizer-grid converter-grid">
+          <div class="resizer-controls">
+            <div class="upload-box">
+              <label for="converter-upload">Upload image</label>
+              <input id="converter-upload" class="file-input" type="file" accept="image/*" />
+            </div>
 
+            <div class="converter-select-wrap">
+              <label for="converter-format">Output format</label>
+              <select id="converter-format" class="select-input">
+                <option value="jpeg">JPG</option>
+                <option value="png">PNG</option>
+                <option value="webp">WebP</option>
+              </select>
+            </div>
+
+            <div class="button-row">
+              <button id="converter-button" class="btn" type="button">Convert Image</button>
+              <button id="converter-download-button" class="btn btn-secondary" type="button" disabled>Download Converted Image</button>
+            </div>
+
+            <p id="converter-message" class="meta-text" aria-live="polite">Upload an image to get started.</p>
+          </div>
+
+          <div class="preview-card">
+            <h3>Preview</h3>
+            <canvas id="converter-canvas" class="preview-canvas" aria-label="Converted image preview"></canvas>
+          </div>
+        </div>
       </section>
 
       <section class="tool-panel tool-about">

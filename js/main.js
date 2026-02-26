@@ -276,3 +276,106 @@ cropDownloadButton?.addEventListener("click", () => {
   downloadLink.download = `${cropFileName}-cropped.png`;
   downloadLink.click();
 });
+
+const converterUploadInput = document.getElementById("converter-upload");
+const converterFormatSelect = document.getElementById("converter-format");
+const converterButton = document.getElementById("converter-button");
+const converterDownloadButton = document.getElementById("converter-download-button");
+const converterCanvas = document.getElementById("converter-canvas");
+const converterMessage = document.getElementById("converter-message");
+
+let converterSourceImage = null;
+let converterFileName = "converted-image";
+let converterLastMimeType = "image/jpeg";
+let converterLastExtension = "jpg";
+
+const formatToMimeType = {
+  jpeg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp"
+};
+
+const formatToExtension = {
+  jpeg: "jpg",
+  png: "png",
+  webp: "webp"
+};
+
+const setConverterMessage = (message) => {
+  if (converterMessage) {
+    converterMessage.textContent = message;
+  }
+};
+
+const convertImageOnCanvas = () => {
+  if (!converterSourceImage || !converterCanvas || !converterFormatSelect) {
+    return;
+  }
+
+  const selectedFormat = converterFormatSelect.value;
+  const mimeType = formatToMimeType[selectedFormat] || "image/jpeg";
+  const extension = formatToExtension[selectedFormat] || "jpg";
+  const context = converterCanvas.getContext("2d");
+
+  converterCanvas.width = converterSourceImage.width;
+  converterCanvas.height = converterSourceImage.height;
+  context.clearRect(0, 0, converterCanvas.width, converterCanvas.height);
+  context.drawImage(converterSourceImage, 0, 0);
+
+  converterLastMimeType = mimeType;
+  converterLastExtension = extension;
+
+  if (converterDownloadButton) {
+    converterDownloadButton.disabled = false;
+  }
+
+  setConverterMessage(`Done! Your image is ready as ${extension.toUpperCase()}.`);
+};
+
+converterUploadInput?.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    setConverterMessage("Please upload a valid image file.");
+    if (converterDownloadButton) converterDownloadButton.disabled = true;
+    return;
+  }
+
+  converterFileName = file.name.replace(/\.[^.]+$/, "") || "converted-image";
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const loadedImage = new Image();
+    loadedImage.onload = () => {
+      converterSourceImage = loadedImage;
+      convertImageOnCanvas();
+    };
+    loadedImage.src = reader.result;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+converterButton?.addEventListener("click", () => {
+  if (!converterSourceImage) {
+    setConverterMessage("Please upload an image first.");
+    return;
+  }
+
+  convertImageOnCanvas();
+});
+
+converterDownloadButton?.addEventListener("click", () => {
+  if (!converterCanvas || converterDownloadButton.disabled) {
+    return;
+  }
+
+  const downloadLink = document.createElement("a");
+  downloadLink.href = converterCanvas.toDataURL(converterLastMimeType, 0.92);
+  downloadLink.download = `${converterFileName}-converted.${converterLastExtension}`;
+  downloadLink.click();
+});
