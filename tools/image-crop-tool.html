@@ -30,22 +30,47 @@
 
       <section class="tool-panel tool-middle">
         <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <p class="meta-text">Upload an image, enter crop values, then click Crop Image.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="resizer-grid">
+          <div class="resizer-controls crop-controls">
+            <div class="upload-box">
+              <label for="crop-image-upload">Upload image</label>
+              <input id="crop-image-upload" class="file-input" type="file" accept="image/*" />
+            </div>
 
+            <div class="dimension-grid">
+              <div>
+                <label for="crop-x">Start X (px)</label>
+                <input id="crop-x" class="text-input" type="number" min="0" value="0" />
+              </div>
+              <div>
+                <label for="crop-y">Start Y (px)</label>
+                <input id="crop-y" class="text-input" type="number" min="0" value="0" />
+              </div>
+              <div>
+                <label for="crop-width">Crop Width (px)</label>
+                <input id="crop-width" class="text-input" type="number" min="1" />
+              </div>
+              <div>
+                <label for="crop-height">Crop Height (px)</label>
+                <input id="crop-height" class="text-input" type="number" min="1" />
+              </div>
+            </div>
+
+            <p id="crop-message" class="meta-text" role="status" aria-live="polite">Upload an image to begin.</p>
+
+            <div class="button-row">
+              <button id="crop-button" class="btn" type="button">Crop Image</button>
+              <button id="crop-download-button" class="btn btn-secondary" type="button" disabled>Download Cropped Image</button>
+            </div>
+          </div>
+
+          <div class="preview-card">
+            <h3>Cropped Preview</h3>
+            <canvas id="crop-canvas" class="preview-canvas" aria-label="Cropped image preview"></canvas>
+          </div>
+        </div>
       </section>
 
       <section class="tool-panel tool-about">
