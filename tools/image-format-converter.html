@@ -6,29 +6,16 @@
     <title>Image Format Converter | MediaTools Pro</title>
     <link rel="stylesheet" href="../css/style.css" />
   </head>
-  <body>
-    <header class="site-header">
-      <div class="container header-row">
-        <a href="../index.html" class="logo">MediaTools Pro</a>
-        <nav class="main-nav" aria-label="Main Navigation">
-          <a href="../index.html">Home</a>
-          <a href="../pages/about.html">About</a>
-          <a href="../pages/contact.html">Contact</a>
-          <a href="../pages/privacy.html">Privacy</a>
-          <a href="../pages/terms.html">Terms</a>
-          <a href="../pages/faq.html">FAQs</a>
-        </nav>
-        <button class="theme-toggle" type="button" aria-label="Toggle dark and light mode">🌙 Dark Mode</button>
-      </div>
-    </header>
+  <body data-base-path="../">
+    <header id="site-header"></header>
 
-        <main class="page-main container">
-      <section class="tool-panel tool-top">
+<main class="page-main tool-container container">
+      <section class="tool-panel tool-header">
         <h1>Image Format Converter</h1>
         <p class="meta-text">Convert image formats between JPG, PNG, WEBP, and more for compatibility and performance.</p>
       </section>
 
-      <section class="tool-panel tool-middle">
+      <section class="tool-panel tool-content">
         <h2>Convert Your Image</h2>
         <p class="meta-text">Upload one image, pick a format, then convert and download it. Everything runs in your browser.</p>
 
@@ -48,7 +35,7 @@
               </select>
             </div>
 
-            <div class="button-row">
+            <div class="button-row tool-actions">
               <button id="converter-button" class="btn" type="button">Convert Image</button>
               <button id="converter-download-button" class="btn btn-secondary" type="button" disabled>Download Converted Image</button>
             </div>
@@ -63,14 +50,14 @@
         </div>
       </section>
 
-      <section class="tool-panel tool-about">
+      <section class="tool-panel tool-description">
         <h2>About this tool</h2>
         <p>Image Format Converter is designed to help you work faster with dependable results. Convert image formats between JPG, PNG, WEBP, and more for compatibility and performance.</p>
         <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
         <p>Image Format Converter is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
       </section>
 
-      <section class="tool-panel tool-features">
+      <section class="tool-panel tool-description">
         <h2>Features</h2>
         <ul>
           <li>Focused workflow for image format converter tasks.</li>
@@ -81,18 +68,9 @@
         </ul>
       </section>
     </main>
+    <footer id="site-footer"></footer>
 
-    <footer class="site-footer">
-      <div class="container footer-links">
-        <a href="../pages/about.html">About</a>
-        <a href="../pages/contact.html">Contact</a>
-        <a href="../pages/privacy.html">Privacy Policy</a>
-        <a href="../pages/terms.html">Terms</a>
-        <a href="../pages/faq.html">FAQs</a>
-      </div>
-      <p class="container copyright">© 2026 MediaTools Pro. All rights reserved.</p>
-    </footer>
-
+<script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
   </body>
 </html>

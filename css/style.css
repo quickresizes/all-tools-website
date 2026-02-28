@@ -351,6 +351,34 @@ a {
   gap: 1rem;
 }
 
+.tool-container {
+  display: grid;
+  gap: 1rem;
+}
+
+.tool-header {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  column-gap: 1rem;
+  row-gap: 0.25rem;
+  background: linear-gradient(140deg, color-mix(in srgb, var(--surface) 82%, transparent), color-mix(in srgb, var(--primary-soft) 50%, var(--surface)));
+}
+
+.tool-content {
+  background: linear-gradient(170deg, color-mix(in srgb, var(--surface) 88%, transparent), color-mix(in srgb, var(--surface-2) 72%, transparent));
+}
+
+.tool-description {
+  background: linear-gradient(170deg, color-mix(in srgb, var(--surface) 90%, transparent), color-mix(in srgb, var(--surface-2) 65%, transparent));
+}
+
+.tool-actions {
+  margin-top: 1rem;
+}
+
 .page-card,
 .tool-panel {
   background: var(--surface);
@@ -378,6 +406,7 @@ a {
 }
 
 .tool-description h2,
+.tool-content h2,
 .tool-panel h2,
 .page-card h1 {
   margin-top: 0;
@@ -388,17 +417,17 @@ a {
   padding-left: 1.2rem;
 }
 
-.tool-top h1 {
+.tool-header h1 {
   margin: 0;
   font-size: clamp(1.6rem, 2.6vw, 2.2rem);
 }
 
-.tool-top .meta-text {
+.tool-header .meta-text {
   margin: 0.3rem 0 0;
   max-width: 760px;
 }
 
-.tool-top {
+.tool-header {
   position: relative;
   overflow: hidden;
   display: grid;
@@ -409,7 +438,7 @@ a {
   background: linear-gradient(140deg, color-mix(in srgb, var(--surface) 82%, transparent), color-mix(in srgb, var(--primary-soft) 50%, var(--surface)));
 }
 
-.tool-top::after {
+.tool-header::after {
   content: "";
   position: absolute;
   right: -70px;
@@ -421,7 +450,7 @@ a {
   pointer-events: none;
 }
 
-.tool-top::before {
+.tool-header::before {
   content: "🧰";
   width: 52px;
   height: 52px;
@@ -439,47 +468,41 @@ a {
   grid-row: 1 / span 2;
 }
 
-.tool-top h1,
-.tool-top .meta-text {
+.tool-header h1,
+.tool-header .meta-text {
   grid-column: 2;
 }
 
-.tool-top > * {
+.tool-header > * {
   position: relative;
   z-index: 1;
 }
 
-.tool-middle {
+.tool-content {
   background: linear-gradient(170deg, color-mix(in srgb, var(--surface) 88%, transparent), color-mix(in srgb, var(--surface-2) 72%, transparent));
 }
 
-.tool-about,
-.tool-features {
-  background: linear-gradient(170deg, color-mix(in srgb, var(--surface) 90%, transparent), color-mix(in srgb, var(--surface-2) 65%, transparent));
-}
-
-.tool-middle h2,
-.tool-about h2,
-.tool-features h2 {
+.tool-content h2,
+.tool-description h2 {
   margin-bottom: 0.8rem;
 }
 
-.tool-about p {
+.tool-description p {
   margin: 0 0 0.85rem;
   color: var(--muted);
 }
 
-.tool-about p:last-child {
+.tool-description p:last-child {
   margin-bottom: 0;
 }
 
-.tool-features ul {
+.tool-description ul {
   margin: 0;
   padding-left: 1.2rem;
   color: var(--muted);
 }
 
-.tool-features li + li {
+.tool-description li + li {
   margin-top: 0.45rem;
 }
 
@@ -547,7 +570,6 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem;
-  margin-top: 1rem;
 }
 
 .btn-secondary {
@@ -624,12 +646,12 @@ a {
   box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 42%, transparent);
 }
 
-.tool-features ul {
+.tool-description ul {
   display: grid;
   gap: 0.45rem;
 }
 
-.tool-features li {
+.tool-description li {
   padding-left: 0.15rem;
 }
 @media (max-width: 950px) {

@@ -10,28 +10,10 @@
     />
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body>
-    <header class="site-header">
-      <div class="container header-row">
-        <a href="index.html" class="logo">MediaTools Pro</a>
-        <nav class="main-nav" aria-label="Main Navigation">
-          <a href="index.html">Home</a>
-          <a href="pages/about.html">About</a>
-          <a href="pages/contact.html">Contact</a>
-          <a href="pages/faq.html">FAQ</a>
-        </nav>
-        <button
-          class="theme-toggle"
-          type="button"
-          aria-label="Toggle dark and light mode"
-          aria-pressed="false"
-        >
-          🌙 Dark Mode
-        </button>
-      </div>
-    </header>
+  <body data-base-path="./">
+    <header id="site-header"></header>
 
-    <main>
+<main>
       <section class="hero container">
         <p class="hero-tag">Powerful tools, built for speed</p>
         <h1>Professional media tools for modern creators</h1>
@@ -243,29 +225,9 @@
         </div>
       </section>
     </main>
+    <footer id="site-footer"></footer>
 
-    <footer class="site-footer">
-      <div class="container footer-layout">
-        <div class="footer-brand">
-          <a href="index.html" class="logo footer-logo">MediaTools Pro</a>
-          <p>Professional media utilities for creators, marketers, and teams.</p>
-        </div>
-        <div class="footer-links">
-          <a href="pages/about.html">About</a>
-          <a href="pages/contact.html">Contact</a>
-          <a href="pages/privacy.html">Privacy</a>
-          <a href="pages/terms.html">Terms</a>
-          <a href="pages/faq.html">FAQ</a>
-        </div>
-        <div class="footer-social" aria-label="Social links">
-          <a href="#" aria-label="X (placeholder)">X</a>
-          <a href="#" aria-label="LinkedIn (placeholder)">LinkedIn</a>
-          <a href="#" aria-label="YouTube (placeholder)">YouTube</a>
-        </div>
-      </div>
-      <p class="container copyright">© 2026 MediaTools Pro. All rights reserved.</p>
-    </footer>
-
+<script src="js/layout.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

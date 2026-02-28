@@ -6,29 +6,16 @@
     <title>Image Resizer | MediaTools Pro</title>
     <link rel="stylesheet" href="../css/style.css" />
   </head>
-  <body>
-    <header class="site-header">
-      <div class="container header-row">
-        <a href="../index.html" class="logo">MediaTools Pro</a>
-        <nav class="main-nav" aria-label="Main Navigation">
-          <a href="../index.html">Home</a>
-          <a href="../pages/about.html">About</a>
-          <a href="../pages/contact.html">Contact</a>
-          <a href="../pages/privacy.html">Privacy</a>
-          <a href="../pages/terms.html">Terms</a>
-          <a href="../pages/faq.html">FAQs</a>
-        </nav>
-        <button class="theme-toggle" type="button" aria-label="Toggle dark and light mode">🌙 Dark Mode</button>
-      </div>
-    </header>
+  <body data-base-path="../">
+    <header id="site-header"></header>
 
-    <main class="page-main container">
-      <section class="tool-panel tool-top">
+<main class="page-main tool-container container">
+      <section class="tool-panel tool-header">
         <h1>Image Resizer (Single)</h1>
         <p class="meta-text">Upload one image, enter a new width and height, then resize and download it in your browser.</p>
       </section>
 
-      <section class="tool-panel tool-middle">
+      <section class="tool-panel tool-content">
         <h2>Resize Your Image</h2>
         <p class="meta-text">Everything works client-side. Your image is processed only in this browser tab.</p>
 
@@ -50,7 +37,7 @@
               </div>
             </div>
 
-            <div class="button-row">
+            <div class="button-row tool-actions">
               <button id="resize-button" class="btn" type="button">Resize Image</button>
               <button id="download-button" class="btn btn-secondary" type="button" disabled>Download Resized Image</button>
             </div>
@@ -65,14 +52,14 @@
         </div>
       </section>
 
-      <section class="tool-panel tool-about">
+      <section class="tool-panel tool-description">
         <h2>About this tool</h2>
         <p>This Image Resizer makes it easy for beginners to quickly resize one image at a time.</p>
         <p>You can choose exact pixel dimensions, preview the result, and download it instantly.</p>
         <p>No backend is used—your file stays on your device for better privacy.</p>
       </section>
 
-      <section class="tool-panel tool-features">
+      <section class="tool-panel tool-description">
         <h2>Features</h2>
         <ul>
           <li>Simple three-step workflow: upload, adjust, and export.</li>
@@ -83,18 +70,9 @@
         </ul>
       </section>
     </main>
+    <footer id="site-footer"></footer>
 
-    <footer class="site-footer">
-      <div class="container footer-links">
-        <a href="../pages/about.html">About</a>
-        <a href="../pages/contact.html">Contact</a>
-        <a href="../pages/privacy.html">Privacy Policy</a>
-        <a href="../pages/terms.html">Terms</a>
-        <a href="../pages/faq.html">FAQs</a>
-      </div>
-      <p class="container copyright">© 2026 MediaTools Pro. All rights reserved.</p>
-    </footer>
-
+<script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
   </body>
 </html>
