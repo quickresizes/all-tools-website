@@ -22,48 +22,50 @@
       </div>
     </header>
 
-        <main class="page-main container">
+    <main class="page-main container">
       <section class="tool-panel tool-top">
         <h1>Image Quality Tool</h1>
-        <p class="meta-text">Adjust quality settings to reduce file size or improve visual clarity for web and social media.</p>
+        <p class="meta-text">Upload an image, pick a quality level, then compress it in your browser.</p>
       </section>
 
       <section class="tool-panel tool-middle">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <h2>Compress your image</h2>
+        <div class="quality-grid">
+          <div class="quality-controls">
+            <div class="upload-box">
+              <label for="quality-image-upload">Upload image</label>
+              <input id="quality-image-upload" class="file-input" type="file" accept="image/*" />
+            </div>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+            <div class="quality-slider-wrap">
+              <label for="quality-range">Quality: <span id="quality-value">80%</span></label>
+              <input id="quality-range" type="range" min="10" max="100" value="80" />
+            </div>
 
+            <div class="button-row">
+              <button id="quality-compress-button" class="btn" type="button">Compress Image</button>
+              <button id="quality-download-button" class="btn btn-secondary" type="button" disabled>Download Compressed Image</button>
+            </div>
+
+            <div class="quality-size-box">
+              <p><strong>Original size:</strong> <span id="original-size">-</span></p>
+              <p><strong>Compressed size:</strong> <span id="compressed-size">-</span></p>
+              <p id="quality-message" class="meta-text">Upload an image to begin.</p>
+            </div>
+          </div>
+
+          <div class="preview-card">
+            <h3>Compressed Preview</h3>
+            <img id="quality-preview" class="quality-preview-image" alt="Compressed image preview" hidden />
+            <canvas id="quality-canvas" class="preview-canvas" hidden></canvas>
+          </div>
+        </div>
       </section>
 
       <section class="tool-panel tool-about">
         <h2>About this tool</h2>
-        <p>Image Quality Tool is designed to help you work faster with dependable results. Adjust quality settings to reduce file size or improve visual clarity for web and social media.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Image Quality Tool is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
-      </section>
-
-      <section class="tool-panel tool-features">
-        <h2>Features</h2>
-        <ul>
-          <li>Focused workflow for image quality tool tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
-        </ul>
+        <p>This image compressor runs fully in your browser using JavaScript and canvas. Your files stay on your device.</p>
+        <p>It is helpful for websites, social media, and messaging where smaller images load faster.</p>
       </section>
     </main>
 
