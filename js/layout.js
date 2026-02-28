@@ -50,6 +50,41 @@ const renderSiteFooter = (basePath) => {
   `;
 };
 
+const createAdPlaceholder = (label) => {
+  const ad = document.createElement('section');
+  ad.className = 'ad-container';
+  ad.setAttribute('aria-label', label);
+  ad.textContent = 'Ad Space';
+  return ad;
+};
+
+const injectToolPageAdPlaceholders = () => {
+  const toolMain = document.querySelector('main.tool-container');
+  if (!toolMain) return;
+
+  const toolHeader = toolMain.querySelector('.tool-header');
+  const toolInterface = toolMain.querySelector('.tool-content');
+
+  if (toolHeader && !toolMain.querySelector('[aria-label="Tool title ad placeholder"]')) {
+    const titleAd = createAdPlaceholder('Tool title ad placeholder');
+    titleAd.classList.add('container');
+    toolHeader.insertAdjacentElement('afterend', titleAd);
+  }
+
+  if (toolInterface && !toolMain.querySelector('[aria-label="Tool interface ad placeholder"]')) {
+    const interfaceAd = createAdPlaceholder('Tool interface ad placeholder');
+    interfaceAd.classList.add('container');
+    toolInterface.insertAdjacentElement('afterend', interfaceAd);
+  }
+
+  if (!toolMain.querySelector('[aria-label="Tool footer ad placeholder"]')) {
+    const footerAd = createAdPlaceholder('Tool footer ad placeholder');
+    footerAd.classList.add('container');
+    toolMain.append(footerAd);
+  }
+};
+
 const basePath = resolveBasePath();
 renderSiteHeader(basePath);
 renderSiteFooter(basePath);
+injectToolPageAdPlaceholders();

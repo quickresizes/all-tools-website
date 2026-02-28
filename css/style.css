@@ -58,6 +58,23 @@ a {
   margin: 0 auto;
 }
 
+.ad-container {
+  min-height: 120px;
+  margin: 1.25rem auto;
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface-2) 78%, transparent);
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 1rem;
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -681,6 +698,12 @@ a {
   .why-grid,
   .dimension-grid {
     grid-template-columns: 1fr;
+  }
+
+  .ad-container {
+    min-height: 96px;
+    margin: 1rem auto;
+    font-size: 0.95rem;
   }
 }
 
