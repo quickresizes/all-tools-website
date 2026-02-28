@@ -379,3 +379,129 @@ converterDownloadButton?.addEventListener("click", () => {
   downloadLink.download = `${converterFileName}-converted.${converterLastExtension}`;
   downloadLink.click();
 });
+
+const qualityUploadInput = document.getElementById("quality-image-upload");
+const qualityRangeInput = document.getElementById("quality-range");
+const qualityValueLabel = document.getElementById("quality-value");
+const qualityCompressButton = document.getElementById("quality-compress-button");
+const qualityDownloadButton = document.getElementById("quality-download-button");
+const qualityPreviewImage = document.getElementById("quality-preview");
+const qualityCanvas = document.getElementById("quality-canvas");
+const qualityOriginalSize = document.getElementById("original-size");
+const qualityCompressedSize = document.getElementById("compressed-size");
+const qualityMessage = document.getElementById("quality-message");
+
+let qualitySourceImage = null;
+let qualityFileName = "compressed-image";
+let qualityCompressedDataUrl = "";
+
+const setQualityMessage = (message) => {
+  if (qualityMessage) {
+    qualityMessage.textContent = message;
+  }
+};
+
+const formatFileSize = (bytes) => {
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return "0 KB";
+  }
+
+  const kb = bytes / 1024;
+  if (kb < 1024) {
+    return `${kb.toFixed(1)} KB`;
+  }
+
+  return `${(kb / 1024).toFixed(2)} MB`;
+};
+
+const estimateBase64FileSize = (dataUrl) => {
+  const base64Part = dataUrl.split(",")[1] || "";
+  const padding = (base64Part.match(/=+$/) || [""])[0].length;
+  return Math.floor((base64Part.length * 3) / 4) - padding;
+};
+
+qualityRangeInput?.addEventListener("input", () => {
+  if (qualityValueLabel) {
+    qualityValueLabel.textContent = `${qualityRangeInput.value}%`;
+  }
+});
+
+qualityUploadInput?.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    setQualityMessage("Please upload a valid image file.");
+    return;
+  }
+
+  qualityFileName = file.name.replace(/\.[^.]+$/, "") || "compressed-image";
+
+  if (qualityOriginalSize) {
+    qualityOriginalSize.textContent = formatFileSize(file.size);
+  }
+
+  if (qualityCompressedSize) {
+    qualityCompressedSize.textContent = "-";
+  }
+
+  qualityCompressedDataUrl = "";
+  if (qualityDownloadButton) qualityDownloadButton.disabled = true;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const loadedImage = new Image();
+    loadedImage.onload = () => {
+      qualitySourceImage = loadedImage;
+      setQualityMessage("Image uploaded. Choose a quality level and click Compress Image.");
+    };
+    loadedImage.src = reader.result;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+qualityCompressButton?.addEventListener("click", () => {
+  if (!qualitySourceImage || !qualityCanvas || !qualityRangeInput) {
+    setQualityMessage("Please upload an image first.");
+    return;
+  }
+
+  const context = qualityCanvas.getContext("2d");
+  qualityCanvas.width = qualitySourceImage.width;
+  qualityCanvas.height = qualitySourceImage.height;
+  context.clearRect(0, 0, qualityCanvas.width, qualityCanvas.height);
+  context.drawImage(qualitySourceImage, 0, 0);
+
+  const qualityLevel = Number.parseInt(qualityRangeInput.value, 10) / 100;
+  qualityCompressedDataUrl = qualityCanvas.toDataURL("image/jpeg", qualityLevel);
+
+  if (qualityPreviewImage) {
+    qualityPreviewImage.src = qualityCompressedDataUrl;
+    qualityPreviewImage.hidden = false;
+  }
+
+  if (qualityCompressedSize) {
+    qualityCompressedSize.textContent = formatFileSize(estimateBase64FileSize(qualityCompressedDataUrl));
+  }
+
+  if (qualityDownloadButton) {
+    qualityDownloadButton.disabled = false;
+  }
+
+  setQualityMessage("Compression complete! Preview your image and download it.");
+});
+
+qualityDownloadButton?.addEventListener("click", () => {
+  if (!qualityCompressedDataUrl) {
+    return;
+  }
+
+  const downloadLink = document.createElement("a");
+  downloadLink.href = qualityCompressedDataUrl;
+  downloadLink.download = `${qualityFileName}-compressed.jpg`;
+  downloadLink.click();
+});
