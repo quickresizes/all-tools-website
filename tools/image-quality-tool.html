@@ -6,29 +6,16 @@
     <title>Image Quality Tool | MediaTools Pro</title>
     <link rel="stylesheet" href="../css/style.css" />
   </head>
-  <body>
-    <header class="site-header">
-      <div class="container header-row">
-        <a href="../index.html" class="logo">MediaTools Pro</a>
-        <nav class="main-nav" aria-label="Main Navigation">
-          <a href="../index.html">Home</a>
-          <a href="../pages/about.html">About</a>
-          <a href="../pages/contact.html">Contact</a>
-          <a href="../pages/privacy.html">Privacy</a>
-          <a href="../pages/terms.html">Terms</a>
-          <a href="../pages/faq.html">FAQs</a>
-        </nav>
-        <button class="theme-toggle" type="button" aria-label="Toggle dark and light mode">🌙 Dark Mode</button>
-      </div>
-    </header>
+  <body data-base-path="../">
+    <header id="site-header"></header>
 
-    <main class="page-main container">
-      <section class="tool-panel tool-top">
+<main class="page-main tool-container container">
+      <section class="tool-panel tool-header">
         <h1>Image Quality Tool</h1>
         <p class="meta-text">Upload an image, pick a quality level, then compress it in your browser.</p>
       </section>
 
-      <section class="tool-panel tool-middle">
+      <section class="tool-panel tool-content">
         <h2>Compress your image</h2>
         <div class="quality-grid">
           <div class="quality-controls">
@@ -42,7 +29,7 @@
               <input id="quality-range" type="range" min="10" max="100" value="80" />
             </div>
 
-            <div class="button-row">
+            <div class="button-row tool-actions">
               <button id="quality-compress-button" class="btn" type="button">Compress Image</button>
               <button id="quality-download-button" class="btn btn-secondary" type="button" disabled>Download Compressed Image</button>
             </div>
@@ -62,13 +49,13 @@
         </div>
       </section>
 
-      <section class="tool-panel tool-about">
+      <section class="tool-panel tool-description">
         <h2>About this tool</h2>
         <p>This image compressor runs fully in your browser using JavaScript and canvas. Your files stay on your device.</p>
         <p>It is helpful for websites, social media, and messaging where smaller images load faster.</p>
       </section>
 
-      <section class="tool-panel tool-features">
+      <section class="tool-panel tool-description">
         <h2>Features</h2>
         <ul>
           <li>Simple three-step workflow: upload, adjust, and export.</li>
@@ -79,18 +66,9 @@
         </ul>
       </section>
     </main>
+    <footer id="site-footer"></footer>
 
-    <footer class="site-footer">
-      <div class="container footer-links">
-        <a href="../pages/about.html">About</a>
-        <a href="../pages/contact.html">Contact</a>
-        <a href="../pages/privacy.html">Privacy Policy</a>
-        <a href="../pages/terms.html">Terms</a>
-        <a href="../pages/faq.html">FAQs</a>
-      </div>
-      <p class="container copyright">© 2026 MediaTools Pro. All rights reserved.</p>
-    </footer>
-
+<script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
   </body>
 </html>
