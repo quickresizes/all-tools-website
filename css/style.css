@@ -792,3 +792,29 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+.aspect-tool-grid {
+  align-items: start;
+}
+
+.aspect-controls {
+  display: grid;
+  gap: 1rem;
+}
+
+.aspect-control-group label {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.before-after-grid .meta-text {
+  margin: 0 0 0.45rem;
+  font-weight: 600;
+}
+
+@media (max-width: 650px) {
+  .before-after-grid {
+    grid-template-columns: 1fr;
+  }
+}

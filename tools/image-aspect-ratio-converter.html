@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image Aspect Ratio Converter – Free Online Image Aspect Ratio Converter Tool | MediaTools Pro</title>
-    <meta name="description" content="Convert images to popular aspect ratios like 1:1, 4:3, 16:9, and more. Use this free online image aspect ratio converter at MediaTools Pro." />
-    <meta name="keywords" content="image aspect ratio converter, image aspect ratio converter online, free image aspect ratio converter, media tools pro, image, aspect, ratio, converter, online tool" />
+    <meta name="description" content="Convert images to popular aspect ratios like 1:1, 4:5, 16:9 and more with a live before/after preview." />
+    <meta name="keywords" content="image aspect ratio converter, image resize ratio online, instagram ratio converter, youtube thumbnail ratio" />
     <meta property="og:title" content="Image Aspect Ratio Converter – Free Online Image Aspect Ratio Converter Tool | MediaTools Pro" />
-    <meta property="og:description" content="Convert images to popular aspect ratios like 1:1, 4:3, 16:9, and more. Use this free online image aspect ratio converter at MediaTools Pro." />
+    <meta property="og:description" content="Upload your image, choose an aspect ratio preset or custom size, preview before/after, and download as JPG, PNG, or WebP." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/image-aspect-ratio-converter.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
@@ -16,53 +16,102 @@
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Image Aspect Ratio Converter</h1>
-        <p class="meta-text">Convert images to popular aspect ratios like 1:1, 4:3, 16:9, and more.</p>
+        <p class="meta-text">Upload, pick a ratio, preview before and after, then download the resized image in your preferred format.</p>
       </section>
 
       <section class="tool-panel tool-content">
         <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <p class="meta-text">Everything runs in your browser for speed and privacy.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="tool-layout aspect-tool-grid">
+          <div class="aspect-controls">
+            <div class="upload-box">
+              <label for="aspect-upload">Upload image</label>
+              <input id="aspect-upload" class="file-input" type="file" accept="image/*" />
+            </div>
 
+            <div class="aspect-control-group">
+              <label for="aspect-preset">Preset aspect ratio</label>
+              <select id="aspect-preset" class="select-input">
+                <option value="1:1">1:1 (Square)</option>
+                <option value="4:5">4:5 (Instagram)</option>
+                <option value="16:9">16:9 (YouTube)</option>
+                <option value="9:16">9:16 (Reels/Shorts)</option>
+                <option value="3:2">3:2</option>
+                <option value="custom">Custom width &amp; height</option>
+              </select>
+            </div>
+
+            <div id="aspect-custom-size" class="dimension-grid" hidden>
+              <div>
+                <label for="aspect-custom-width">Custom width (px)</label>
+                <input id="aspect-custom-width" class="text-input" type="number" min="1" value="1080" />
+              </div>
+              <div>
+                <label for="aspect-custom-height">Custom height (px)</label>
+                <input id="aspect-custom-height" class="text-input" type="number" min="1" value="1080" />
+              </div>
+            </div>
+
+            <div class="aspect-control-group">
+              <label for="aspect-format">Output format</label>
+              <select id="aspect-format" class="select-input">
+                <option value="jpeg">JPG</option>
+                <option value="png">PNG</option>
+                <option value="webp">WebP</option>
+              </select>
+            </div>
+
+            <div class="button-row tool-actions">
+              <button id="aspect-apply" class="btn" type="button">Apply</button>
+              <button id="aspect-download" class="btn btn-secondary" type="button" disabled>Download</button>
+              <button id="aspect-reset" class="btn btn-secondary" type="button">Reset</button>
+            </div>
+
+            <p id="aspect-message" class="meta-text">Upload an image to get started.</p>
+            <canvas id="aspect-output-canvas" class="visually-hidden" aria-hidden="true"></canvas>
+          </div>
+
+          <div class="preview-card">
+            <h3>Before / After Preview</h3>
+            <div class="before-after-grid">
+              <div>
+                <p class="meta-text">Before</p>
+                <canvas id="aspect-before-canvas" class="preview-canvas" aria-label="Original image preview"></canvas>
+              </div>
+              <div>
+                <p class="meta-text">After</p>
+                <canvas id="aspect-after-canvas" class="preview-canvas" aria-label="Resized image preview"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>About this tool</h2>
-        <p>Image Aspect Ratio Converter is designed to help you work faster with dependable results. Convert images to popular aspect ratios like 1:1, 4:3, 16:9, and more.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Image Aspect Ratio Converter is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
+        <p>This Image Aspect Ratio Converter helps you quickly fit images for social media, video thumbnails, websites, and more.</p>
+        <p>Choose a ready-made ratio or set your own custom size, then export in JPG, PNG, or WebP.</p>
+        <p>Your image stays private because everything is processed client-side with HTML5 canvas.</p>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>Features</h2>
         <ul>
-          <li>Focused workflow for image aspect ratio converter tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
+          <li>Preset ratios: 1:1, 4:5, 16:9, 9:16, and 3:2.</li>
+          <li>Custom width and height mode for flexible output.</li>
+          <li>Before/after preview to compare changes clearly.</li>
+          <li>Download options: JPG, PNG, and WebP.</li>
+          <li>Mobile-friendly, dark/light mode compatible interface.</li>
         </ul>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
   </body>
 </html>

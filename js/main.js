@@ -723,3 +723,273 @@ rotateDownloadButton?.addEventListener("click", () => {
   downloadLink.download = `${rotateFileName}-edited.${extension}`;
   downloadLink.click();
 });
+
+const aspectUploadInput = document.getElementById("aspect-upload");
+const aspectPresetSelect = document.getElementById("aspect-preset");
+const aspectCustomSizeWrap = document.getElementById("aspect-custom-size");
+const aspectCustomWidthInput = document.getElementById("aspect-custom-width");
+const aspectCustomHeightInput = document.getElementById("aspect-custom-height");
+const aspectFormatSelect = document.getElementById("aspect-format");
+const aspectApplyButton = document.getElementById("aspect-apply");
+const aspectDownloadButton = document.getElementById("aspect-download");
+const aspectResetButton = document.getElementById("aspect-reset");
+const aspectBeforeCanvas = document.getElementById("aspect-before-canvas");
+const aspectAfterCanvas = document.getElementById("aspect-after-canvas");
+const aspectOutputCanvas = document.getElementById("aspect-output-canvas");
+const aspectMessage = document.getElementById("aspect-message");
+
+let aspectSourceImage = null;
+let aspectFileName = "aspect-ratio-image";
+let aspectCurrentMimeType = "image/jpeg";
+let aspectCurrentExtension = "jpg";
+
+const aspectFormatToMimeType = {
+  jpeg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp"
+};
+
+const aspectFormatToExtension = {
+  jpeg: "jpg",
+  png: "png",
+  webp: "webp"
+};
+
+const aspectRatioPresets = {
+  "1:1": { width: 1, height: 1 },
+  "4:5": { width: 4, height: 5 },
+  "16:9": { width: 16, height: 9 },
+  "9:16": { width: 9, height: 16 },
+  "3:2": { width: 3, height: 2 }
+};
+
+const setAspectMessage = (message) => {
+  if (aspectMessage) {
+    aspectMessage.textContent = message;
+  }
+};
+
+const drawImagePreview = (image, canvas) => {
+  if (!image || !canvas) {
+    return;
+  }
+
+  const context = canvas.getContext("2d");
+  const maxPreviewWidth = 900;
+  const maxPreviewHeight = 540;
+  const ratio = Math.min(maxPreviewWidth / image.width, maxPreviewHeight / image.height, 1);
+
+  const drawWidth = Math.max(1, Math.round(image.width * ratio));
+  const drawHeight = Math.max(1, Math.round(image.height * ratio));
+
+  canvas.width = drawWidth;
+  canvas.height = drawHeight;
+  context.clearRect(0, 0, drawWidth, drawHeight);
+  context.drawImage(image, 0, 0, drawWidth, drawHeight);
+};
+
+const getTargetAspectDimensions = () => {
+  if (!aspectPresetSelect) {
+    return null;
+  }
+
+  const selectedPreset = aspectPresetSelect.value;
+
+  if (selectedPreset === "custom") {
+    const customWidth = Number.parseInt(aspectCustomWidthInput?.value || "", 10);
+    const customHeight = Number.parseInt(aspectCustomHeightInput?.value || "", 10);
+
+    if (!Number.isInteger(customWidth) || customWidth <= 0 || !Number.isInteger(customHeight) || customHeight <= 0) {
+      return null;
+    }
+
+    return { width: customWidth, height: customHeight, custom: true };
+  }
+
+  const preset = aspectRatioPresets[selectedPreset];
+  if (!preset) {
+    return null;
+  }
+
+  return { width: preset.width, height: preset.height, custom: false };
+};
+
+const renderAspectConversion = () => {
+  if (!aspectSourceImage || !aspectAfterCanvas || !aspectOutputCanvas || !aspectFormatSelect) {
+    return;
+  }
+
+  const targetDimensions = getTargetAspectDimensions();
+
+  if (!targetDimensions) {
+    setAspectMessage("Please enter a valid custom width and height.");
+    if (aspectDownloadButton) aspectDownloadButton.disabled = true;
+    return;
+  }
+
+  const selectedFormat = aspectFormatSelect.value;
+  aspectCurrentMimeType = aspectFormatToMimeType[selectedFormat] || "image/jpeg";
+  aspectCurrentExtension = aspectFormatToExtension[selectedFormat] || "jpg";
+
+  let outputWidth = targetDimensions.width;
+  let outputHeight = targetDimensions.height;
+
+  if (!targetDimensions.custom) {
+    const longEdge = 1600;
+    if (targetDimensions.width >= targetDimensions.height) {
+      outputWidth = longEdge;
+      outputHeight = Math.max(1, Math.round((targetDimensions.height / targetDimensions.width) * longEdge));
+    } else {
+      outputHeight = longEdge;
+      outputWidth = Math.max(1, Math.round((targetDimensions.width / targetDimensions.height) * longEdge));
+    }
+  }
+
+  const sourceRatio = aspectSourceImage.width / aspectSourceImage.height;
+  const targetRatio = outputWidth / outputHeight;
+
+  let sourceX = 0;
+  let sourceY = 0;
+  let sourceWidth = aspectSourceImage.width;
+  let sourceHeight = aspectSourceImage.height;
+
+  if (sourceRatio > targetRatio) {
+    sourceWidth = Math.round(aspectSourceImage.height * targetRatio);
+    sourceX = Math.round((aspectSourceImage.width - sourceWidth) / 2);
+  } else {
+    sourceHeight = Math.round(aspectSourceImage.width / targetRatio);
+    sourceY = Math.round((aspectSourceImage.height - sourceHeight) / 2);
+  }
+
+  const outputContext = aspectOutputCanvas.getContext("2d");
+  aspectOutputCanvas.width = outputWidth;
+  aspectOutputCanvas.height = outputHeight;
+  outputContext.clearRect(0, 0, outputWidth, outputHeight);
+  outputContext.imageSmoothingEnabled = true;
+  outputContext.imageSmoothingQuality = "high";
+  outputContext.drawImage(
+    aspectSourceImage,
+    sourceX,
+    sourceY,
+    sourceWidth,
+    sourceHeight,
+    0,
+    0,
+    outputWidth,
+    outputHeight
+  );
+
+  drawImagePreview(aspectOutputCanvas, aspectAfterCanvas);
+
+  if (aspectDownloadButton) {
+    aspectDownloadButton.disabled = false;
+  }
+
+  setAspectMessage(`Done! Output size: ${outputWidth} × ${outputHeight}px (${aspectCurrentExtension.toUpperCase()}).`);
+};
+
+const resetAspectTool = () => {
+  aspectSourceImage = null;
+  aspectFileName = "aspect-ratio-image";
+
+  if (aspectUploadInput) {
+    aspectUploadInput.value = "";
+  }
+
+  if (aspectPresetSelect) {
+    aspectPresetSelect.value = "1:1";
+  }
+
+  if (aspectCustomWidthInput) {
+    aspectCustomWidthInput.value = "1080";
+  }
+
+  if (aspectCustomHeightInput) {
+    aspectCustomHeightInput.value = "1080";
+  }
+
+  if (aspectFormatSelect) {
+    aspectFormatSelect.value = "jpeg";
+  }
+
+  if (aspectCustomSizeWrap) {
+    aspectCustomSizeWrap.hidden = true;
+  }
+
+  [aspectBeforeCanvas, aspectAfterCanvas, aspectOutputCanvas].forEach((canvas) => {
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = 0;
+    canvas.height = 0;
+  });
+
+  if (aspectDownloadButton) {
+    aspectDownloadButton.disabled = true;
+  }
+
+  setAspectMessage("Upload an image to get started.");
+};
+
+aspectPresetSelect?.addEventListener("change", () => {
+  const isCustom = aspectPresetSelect.value === "custom";
+
+  if (aspectCustomSizeWrap) {
+    aspectCustomSizeWrap.hidden = !isCustom;
+  }
+});
+
+aspectUploadInput?.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    setAspectMessage("Please upload a valid image file.");
+    if (aspectDownloadButton) aspectDownloadButton.disabled = true;
+    return;
+  }
+
+  aspectFileName = file.name.replace(/\.[^.]+$/, "") || "aspect-ratio-image";
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const loadedImage = new Image();
+    loadedImage.onload = () => {
+      aspectSourceImage = loadedImage;
+      drawImagePreview(aspectSourceImage, aspectBeforeCanvas);
+      renderAspectConversion();
+      setAspectMessage("Image uploaded. Choose options and click Apply.");
+    };
+    loadedImage.src = reader.result;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+aspectApplyButton?.addEventListener("click", () => {
+  if (!aspectSourceImage) {
+    setAspectMessage("Please upload an image first.");
+    return;
+  }
+
+  renderAspectConversion();
+});
+
+aspectDownloadButton?.addEventListener("click", () => {
+  if (!aspectOutputCanvas || aspectDownloadButton.disabled) {
+    return;
+  }
+
+  const quality = aspectCurrentMimeType === "image/png" ? undefined : 0.95;
+  const downloadLink = document.createElement("a");
+  downloadLink.href = aspectOutputCanvas.toDataURL(aspectCurrentMimeType, quality);
+  downloadLink.download = `${aspectFileName}.${aspectCurrentExtension}`;
+  downloadLink.click();
+});
+
+aspectResetButton?.addEventListener("click", () => {
+  resetAspectTool();
+});
