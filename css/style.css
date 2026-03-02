@@ -740,6 +740,45 @@ a {
   margin: 0.2rem 0;
 }
 
+.before-after-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.rotate-controls .upload-box {
+  margin-bottom: 1rem;
+}
+
+.rotate-input-grid {
+  align-items: end;
+}
+
+.zoom-buttons {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.zoom-buttons .btn {
+  flex: 1;
+}
+
+.button-with-label {
+  display: flex;
+  align-items: end;
+}
+
+.button-with-label .btn {
+  width: 100%;
+}
+
+@media (max-width: 950px) {
+  .before-after-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .quality-preview-image {
   width: 100%;
   display: block;
