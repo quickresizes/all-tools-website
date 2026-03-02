@@ -993,3 +993,230 @@ aspectDownloadButton?.addEventListener("click", () => {
 aspectResetButton?.addEventListener("click", () => {
   resetAspectTool();
 });
+
+const metadataUploadInput = document.getElementById("metadata-image-upload");
+const metadataPreviewImage = document.getElementById("metadata-preview-image");
+const metadataPreviewPlaceholder = document.getElementById("metadata-preview-placeholder");
+const metadataReadButton = document.getElementById("metadata-read-button");
+const metadataDownloadButton = document.getElementById("metadata-download-button");
+const metadataResetButton = document.getElementById("metadata-reset-button");
+const metadataMessage = document.getElementById("metadata-message");
+
+const metadataFileName = document.getElementById("metadata-file-name");
+const metadataFileSize = document.getElementById("metadata-file-size");
+const metadataFileFormat = document.getElementById("metadata-file-format");
+const metadataDimensions = document.getElementById("metadata-dimensions");
+const metadataLastModified = document.getElementById("metadata-last-modified");
+
+let metadataImageFile = null;
+let metadataPreviewUrl = "";
+let metadataTextToDownload = "";
+
+const setMetadataMessage = (message) => {
+  if (metadataMessage) {
+    metadataMessage.textContent = message;
+  }
+};
+
+const setMetadataCellValue = (element, value) => {
+  if (element) {
+    element.textContent = value;
+  }
+};
+
+const resetMetadataTable = () => {
+  setMetadataCellValue(metadataFileName, "—");
+  setMetadataCellValue(metadataFileSize, "—");
+  setMetadataCellValue(metadataFileFormat, "—");
+  setMetadataCellValue(metadataDimensions, "—");
+  setMetadataCellValue(metadataLastModified, "—");
+};
+
+const formatBytes = (byteCount) => {
+  if (!Number.isFinite(byteCount) || byteCount < 0) {
+    return "Unknown";
+  }
+
+  if (byteCount < 1024) {
+    return `${byteCount} bytes`;
+  }
+
+  const units = ["KB", "MB", "GB"];
+  let value = byteCount / 1024;
+  let unitIndex = 0;
+
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  return `${value.toFixed(2)} ${units[unitIndex]} (${byteCount.toLocaleString()} bytes)`;
+};
+
+const formatDateValue = (file) => {
+  if (!file || !file.lastModified) {
+    return "Not available";
+  }
+
+  const date = new Date(file.lastModified);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not available";
+  }
+
+  return date.toLocaleString();
+};
+
+const getImageFormat = (file) => {
+  const type = file?.type || "";
+
+  if (type.startsWith("image/")) {
+    const typeLabel = type.replace("image/", "").toUpperCase();
+    return typeLabel === "JPEG" ? "JPG" : typeLabel;
+  }
+
+  const extension = file?.name?.split(".").pop()?.toUpperCase();
+  return extension || "Unknown";
+};
+
+const buildMetadataText = (metadata) => {
+  return [
+    "Image Metadata Viewer Results",
+    "-----------------------------",
+    `File name: ${metadata.name}`,
+    `File size: ${metadata.size}`,
+    `Image format: ${metadata.format}`,
+    `Width x Height: ${metadata.dimensions}`,
+    `Last modified date: ${metadata.lastModified}`
+  ].join("\n");
+};
+
+const clearMetadataPreview = () => {
+  if (metadataPreviewUrl) {
+    URL.revokeObjectURL(metadataPreviewUrl);
+    metadataPreviewUrl = "";
+  }
+
+  if (metadataPreviewImage) {
+    metadataPreviewImage.hidden = true;
+    metadataPreviewImage.removeAttribute("src");
+  }
+
+  if (metadataPreviewPlaceholder) {
+    metadataPreviewPlaceholder.hidden = false;
+  }
+};
+
+const resetMetadataTool = () => {
+  metadataImageFile = null;
+  metadataTextToDownload = "";
+
+  if (metadataUploadInput) {
+    metadataUploadInput.value = "";
+  }
+
+  if (metadataDownloadButton) {
+    metadataDownloadButton.disabled = true;
+  }
+
+  clearMetadataPreview();
+  resetMetadataTable();
+  setMetadataMessage("No image uploaded yet.");
+};
+
+metadataUploadInput?.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+
+  if (!file) {
+    resetMetadataTool();
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    resetMetadataTool();
+    setMetadataMessage("Please upload a valid image file.");
+    return;
+  }
+
+  metadataImageFile = file;
+  metadataTextToDownload = "";
+
+  if (metadataDownloadButton) {
+    metadataDownloadButton.disabled = true;
+  }
+
+  clearMetadataPreview();
+  metadataPreviewUrl = URL.createObjectURL(file);
+
+  if (metadataPreviewImage) {
+    metadataPreviewImage.src = metadataPreviewUrl;
+    metadataPreviewImage.hidden = false;
+  }
+
+  if (metadataPreviewPlaceholder) {
+    metadataPreviewPlaceholder.hidden = true;
+  }
+
+  resetMetadataTable();
+  setMetadataMessage("Image uploaded. Click \"Read Metadata\" to view details.");
+});
+
+metadataReadButton?.addEventListener("click", () => {
+  if (!metadataImageFile) {
+    setMetadataMessage("Please upload an image first.");
+    return;
+  }
+
+  const image = new Image();
+  image.onload = () => {
+    const metadata = {
+      name: metadataImageFile.name || "Unknown",
+      size: formatBytes(metadataImageFile.size),
+      format: getImageFormat(metadataImageFile),
+      dimensions: `${image.width} × ${image.height} px`,
+      lastModified: formatDateValue(metadataImageFile)
+    };
+
+    setMetadataCellValue(metadataFileName, metadata.name);
+    setMetadataCellValue(metadataFileSize, metadata.size);
+    setMetadataCellValue(metadataFileFormat, metadata.format);
+    setMetadataCellValue(metadataDimensions, metadata.dimensions);
+    setMetadataCellValue(metadataLastModified, metadata.lastModified);
+
+    metadataTextToDownload = buildMetadataText(metadata);
+
+    if (metadataDownloadButton) {
+      metadataDownloadButton.disabled = false;
+    }
+
+    setMetadataMessage("Metadata loaded successfully.");
+  };
+
+  image.onerror = () => {
+    setMetadataMessage("We could not read this image. Please try another file.");
+  };
+
+  image.src = metadataPreviewUrl;
+});
+
+metadataDownloadButton?.addEventListener("click", () => {
+  if (!metadataTextToDownload) {
+    setMetadataMessage("Please read metadata before downloading.");
+    return;
+  }
+
+  const textBlob = new Blob([metadataTextToDownload], { type: "text/plain" });
+  const textUrl = URL.createObjectURL(textBlob);
+  const downloadLink = document.createElement("a");
+  const baseName = (metadataImageFile?.name || "image").replace(/\.[^.]+$/, "");
+
+  downloadLink.href = textUrl;
+  downloadLink.download = `${baseName}-metadata.txt`;
+  downloadLink.click();
+
+  URL.revokeObjectURL(textUrl);
+});
+
+metadataResetButton?.addEventListener("click", () => {
+  resetMetadataTool();
+});

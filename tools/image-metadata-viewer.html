@@ -24,22 +24,58 @@
 
       <section class="tool-panel tool-content">
         <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <p class="meta-text">Upload an image, preview it, and read important metadata in one click.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="metadata-layout">
+          <div class="metadata-controls">
+            <div class="upload-box">
+              <label for="metadata-image-upload">Upload image</label>
+              <input id="metadata-image-upload" class="file-input" type="file" accept="image/*" />
+            </div>
 
+            <div class="button-row tool-actions">
+              <button id="metadata-read-button" class="btn" type="button">Read Metadata</button>
+              <button id="metadata-download-button" class="btn btn-secondary" type="button" disabled>Download Metadata as Text</button>
+              <button id="metadata-reset-button" class="btn btn-secondary" type="button">Reset</button>
+            </div>
+
+            <p id="metadata-message" class="meta-text" role="status" aria-live="polite">No image uploaded yet.</p>
+          </div>
+
+          <div class="preview-card metadata-preview-card">
+            <h3>Image Preview</h3>
+            <img id="metadata-preview-image" class="metadata-preview-image" alt="Uploaded image preview" hidden />
+            <p id="metadata-preview-placeholder" class="meta-text">Your uploaded image preview will appear here.</p>
+          </div>
+        </div>
+
+        <div class="metadata-table-wrap" aria-live="polite">
+          <h3>Metadata Details</h3>
+          <table class="metadata-table">
+            <tbody>
+              <tr>
+                <th scope="row">File name</th>
+                <td id="metadata-file-name">—</td>
+              </tr>
+              <tr>
+                <th scope="row">File size</th>
+                <td id="metadata-file-size">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Image format</th>
+                <td id="metadata-file-format">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Width × Height</th>
+                <td id="metadata-dimensions">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Last modified date</th>
+                <td id="metadata-last-modified">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
