@@ -505,3 +505,221 @@ qualityDownloadButton?.addEventListener("click", () => {
   downloadLink.download = `${qualityFileName}-compressed.jpg`;
   downloadLink.click();
 });
+
+const rotateUploadInput = document.getElementById("rotate-image-upload");
+const rotateLeftButton = document.getElementById("rotate-left-button");
+const rotateRightButton = document.getElementById("rotate-right-button");
+const flipHorizontalButton = document.getElementById("flip-horizontal-button");
+const flipVerticalButton = document.getElementById("flip-vertical-button");
+const customAngleInput = document.getElementById("custom-angle");
+const applyAngleButton = document.getElementById("apply-angle-button");
+const zoomInButton = document.getElementById("zoom-in-button");
+const zoomOutButton = document.getElementById("zoom-out-button");
+const zoomLevelInput = document.getElementById("zoom-level");
+const resetTransformButton = document.getElementById("reset-transform-button");
+const rotateDownloadFormatSelect = document.getElementById("rotate-download-format");
+const rotateDownloadButton = document.getElementById("rotate-download-button");
+const rotateBeforeCanvas = document.getElementById("rotate-before-canvas");
+const rotateAfterCanvas = document.getElementById("rotate-after-canvas");
+const rotateMessage = document.getElementById("rotate-message");
+
+let rotateSourceImage = null;
+let rotateFileName = "rotated-image";
+let rotationAngle = 0;
+let scaleX = 1;
+let scaleY = 1;
+let zoomLevel = 1;
+
+const rotateMimeTypes = {
+  jpeg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp"
+};
+
+const rotateExtensions = {
+  jpeg: "jpg",
+  png: "png",
+  webp: "webp"
+};
+
+const setRotateMessage = (message) => {
+  if (rotateMessage) {
+    rotateMessage.textContent = message;
+  }
+};
+
+const drawImageCover = (image, canvas) => {
+  if (!image || !canvas) {
+    return;
+  }
+
+  const context = canvas.getContext("2d");
+  const maxPreviewWidth = 900;
+  const maxPreviewHeight = 540;
+  const ratio = Math.min(maxPreviewWidth / image.width, maxPreviewHeight / image.height, 1);
+
+  const drawWidth = Math.round(image.width * ratio);
+  const drawHeight = Math.round(image.height * ratio);
+
+  canvas.width = drawWidth;
+  canvas.height = drawHeight;
+  context.clearRect(0, 0, drawWidth, drawHeight);
+  context.drawImage(image, 0, 0, drawWidth, drawHeight);
+};
+
+const updateZoomLabel = () => {
+  if (zoomLevelInput) {
+    zoomLevelInput.value = String(Math.round(zoomLevel * 100));
+  }
+};
+
+const renderTransformedImage = () => {
+  if (!rotateSourceImage || !rotateAfterCanvas) {
+    if (rotateDownloadButton) rotateDownloadButton.disabled = true;
+    return;
+  }
+
+  const radians = (rotationAngle * Math.PI) / 180;
+  const sine = Math.abs(Math.sin(radians));
+  const cosine = Math.abs(Math.cos(radians));
+  const scaledWidth = rotateSourceImage.width * zoomLevel;
+  const scaledHeight = rotateSourceImage.height * zoomLevel;
+
+  const outputWidth = Math.max(1, Math.ceil((scaledWidth * cosine) + (scaledHeight * sine)));
+  const outputHeight = Math.max(1, Math.ceil((scaledWidth * sine) + (scaledHeight * cosine)));
+
+  rotateAfterCanvas.width = outputWidth;
+  rotateAfterCanvas.height = outputHeight;
+
+  const context = rotateAfterCanvas.getContext("2d");
+  context.clearRect(0, 0, outputWidth, outputHeight);
+  context.translate(outputWidth / 2, outputHeight / 2);
+  context.rotate(radians);
+  context.scale(scaleX * zoomLevel, scaleY * zoomLevel);
+  context.drawImage(rotateSourceImage, -rotateSourceImage.width / 2, -rotateSourceImage.height / 2);
+  context.setTransform(1, 0, 0, 1, 0, 0);
+
+  if (rotateDownloadButton) {
+    rotateDownloadButton.disabled = false;
+  }
+};
+
+const resetRotateState = () => {
+  rotationAngle = 0;
+  scaleX = 1;
+  scaleY = 1;
+  zoomLevel = 1;
+
+  if (customAngleInput) {
+    customAngleInput.value = "0";
+  }
+
+  updateZoomLabel();
+};
+
+rotateUploadInput?.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    setRotateMessage("Please upload a valid image file.");
+    if (rotateDownloadButton) rotateDownloadButton.disabled = true;
+    return;
+  }
+
+  rotateFileName = file.name.replace(/\.[^.]+$/, "") || "rotated-image";
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const loadedImage = new Image();
+    loadedImage.onload = () => {
+      rotateSourceImage = loadedImage;
+      resetRotateState();
+      drawImageCover(rotateSourceImage, rotateBeforeCanvas);
+      renderTransformedImage();
+      setRotateMessage("Image uploaded. Use rotate, flip, zoom, or custom angle controls.");
+    };
+    loadedImage.src = reader.result;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+rotateLeftButton?.addEventListener("click", () => {
+  if (!rotateSourceImage) return;
+  rotationAngle -= 90;
+  if (customAngleInput) customAngleInput.value = String(rotationAngle);
+  renderTransformedImage();
+});
+
+rotateRightButton?.addEventListener("click", () => {
+  if (!rotateSourceImage) return;
+  rotationAngle += 90;
+  if (customAngleInput) customAngleInput.value = String(rotationAngle);
+  renderTransformedImage();
+});
+
+flipHorizontalButton?.addEventListener("click", () => {
+  if (!rotateSourceImage) return;
+  scaleX *= -1;
+  renderTransformedImage();
+});
+
+flipVerticalButton?.addEventListener("click", () => {
+  if (!rotateSourceImage) return;
+  scaleY *= -1;
+  renderTransformedImage();
+});
+
+applyAngleButton?.addEventListener("click", () => {
+  if (!rotateSourceImage || !customAngleInput) return;
+
+  const userAngle = Number.parseFloat(customAngleInput.value);
+  if (!Number.isFinite(userAngle)) {
+    setRotateMessage("Please enter a valid angle number.");
+    return;
+  }
+
+  rotationAngle = userAngle;
+  renderTransformedImage();
+  setRotateMessage(`Custom angle applied: ${rotationAngle}°.`);
+});
+
+zoomInButton?.addEventListener("click", () => {
+  if (!rotateSourceImage) return;
+  zoomLevel = Math.min(zoomLevel + 0.1, 4);
+  updateZoomLabel();
+  renderTransformedImage();
+});
+
+zoomOutButton?.addEventListener("click", () => {
+  if (!rotateSourceImage) return;
+  zoomLevel = Math.max(zoomLevel - 0.1, 0.1);
+  updateZoomLabel();
+  renderTransformedImage();
+});
+
+resetTransformButton?.addEventListener("click", () => {
+  if (!rotateSourceImage) return;
+  resetRotateState();
+  renderTransformedImage();
+  setRotateMessage("Image reset to original orientation and zoom.");
+});
+
+rotateDownloadButton?.addEventListener("click", () => {
+  if (!rotateAfterCanvas || rotateDownloadButton.disabled) {
+    return;
+  }
+
+  const selectedFormat = rotateDownloadFormatSelect?.value || "jpeg";
+  const mimeType = rotateMimeTypes[selectedFormat] || "image/jpeg";
+  const extension = rotateExtensions[selectedFormat] || "jpg";
+
+  const downloadLink = document.createElement("a");
+  downloadLink.href = rotateAfterCanvas.toDataURL(mimeType, 0.92);
+  downloadLink.download = `${rotateFileName}-edited.${extension}`;
+  downloadLink.click();
+});

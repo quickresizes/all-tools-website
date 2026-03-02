@@ -16,53 +16,91 @@
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
-        <h1>Image Rotate & Flip</h1>
-        <p class="meta-text">Rotate photos and flip orientation instantly for correct alignment and layout.</p>
+        <h1>Image Rotate &amp; Flip</h1>
+        <p class="meta-text">Rotate, flip, zoom, and export images in your browser with no uploads to a server.</p>
       </section>
 
       <section class="tool-panel tool-content">
         <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <p class="meta-text">Upload an image, use the controls, preview before and after, then download in your preferred format.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="resizer-grid rotate-tool-grid">
+          <div class="resizer-controls rotate-controls">
+            <div class="upload-box">
+              <label for="rotate-image-upload">Upload image</label>
+              <input id="rotate-image-upload" class="file-input" type="file" accept="image/*" />
+            </div>
 
+            <div class="button-row tool-actions">
+              <button id="rotate-left-button" class="btn btn-secondary" type="button">↺ Rotate Left</button>
+              <button id="rotate-right-button" class="btn btn-secondary" type="button">↻ Rotate Right</button>
+              <button id="flip-horizontal-button" class="btn btn-secondary" type="button">↔ Flip Horizontal</button>
+              <button id="flip-vertical-button" class="btn btn-secondary" type="button">↕ Flip Vertical</button>
+            </div>
+
+            <div class="dimension-grid rotate-input-grid">
+              <div>
+                <label for="custom-angle">Custom Angle (°)</label>
+                <input id="custom-angle" class="text-input" type="number" value="0" step="1" />
+              </div>
+              <div class="button-with-label">
+                <span class="visually-hidden">Apply custom angle</span>
+                <button id="apply-angle-button" class="btn btn-secondary" type="button">Apply Angle</button>
+              </div>
+              <div>
+                <label for="zoom-level">Zoom (%)</label>
+                <input id="zoom-level" class="text-input" type="number" value="100" min="10" max="400" step="10" readonly />
+              </div>
+              <div class="zoom-buttons">
+                <button id="zoom-out-button" class="btn btn-secondary" type="button">− Zoom Out</button>
+                <button id="zoom-in-button" class="btn btn-secondary" type="button">+ Zoom In</button>
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button id="reset-transform-button" class="btn btn-secondary" type="button">Reset</button>
+            </div>
+
+            <div class="converter-select-wrap">
+              <label for="rotate-download-format">Download format</label>
+              <select id="rotate-download-format" class="select-input">
+                <option value="jpeg">JPG</option>
+                <option value="png">PNG</option>
+                <option value="webp">WebP</option>
+              </select>
+            </div>
+
+            <p id="rotate-message" class="meta-text" role="status" aria-live="polite">Upload an image to begin.</p>
+
+            <div class="button-row tool-actions">
+              <button id="rotate-download-button" class="btn" type="button" disabled>Download Image</button>
+            </div>
+          </div>
+
+          <div class="before-after-grid">
+            <div class="preview-card">
+              <h3>Before</h3>
+              <canvas id="rotate-before-canvas" class="preview-canvas" aria-label="Original image preview"></canvas>
+            </div>
+            <div class="preview-card">
+              <h3>After</h3>
+              <canvas id="rotate-after-canvas" class="preview-canvas" aria-label="Edited image preview"></canvas>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>About this tool</h2>
-        <p>Image Rotate & Flip is designed to help you work faster with dependable results. Rotate photos and flip orientation instantly for correct alignment and layout.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Image Rotate & Flip is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
-      </section>
-
-      <section class="tool-panel tool-description">
-        <h2>Features</h2>
-        <ul>
-          <li>Focused workflow for image rotate & flip tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
-        </ul>
+        <p>Image Rotate &amp; Flip helps you quickly correct orientation and create clean exports without installing software.</p>
+        <p>All editing happens on your device using HTML canvas, so your files stay private and processing is fast.</p>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
   </body>
 </html>
