@@ -3,66 +3,652 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>YouTube Thumbnail Resizer – Free Online YouTube Thumbnail Resizer Tool | MediaTools Pro</title>
-    <meta name="description" content="Resize YouTube thumbnails to exact dimensions for uploads and sharing. Use this free online youtube thumbnail resizer at MediaTools Pro." />
-    <meta name="keywords" content="youtube thumbnail resizer, youtube thumbnail resizer online, free youtube thumbnail resizer, media tools pro, youtube, thumbnail, resizer, online tool" />
-    <meta property="og:title" content="YouTube Thumbnail Resizer – Free Online YouTube Thumbnail Resizer Tool | MediaTools Pro" />
-    <meta property="og:description" content="Resize YouTube thumbnails to exact dimensions for uploads and sharing. Use this free online youtube thumbnail resizer at MediaTools Pro." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://mediatoolspro.com/tools/youtube-thumbnail-resizer.html" />
-    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
-    <link rel="stylesheet" href="../css/style.css" />
+    <title>YouTube Thumbnail Studio | MediaTools Pro</title>
+    <meta
+      name="description"
+      content="YouTube Thumbnail Studio lets you fetch thumbnails from YouTube URLs, resize to Full HD/2K/4K/8K, and download optimized JPG images instantly in your browser."
+    />
+    <style>
+      :root {
+        --bg: #070b1a;
+        --panel: rgba(255, 255, 255, 0.08);
+        --border: rgba(255, 255, 255, 0.2);
+        --text: #e8ebff;
+        --muted: #a5acd1;
+        --accent-a: #00e5ff;
+        --accent-b: #9b5cff;
+        --success: #34f5b4;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at top left, #131c44 0%, #070b1a 40%, #04060f 100%);
+      }
+
+      .container {
+        width: min(1100px, 92vw);
+        margin: 0 auto;
+        padding: 2rem 0 4rem;
+      }
+
+      .title-wrap {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.8rem, 4vw, 2.9rem);
+        letter-spacing: 0.02em;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        margin-top: 0.65rem;
+      }
+
+      .studio {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        backdrop-filter: blur(16px);
+        box-shadow: 0 0 30px rgba(0, 229, 255, 0.15), inset 0 0 40px rgba(155, 92, 255, 0.08);
+        padding: 1.25rem;
+        display: grid;
+        gap: 1rem;
+      }
+
+      .url-row,
+      .controls,
+      .action-row {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .url-row {
+        grid-template-columns: 1fr auto;
+      }
+
+      .controls {
+        grid-template-columns: repeat(4, minmax(150px, 1fr));
+      }
+
+      label {
+        display: block;
+        font-size: 0.88rem;
+        color: #c8cef3;
+        margin-bottom: 0.4rem;
+      }
+
+      input,
+      select,
+      button {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(10, 14, 30, 0.85);
+        color: var(--text);
+        padding: 0.75rem 0.85rem;
+        outline: none;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: var(--accent-a);
+        box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2);
+      }
+
+      .btn {
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        background: linear-gradient(120deg, var(--accent-a), var(--accent-b));
+        color: #061026;
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
+        box-shadow: 0 0 16px rgba(0, 229, 255, 0.35);
+      }
+
+      .btn:hover {
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 0 22px rgba(155, 92, 255, 0.6);
+      }
+
+      .btn.secondary {
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--text);
+      }
+
+      .action-row {
+        grid-template-columns: repeat(4, minmax(140px, 1fr));
+      }
+
+      .preview-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .card {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 0.8rem;
+        background: rgba(4, 9, 23, 0.75);
+      }
+
+      .img-box {
+        width: 100%;
+        aspect-ratio: 16/9;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        background: #03050c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .img-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        cursor: zoom-in;
+      }
+
+      .placeholder {
+        color: #8a91ba;
+        text-align: center;
+        padding: 0.8rem;
+      }
+
+      .meta-grid {
+        margin-top: 0.7rem;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.6rem;
+      }
+
+      .meta-pill {
+        padding: 0.6rem;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 10px;
+        font-size: 0.85rem;
+        color: #d6ddff;
+      }
+
+      .status {
+        color: var(--success);
+        min-height: 1.2rem;
+      }
+
+      .section {
+        margin-top: 1.4rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+      }
+
+      .section h2 {
+        margin-top: 0;
+      }
+
+      .section li {
+        margin: 0.45rem 0;
+        color: #d5dbfb;
+      }
+
+      .ad-container {
+        margin-top: 1.2rem;
+        border-radius: 14px;
+        border: 1px dashed rgba(255, 255, 255, 0.35);
+        padding: 1.2rem;
+        text-align: center;
+        color: #acb3dc;
+        background: rgba(7, 10, 22, 0.85);
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        place-items: center;
+        background: rgba(2, 3, 10, 0.9);
+        z-index: 1000;
+        animation: fadeIn 0.25s ease;
+      }
+
+      .modal.open {
+        display: grid;
+      }
+
+      .modal img {
+        width: min(92vw, 1400px);
+        max-height: 92vh;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        box-shadow: 0 0 35px rgba(0, 229, 255, 0.45);
+        animation: popIn 0.25s ease;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes popIn {
+        from { transform: scale(0.96); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+
+      @media (max-width: 900px) {
+        .controls,
+        .preview-wrap,
+        .action-row,
+        .url-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
-  <body data-base-path="../">
-    <header id="site-header"></header>
+  <body>
+    <main class="container">
+      <div class="title-wrap">
+        <h1>YouTube Thumbnail Studio</h1>
+        <p class="subtitle">Fetch, resize, preview, and export high-quality YouTube thumbnails instantly.</p>
+      </div>
 
-<main class="page-main tool-container container">
-      <section class="tool-panel tool-header">
-        <h1>YouTube Thumbnail Resizer</h1>
-        <p class="meta-text">Resize YouTube thumbnails to exact dimensions for uploads and sharing.</p>
-      </section>
+      <section class="studio">
+        <div class="url-row">
+          <div>
+            <label for="youtubeUrl">YouTube URL</label>
+            <input id="youtubeUrl" type="text" placeholder="https://www.youtube.com/watch?v=... or youtu.be/..." />
+          </div>
+          <div style="align-self: end">
+            <button id="fetchBtn" class="btn" type="button">Fetch Original Thumbnail</button>
+          </div>
+        </div>
 
-      <section class="tool-panel tool-content">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
-
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
+        <div class="controls">
+          <div>
+            <label for="qualityPreset">Quality Preset</label>
+            <select id="qualityPreset">
+              <option value="original">Original</option>
+              <option value="1920x1080">Full HD (1920x1080)</option>
+              <option value="2560x1440">2K (2560x1440)</option>
+              <option value="3840x2160">4K (3840x2160)</option>
+              <option value="7680x4320">8K (7680x4320)</option>
+            </select>
           </div>
           <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
+            <label for="aspectRatio">Aspect Ratio</label>
+            <select id="aspectRatio">
+              <option value="16:9">16:9</option>
+              <option value="1:1">1:1</option>
+              <option value="9:16">9:16</option>
+              <option value="custom">Custom</option>
+            </select>
           </div>
-          <button class="btn" type="button">Process Now</button>
+          <div>
+            <label for="customWidth">Custom Width</label>
+            <input id="customWidth" type="number" min="1" value="1280" />
+          </div>
+          <div>
+            <label for="customHeight">Custom Height</label>
+            <input id="customHeight" type="number" min="1" value="720" />
+          </div>
+        </div>
 
+        <div class="action-row">
+          <button id="generateBtn" class="btn" type="button">Generate Thumbnail</button>
+          <button id="downloadBtn" class="btn secondary" type="button">Download Image</button>
+          <button id="copyLinkBtn" class="btn secondary" type="button">Copy Image Link</button>
+          <button id="resetBtn" class="btn secondary" type="button">Reset</button>
+        </div>
+
+        <p id="statusText" class="status"></p>
+
+        <div class="preview-wrap">
+          <article class="card">
+            <h3>Original Preview</h3>
+            <div class="img-box" id="originalBox">
+              <div class="placeholder">Original thumbnail will appear here.</div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Generated Preview</h3>
+            <div class="img-box" id="generatedBox">
+              <div class="placeholder">Generated thumbnail will appear here.</div>
+            </div>
+            <div class="meta-grid">
+              <div class="meta-pill"><strong>Resolution:</strong> <span id="resolutionLabel">-</span></div>
+              <div class="meta-pill"><strong>Format:</strong> JPG</div>
+              <div class="meta-pill"><strong>Estimated Size:</strong> <span id="sizeLabel">-</span></div>
+            </div>
+          </article>
+        </div>
       </section>
 
-      <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>YouTube Thumbnail Resizer is designed to help you work faster with dependable results. Resize YouTube thumbnails to exact dimensions for uploads and sharing.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>YouTube Thumbnail Resizer is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
+      <div class="ad-container">Ad Space</div>
+
+      <section class="section">
+        <h2>How to Use</h2>
+        <ol>
+          <li>Paste any YouTube video URL (watch, shorts, or youtu.be link).</li>
+          <li>Click <strong>Fetch Original Thumbnail</strong> to load the highest available image.</li>
+          <li>Choose quality preset, aspect ratio, or custom dimensions.</li>
+          <li>Click <strong>Generate Thumbnail</strong>, then download or copy image link.</li>
+        </ol>
       </section>
 
-      <section class="tool-panel tool-description">
-        <h2>Features</h2>
+      <section class="section">
+        <h2>Why Use This Studio</h2>
         <ul>
-          <li>Focused workflow for youtube thumbnail resizer tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
+          <li>Free</li>
+          <li>No Login</li>
+          <li>4K/8K Support</li>
+          <li>Custom Resize</li>
+          <li>Secure (Client-side only)</li>
         </ul>
       </section>
-    </main>
-    <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
-    <script src="../js/main.js"></script>
+      <section class="section">
+        <h2>Features</h2>
+        <ul>
+          <li>Smart YouTube URL parser (watch, shorts, youtu.be).</li>
+          <li>Automatic thumbnail fallback (maxresdefault to default).</li>
+          <li>Canvas-based high-resolution JPG export workflow.</li>
+          <li>Quality presets from Original up to 8K.</li>
+          <li>Aspect ratio controls (16:9, 1:1, 9:16, custom).</li>
+          <li>One-click fullscreen preview modal with animation.</li>
+          <li>Live resolution and estimated size indicators.</li>
+          <li>Responsive futuristic dark UI with neon/glass effects.</li>
+          <li>Download, copy link, and reset actions.</li>
+          <li>Runs fully in-browser and works on GitHub Pages.</li>
+        </ul>
+      </section>
+
+      <div class="ad-container">Ad Space</div>
+    </main>
+
+    <div id="previewModal" class="modal">
+      <img id="modalImage" alt="Fullscreen thumbnail preview" />
+    </div>
+
+    <script>
+      const youtubeUrl = document.getElementById("youtubeUrl");
+      const fetchBtn = document.getElementById("fetchBtn");
+      const qualityPreset = document.getElementById("qualityPreset");
+      const aspectRatio = document.getElementById("aspectRatio");
+      const customWidth = document.getElementById("customWidth");
+      const customHeight = document.getElementById("customHeight");
+      const generateBtn = document.getElementById("generateBtn");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const copyLinkBtn = document.getElementById("copyLinkBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const statusText = document.getElementById("statusText");
+      const originalBox = document.getElementById("originalBox");
+      const generatedBox = document.getElementById("generatedBox");
+      const resolutionLabel = document.getElementById("resolutionLabel");
+      const sizeLabel = document.getElementById("sizeLabel");
+      const previewModal = document.getElementById("previewModal");
+      const modalImage = document.getElementById("modalImage");
+
+      let originalImage = null;
+      let originalImageUrl = "";
+      let generatedDataUrl = "";
+
+      function setStatus(message, isError = false) {
+        statusText.textContent = message;
+        statusText.style.color = isError ? "#ff6f8f" : "#34f5b4";
+      }
+
+      function extractVideoId(urlText) {
+        if (!urlText) return "";
+        const text = urlText.trim();
+
+        if (/^[a-zA-Z0-9_-]{11}$/.test(text)) return text;
+
+        try {
+          const parsed = new URL(text);
+          const host = parsed.hostname.replace("www.", "");
+
+          if (host === "youtu.be") {
+            return parsed.pathname.split("/").filter(Boolean)[0] || "";
+          }
+
+          if (host.endsWith("youtube.com")) {
+            if (parsed.pathname === "/watch") {
+              return parsed.searchParams.get("v") || "";
+            }
+
+            if (parsed.pathname.startsWith("/shorts/")) {
+              return parsed.pathname.split("/")[2] || "";
+            }
+
+            if (parsed.pathname.startsWith("/embed/")) {
+              return parsed.pathname.split("/")[2] || "";
+            }
+          }
+        } catch (error) {
+          return "";
+        }
+
+        return "";
+      }
+
+      function loadImage(url) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = url;
+        });
+      }
+
+      async function fetchThumbnail() {
+        const videoId = extractVideoId(youtubeUrl.value);
+        if (!videoId) {
+          setStatus("Invalid YouTube URL or video ID.", true);
+          return;
+        }
+
+        setStatus("Fetching thumbnail...");
+
+        const fallbackList = [
+          `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`,
+          `https://i.ytimg.com/vi/${videoId}/sddefault.jpg`,
+          `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+          `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`,
+          `https://i.ytimg.com/vi/${videoId}/default.jpg`
+        ];
+
+        for (const url of fallbackList) {
+          try {
+            const img = await loadImage(url);
+            if (img.naturalWidth > 120) {
+              originalImage = img;
+              originalImageUrl = url;
+              originalBox.innerHTML = `<img id="originalImageEl" src="${url}" alt="Original YouTube thumbnail" />`;
+              generatedDataUrl = "";
+              generatedBox.innerHTML = '<div class="placeholder">Generated thumbnail will appear here.</div>';
+              resolutionLabel.textContent = `${img.naturalWidth} x ${img.naturalHeight}`;
+              sizeLabel.textContent = "-";
+              wirePreviewClicks();
+              setStatus("Original thumbnail loaded successfully.");
+              return;
+            }
+          } catch (error) {
+            continue;
+          }
+        }
+
+        setStatus("Thumbnail not found for this video.", true);
+      }
+
+      function calculateOutputSize() {
+        const ratio = aspectRatio.value;
+        const preset = qualityPreset.value;
+
+        if (ratio === "custom") {
+          const w = parseInt(customWidth.value, 10);
+          const h = parseInt(customHeight.value, 10);
+          return {
+            width: Math.max(1, w || 1),
+            height: Math.max(1, h || 1)
+          };
+        }
+
+        let width;
+        if (preset === "original") {
+          width = originalImage ? originalImage.naturalWidth : 1280;
+        } else {
+          width = parseInt(preset.split("x")[0], 10);
+        }
+
+        const ratioMap = {
+          "16:9": 9 / 16,
+          "1:1": 1,
+          "9:16": 16 / 9
+        };
+
+        const height = Math.round(width * ratioMap[ratio]);
+        customWidth.value = width;
+        customHeight.value = height;
+
+        return { width, height };
+      }
+
+      function bytesToHuman(bytes) {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+      }
+
+      function generateThumbnail() {
+        if (!originalImage) {
+          setStatus("Fetch an original thumbnail first.", true);
+          return;
+        }
+
+        const { width, height } = calculateOutputSize();
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(originalImage, 0, 0, width, height);
+
+        generatedDataUrl = canvas.toDataURL("image/jpeg", 0.95);
+        generatedBox.innerHTML = `<img id="generatedImageEl" src="${generatedDataUrl}" alt="Generated thumbnail" />`;
+        resolutionLabel.textContent = `${width} x ${height}`;
+
+        const estimatedBytes = Math.round((generatedDataUrl.length - "data:image/jpeg;base64,".length) * 0.75);
+        sizeLabel.textContent = bytesToHuman(estimatedBytes);
+
+        wirePreviewClicks();
+        setStatus("Thumbnail generated successfully.");
+      }
+
+      function wirePreviewClicks() {
+        const originalEl = document.getElementById("originalImageEl");
+        const generatedEl = document.getElementById("generatedImageEl");
+
+        if (originalEl) {
+          originalEl.onclick = () => openModal(originalEl.src);
+        }
+
+        if (generatedEl) {
+          generatedEl.onclick = () => openModal(generatedEl.src);
+        }
+      }
+
+      function openModal(src) {
+        modalImage.src = src;
+        previewModal.classList.add("open");
+      }
+
+      function closeModal() {
+        previewModal.classList.remove("open");
+      }
+
+      function downloadImage() {
+        if (!generatedDataUrl && !originalImageUrl) {
+          setStatus("No image available to download.", true);
+          return;
+        }
+
+        const urlToDownload = generatedDataUrl || originalImageUrl;
+        const a = document.createElement("a");
+        a.href = urlToDownload;
+        a.download = generatedDataUrl ? "youtube-thumbnail-studio.jpg" : "youtube-thumbnail-original.jpg";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setStatus("Download started.");
+      }
+
+      async function copyImageLink() {
+        const link = generatedDataUrl || originalImageUrl;
+        if (!link) {
+          setStatus("No image link to copy.", true);
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(link);
+          setStatus("Image link copied to clipboard.");
+        } catch (error) {
+          setStatus("Clipboard access blocked. Copy manually from preview.", true);
+        }
+      }
+
+      function resetStudio() {
+        youtubeUrl.value = "";
+        qualityPreset.value = "original";
+        aspectRatio.value = "16:9";
+        customWidth.value = "1280";
+        customHeight.value = "720";
+        originalImage = null;
+        originalImageUrl = "";
+        generatedDataUrl = "";
+        originalBox.innerHTML = '<div class="placeholder">Original thumbnail will appear here.</div>';
+        generatedBox.innerHTML = '<div class="placeholder">Generated thumbnail will appear here.</div>';
+        resolutionLabel.textContent = "-";
+        sizeLabel.textContent = "-";
+        setStatus("Studio reset.");
+        toggleCustomInputs();
+      }
+
+      function toggleCustomInputs() {
+        const customSelected = aspectRatio.value === "custom";
+        customWidth.disabled = !customSelected;
+        customHeight.disabled = !customSelected;
+      }
+
+      fetchBtn.addEventListener("click", fetchThumbnail);
+      generateBtn.addEventListener("click", generateThumbnail);
+      downloadBtn.addEventListener("click", downloadImage);
+      copyLinkBtn.addEventListener("click", copyImageLink);
+      resetBtn.addEventListener("click", resetStudio);
+      aspectRatio.addEventListener("change", toggleCustomInputs);
+      previewModal.addEventListener("click", closeModal);
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeModal();
+      });
+
+      toggleCustomInputs();
+    </script>
   </body>
 </html>
