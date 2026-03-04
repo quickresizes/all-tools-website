@@ -6,20 +6,23 @@
     <title>Professional YouTube Thumbnail Downloader</title>
     <meta
       name="description"
-      content="Download YouTube thumbnails instantly in multiple quality options with a clean, responsive dark interface."
+      content="Download YouTube thumbnails instantly in multiple quality options with a modern, responsive glassmorphism interface."
     />
     <style>
       :root {
-        --bg: #0f1117;
-        --panel: #171a23;
-        --panel-2: #202532;
-        --text: #eef2ff;
-        --muted: #9ca6c4;
-        --accent: #5b8cff;
-        --accent-hover: #79a0ff;
-        --error: #ff5e6c;
-        --border: #2a3042;
-        --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+        --bg: #070b14;
+        --bg-glow-1: rgba(85, 125, 255, 0.22);
+        --bg-glow-2: rgba(150, 85, 255, 0.2);
+        --surface: rgba(18, 25, 42, 0.62);
+        --surface-strong: rgba(16, 23, 39, 0.86);
+        --text: #eef3ff;
+        --muted: #aeb9d8;
+        --border: rgba(153, 171, 224, 0.24);
+        --accent-1: #5b8cff;
+        --accent-2: #a24dff;
+        --accent-3: #2dd4ff;
+        --error: #ff7387;
+        --shadow-soft: 0 22px 48px rgba(2, 8, 25, 0.45);
       }
 
       * {
@@ -29,101 +32,142 @@
       body {
         margin: 0;
         min-height: 100vh;
-        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
-        background: radial-gradient(circle at top, #1a1f2c 0%, var(--bg) 55%);
+        font-family: Inter, 'Segoe UI', Roboto, Arial, sans-serif;
         color: var(--text);
+        background: radial-gradient(circle at 10% 10%, var(--bg-glow-1), transparent 32%),
+          radial-gradient(circle at 90% 0%, var(--bg-glow-2), transparent 35%),
+          linear-gradient(145deg, #05070f, #0a1020 52%, #060913);
       }
 
-      .wrapper {
-        width: min(1100px, 92vw);
-        margin: 2.5rem auto;
-        background: color-mix(in srgb, var(--panel), black 4%);
+      .page {
+        width: min(1080px, 92vw);
+        margin: clamp(1.5rem, 4vw, 3.5rem) auto;
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .glass-card {
+        background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 18px;
+        border-radius: 24px;
         padding: clamp(1rem, 3vw, 2rem);
-        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .tool-header {
+        text-align: center;
+        margin-bottom: 1.2rem;
       }
 
       h1 {
         margin: 0;
-        font-size: clamp(1.5rem, 3vw, 2.15rem);
+        font-size: clamp(1.55rem, 3.2vw, 2.3rem);
+        line-height: 1.25;
       }
 
       .subtitle {
-        margin: 0.65rem 0 1.4rem;
+        margin: 0.75rem auto 0;
+        max-width: 720px;
         color: var(--muted);
-        line-height: 1.5;
+        line-height: 1.6;
       }
 
       .input-row {
         display: grid;
         grid-template-columns: 1fr auto;
-        gap: 0.75rem;
+        gap: 0.8rem;
+        align-items: center;
       }
 
       input[type='url'] {
         width: 100%;
         border: 1px solid var(--border);
-        background: var(--panel-2);
+        background: var(--surface-strong);
         color: var(--text);
-        border-radius: 12px;
+        border-radius: 14px;
         font-size: 1rem;
-        padding: 0.9rem 1rem;
+        padding: 0.95rem 1rem;
         outline: none;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
       }
 
       input[type='url']:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 4px rgba(91, 140, 255, 0.18);
+        border-color: color-mix(in srgb, var(--accent-1), white 25%);
+        box-shadow: 0 0 0 4px rgba(91, 140, 255, 0.2);
+        transform: translateY(-1px);
+      }
+
+      button,
+      .download {
+        border: 0;
+        border-radius: 12px;
+        background: linear-gradient(120deg, var(--accent-1), var(--accent-2) 52%, var(--accent-3));
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.24s ease, box-shadow 0.24s ease, filter 0.24s ease;
+        box-shadow: 0 12px 24px rgba(77, 87, 255, 0.34);
       }
 
       button {
-        border: 0;
-        border-radius: 12px;
-        background: var(--accent);
-        color: #fff;
-        font-weight: 600;
-        font-size: 0.97rem;
-        padding: 0.9rem 1.15rem;
-        cursor: pointer;
-        transition: transform 0.14s ease, background 0.2s ease;
+        font-size: 0.98rem;
+        padding: 0.95rem 1.2rem;
+        white-space: nowrap;
       }
 
-      button:hover {
-        background: var(--accent-hover);
+      button:hover,
+      .download:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 30px rgba(86, 99, 255, 0.4);
+        filter: brightness(1.06);
       }
 
-      button:active {
-        transform: translateY(1px);
+      button:active,
+      .download:active {
+        transform: translateY(0);
       }
 
       .error {
-        margin-top: 0.8rem;
+        margin-top: 0.85rem;
         color: var(--error);
-        min-height: 1.25rem;
+        min-height: 1.35rem;
         font-size: 0.95rem;
+        text-align: center;
+      }
+
+      .empty {
+        margin: 1rem 0 0;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.93rem;
       }
 
       .grid {
-        margin-top: 1.4rem;
+        margin-top: 1.3rem;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
         gap: 1rem;
       }
 
       .card {
-        background: linear-gradient(170deg, #1b2030 0%, #161a24 90%);
-        border: 1px solid var(--border);
-        border-radius: 14px;
+        background: linear-gradient(165deg, rgba(25, 36, 60, 0.8), rgba(13, 20, 35, 0.9));
+        border: 1px solid rgba(136, 160, 233, 0.24);
+        border-radius: 16px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
+        transition: transform 0.24s ease, box-shadow 0.24s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 28px rgba(1, 11, 34, 0.44);
       }
 
       .thumb-wrap {
         aspect-ratio: 16 / 9;
-        background: #0f1219;
+        background: #090d16;
       }
 
       .thumb-wrap img {
@@ -137,38 +181,56 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0.8rem;
-        gap: 0.5rem;
+        padding: 0.85rem;
+        gap: 0.6rem;
       }
 
       .quality {
         font-size: 0.9rem;
-        color: #d5def8;
+        color: #dae5ff;
         font-weight: 600;
       }
 
       .download {
         text-decoration: none;
         display: inline-block;
-        background: #2b62ff;
-        color: white;
-        border-radius: 10px;
-        padding: 0.45rem 0.75rem;
-        font-size: 0.88rem;
-        font-weight: 600;
+        padding: 0.48rem 0.82rem;
+        font-size: 0.86rem;
       }
 
-      .download:hover {
-        background: #4a79ff;
+      .info-section {
+        text-align: left;
       }
 
-      .empty {
-        margin-top: 1rem;
+      .info-section h2 {
+        margin: 0 0 0.85rem;
+        font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+      }
+
+      .info-section ul,
+      .info-section ol {
+        margin: 0;
+        padding-left: 1.2rem;
         color: var(--muted);
-        font-size: 0.92rem;
+        line-height: 1.7;
       }
 
-      @media (max-width: 620px) {
+      .ad-container {
+        border: 1px dashed rgba(174, 193, 255, 0.38);
+        border-radius: 16px;
+        padding: 1rem;
+        text-align: center;
+        color: #dce8ff;
+        background: rgba(18, 29, 50, 0.55);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      @media (max-width: 700px) {
+        .page {
+          width: min(1100px, 94vw);
+        }
+
         .input-row {
           grid-template-columns: 1fr;
         }
@@ -180,25 +242,65 @@
     </style>
   </head>
   <body>
-    <main class="wrapper">
-      <h1>Professional YouTube Thumbnail Downloader</h1>
-      <p class="subtitle">
-        Paste a YouTube link and instantly preview/download thumbnail images in multiple quality options.
-      </p>
+    <main class="page">
+      <section class="glass-card" aria-labelledby="tool-title">
+        <header class="tool-header">
+          <h1 id="tool-title">Professional YouTube Thumbnail Downloader</h1>
+          <p class="subtitle">
+            Paste a YouTube link and instantly preview/download thumbnail images in multiple quality options.
+          </p>
+        </header>
 
-      <div class="input-row">
-        <input
-          id="youtubeUrl"
-          type="url"
-          placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
-          aria-label="YouTube URL"
-        />
-        <button id="loadBtn" type="button">Get Thumbnails</button>
-      </div>
+        <div class="input-row">
+          <input
+            id="youtubeUrl"
+            type="url"
+            placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
+            aria-label="YouTube URL"
+          />
+          <button id="loadBtn" type="button">Get Thumbnail</button>
+        </div>
 
-      <div id="error" class="error" role="alert" aria-live="polite"></div>
-      <div id="result" class="grid" aria-live="polite"></div>
-      <p id="emptyHint" class="empty">Supported URLs: youtube.com/watch?v=, youtu.be/, youtube.com/shorts/</p>
+        <div id="error" class="error" role="alert" aria-live="polite"></div>
+        <div id="result" class="grid" aria-live="polite"></div>
+        <p id="emptyHint" class="empty">Supported URLs: youtube.com/watch?v=, youtu.be/, youtube.com/shorts/</p>
+      </section>
+
+      <div class="ad-container">Ad Space</div>
+
+      <section class="glass-card info-section" aria-labelledby="how-to-use-title">
+        <h2 id="how-to-use-title">How to Use</h2>
+        <ol>
+          <li>Step 1: Copy YouTube video link</li>
+          <li>Step 2: Paste into input box</li>
+          <li>Step 3: Click Get Thumbnail</li>
+          <li>Step 4: Download your preferred quality</li>
+        </ol>
+      </section>
+
+      <div class="ad-container">Ad Space</div>
+
+      <section class="glass-card info-section" aria-labelledby="why-use-title">
+        <h2 id="why-use-title">Why Use This Tool</h2>
+        <ul>
+          <li>Free &amp; Fast</li>
+          <li>No login required</li>
+          <li>Works on all devices</li>
+          <li>High resolution thumbnails</li>
+          <li>Secure (client-side only)</li>
+        </ul>
+      </section>
+
+      <section class="glass-card info-section" aria-labelledby="features-title">
+        <h2 id="features-title">Features</h2>
+        <ul>
+          <li>Multiple thumbnail quality</li>
+          <li>Instant preview</li>
+          <li>One-click download</li>
+          <li>Mobile friendly</li>
+          <li>Dark theme UI</li>
+        </ul>
+      </section>
     </main>
 
     <script>
