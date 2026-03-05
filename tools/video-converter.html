@@ -3,66 +3,430 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Video Converter – Free Online Video Converter Tool | MediaTools Pro</title>
-    <meta name="description" content="Convert videos between common formats such as MP4, MOV, and AVI. Use this free online video converter at MediaTools Pro." />
-    <meta name="keywords" content="video converter, video converter online, free video converter, media tools pro, video, converter, online tool" />
-    <meta property="og:title" content="Video Converter – Free Online Video Converter Tool | MediaTools Pro" />
-    <meta property="og:description" content="Convert videos between common formats such as MP4, MOV, and AVI. Use this free online video converter at MediaTools Pro." />
+    <title>Video Converter Studio – Free Online Video Converter Tool | MediaTools Pro</title>
+    <meta
+      name="description"
+      content="Convert videos between MP4, WebM, and MOV with quality and resolution controls. Client-side video conversion powered by HTML5 video, canvas, and MediaRecorder."
+    />
+    <meta
+      name="keywords"
+      content="video converter, mp4 converter, webm converter, mov converter, media tools pro, online video tool"
+    />
+    <meta property="og:title" content="Video Converter Studio – Free Online Video Converter Tool | MediaTools Pro" />
+    <meta
+      property="og:description"
+      content="Upload, preview, convert, and download videos directly in your browser with quality and resolution controls."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/video-converter.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      .converter-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 1rem;
+      }
+
+      .converter-card {
+        border: 1px solid var(--border-color, rgba(128, 128, 128, 0.28));
+        border-radius: 12px;
+        padding: 1rem;
+        background: var(--surface-color, rgba(127, 127, 127, 0.06));
+      }
+
+      .converter-card h3 {
+        margin-top: 0;
+        margin-bottom: 0.75rem;
+      }
+
+      .preview-video {
+        width: 100%;
+        max-height: 340px;
+        border-radius: 10px;
+        background: #000;
+      }
+
+      .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.85rem;
+      }
+
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+      }
+
+      .field-group label {
+        font-weight: 600;
+      }
+
+      .select-input,
+      .file-input {
+        width: 100%;
+      }
+
+      .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .status-text {
+        margin: 0;
+        font-size: 0.95rem;
+        opacity: 0.9;
+      }
+
+      .result-meta {
+        margin-top: 0.8rem;
+        font-size: 0.95rem;
+      }
+
+      .download-btn[aria-disabled='true'] {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      @media (max-width: 960px) {
+        .converter-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .field-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
-        <h1>Video Converter</h1>
-        <p class="meta-text">Convert videos between common formats such as MP4, MOV, and AVI.</p>
+        <h1>Video Converter Studio</h1>
+        <p class="meta-text">
+          Convert MP4, WebM, and MOV files right in your browser with adjustable quality and resolution settings.
+        </p>
       </section>
 
       <section class="tool-panel tool-content">
         <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <p class="meta-text">
+          Upload a video, choose your output settings, and click Convert. Processing is fully client-side and works on GitHub Pages.
+        </p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
+        <div class="converter-grid">
+          <div class="converter-card">
+            <h3>Source Video</h3>
+            <div class="field-group">
+              <label for="video-upload">Video Upload (MP4, WebM, MOV)</label>
+              <input id="video-upload" class="file-input" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" />
+            </div>
+            <video id="source-preview" class="preview-video" controls playsinline></video>
+            <p class="result-meta" id="source-info">No file selected.</p>
           </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
 
+          <div class="converter-card">
+            <h3>Conversion Settings</h3>
+            <div class="field-grid">
+              <div class="field-group">
+                <label for="format-select">Convert To</label>
+                <select id="format-select" class="select-input">
+                  <option value="mp4">MP4</option>
+                  <option value="webm">WebM</option>
+                  <option value="mov">MOV</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="quality-select">Quality</label>
+                <select id="quality-select" class="select-input">
+                  <option value="original">Original Quality</option>
+                  <option value="high">High</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="resolution-select">Resolution</label>
+                <select id="resolution-select" class="select-input">
+                  <option value="original" selected>Original</option>
+                  <option value="1080">1080p</option>
+                  <option value="720">720p</option>
+                  <option value="480">480p</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button id="convert-btn" class="btn" type="button">Convert Video</button>
+              <p id="status-text" class="status-text" aria-live="polite">Ready.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="converter-card" style="margin-top: 1rem">
+          <h3>Converted Video</h3>
+          <video id="output-preview" class="preview-video" controls playsinline></video>
+          <p class="result-meta" id="output-info">No converted file yet.</p>
+          <a id="download-link" class="btn download-btn" aria-disabled="true" href="#" download>Download Converted Video</a>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>Video Converter is designed to help you work faster with dependable results. Convert videos between common formats such as MP4, MOV, and AVI.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Video Converter is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
+        <h2>How to Use</h2>
+        <ol>
+          <li>Upload an MP4, WebM, or MOV file using the video upload field.</li>
+          <li>Choose your target format, quality level, and preferred resolution.</li>
+          <li>Click <strong>Convert Video</strong> and wait for processing to complete.</li>
+          <li>Preview the converted output and click Download to save your file.</li>
+        </ol>
+      </section>
+
+      <section class="tool-panel tool-description">
+        <h2>Why Use This Tool</h2>
+        <p>
+          Video Converter Studio is designed for speed, privacy, and convenience. Your media stays in the browser, making it ideal for
+          quick conversions without uploading files to external servers.
+        </p>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>Features</h2>
         <ul>
-          <li>Focused workflow for video converter tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
+          <li>Supports MP4, WebM, and MOV input and output selections.</li>
+          <li>Client-side processing powered by HTML5 video, canvas, and MediaRecorder.</li>
+          <li>Multiple quality presets and resolution options for flexible output.</li>
+          <li>Live source and converted video previews with download support.</li>
+          <li>Responsive, professional interface that adapts to dark and light themes.</li>
         </ul>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script>
+      (function () {
+        const uploadInput = document.getElementById('video-upload');
+        const sourcePreview = document.getElementById('source-preview');
+        const sourceInfo = document.getElementById('source-info');
+        const formatSelect = document.getElementById('format-select');
+        const qualitySelect = document.getElementById('quality-select');
+        const resolutionSelect = document.getElementById('resolution-select');
+        const convertBtn = document.getElementById('convert-btn');
+        const statusText = document.getElementById('status-text');
+        const outputPreview = document.getElementById('output-preview');
+        const outputInfo = document.getElementById('output-info');
+        const downloadLink = document.getElementById('download-link');
+
+        let sourceFile = null;
+        let sourceURL = '';
+        let outputURL = '';
+
+        const QUALITY_CONFIG = {
+          original: 8_000_000,
+          high: 5_000_000,
+          medium: 2_500_000,
+          low: 1_000_000,
+        };
+
+        const FORMAT_MIME_CANDIDATES = {
+          mp4: ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4'],
+          webm: ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'],
+          mov: ['video/quicktime', 'video/mp4'],
+        };
+
+        const formatBytes = (bytes) => {
+          if (!Number.isFinite(bytes)) return 'Unknown size';
+          const units = ['B', 'KB', 'MB', 'GB'];
+          let value = bytes;
+          let idx = 0;
+          while (value >= 1024 && idx < units.length - 1) {
+            value /= 1024;
+            idx += 1;
+          }
+          return `${value.toFixed(value >= 10 || idx === 0 ? 0 : 2)} ${units[idx]}`;
+        };
+
+        const resetOutput = () => {
+          if (outputURL) {
+            URL.revokeObjectURL(outputURL);
+            outputURL = '';
+          }
+          outputPreview.removeAttribute('src');
+          outputPreview.load();
+          outputInfo.textContent = 'No converted file yet.';
+          downloadLink.setAttribute('aria-disabled', 'true');
+          downloadLink.removeAttribute('href');
+        };
+
+        const setStatus = (msg) => {
+          statusText.textContent = msg;
+        };
+
+        const getOutputSize = (videoWidth, videoHeight, target) => {
+          const ratio = videoWidth / videoHeight;
+          if (target === 'original') return { width: videoWidth, height: videoHeight };
+
+          const maxHeight = Number(target);
+          let height = Math.min(maxHeight, videoHeight);
+          let width = Math.round(height * ratio);
+
+          if (width % 2 !== 0) width -= 1;
+          if (height % 2 !== 0) height -= 1;
+
+          return { width: Math.max(width, 2), height: Math.max(height, 2) };
+        };
+
+        const pickSupportedMime = (format) => {
+          const options = FORMAT_MIME_CANDIDATES[format] || [];
+          for (const mime of options) {
+            if (window.MediaRecorder && MediaRecorder.isTypeSupported(mime)) return mime;
+          }
+          return '';
+        };
+
+        uploadInput.addEventListener('change', () => {
+          resetOutput();
+          setStatus('Ready.');
+
+          if (sourceURL) {
+            URL.revokeObjectURL(sourceURL);
+            sourceURL = '';
+          }
+
+          const file = uploadInput.files && uploadInput.files[0];
+          if (!file) {
+            sourceFile = null;
+            sourcePreview.removeAttribute('src');
+            sourcePreview.load();
+            sourceInfo.textContent = 'No file selected.';
+            return;
+          }
+
+          sourceFile = file;
+          sourceURL = URL.createObjectURL(file);
+          sourcePreview.src = sourceURL;
+          sourceInfo.textContent = `Selected: ${file.name} • ${formatBytes(file.size)}`;
+        });
+
+        convertBtn.addEventListener('click', async () => {
+          if (!sourceFile || !sourcePreview.src) {
+            setStatus('Please upload a video file first.');
+            return;
+          }
+
+          if (!window.MediaRecorder) {
+            setStatus('MediaRecorder is not supported in this browser.');
+            return;
+          }
+
+          resetOutput();
+
+          const targetFormat = formatSelect.value;
+          const quality = qualitySelect.value;
+          const resolution = resolutionSelect.value;
+          const preferredMime = pickSupportedMime(targetFormat);
+
+          if (!preferredMime) {
+            setStatus(`Selected format (${targetFormat.toUpperCase()}) is not supported by this browser's encoder.`);
+            return;
+          }
+
+          const workerVideo = document.createElement('video');
+          workerVideo.src = sourcePreview.src;
+          workerVideo.muted = true;
+          workerVideo.playsInline = true;
+          workerVideo.crossOrigin = 'anonymous';
+
+          setStatus('Preparing conversion...');
+
+          try {
+            await workerVideo.play().catch(() => {});
+
+            if (!workerVideo.videoWidth || !workerVideo.videoHeight || !Number.isFinite(workerVideo.duration)) {
+              await new Promise((resolve, reject) => {
+                workerVideo.addEventListener('loadedmetadata', resolve, { once: true });
+                workerVideo.addEventListener('error', () => reject(new Error('Failed to load source metadata.')), { once: true });
+              });
+            }
+
+            const { width, height } = getOutputSize(workerVideo.videoWidth, workerVideo.videoHeight, resolution);
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d', { alpha: false });
+
+            if (!ctx) {
+              setStatus('Could not initialize canvas context.');
+              return;
+            }
+
+            const fps = 30;
+            const stream = canvas.captureStream(fps);
+            const audioTracks = workerVideo.captureStream ? workerVideo.captureStream().getAudioTracks() : [];
+            if (audioTracks.length > 0) stream.addTrack(audioTracks[0]);
+
+            const recordedChunks = [];
+            const recorder = new MediaRecorder(stream, {
+              mimeType: preferredMime,
+              videoBitsPerSecond: QUALITY_CONFIG[quality] || QUALITY_CONFIG.medium,
+            });
+
+            recorder.ondataavailable = (event) => {
+              if (event.data && event.data.size > 0) recordedChunks.push(event.data);
+            };
+
+            const completePromise = new Promise((resolve, reject) => {
+              recorder.onstop = resolve;
+              recorder.onerror = () => reject(new Error('Recording failed during conversion.'));
+            });
+
+            setStatus('Converting video...');
+
+            let rafId = null;
+            const drawFrame = () => {
+              ctx.drawImage(workerVideo, 0, 0, width, height);
+              if (!workerVideo.paused && !workerVideo.ended) {
+                rafId = requestAnimationFrame(drawFrame);
+              }
+            };
+
+            workerVideo.currentTime = 0;
+            await workerVideo.play();
+            drawFrame();
+            recorder.start(250);
+
+            await new Promise((resolve) => {
+              workerVideo.onended = resolve;
+            });
+
+            if (rafId) cancelAnimationFrame(rafId);
+            recorder.stop();
+            await completePromise;
+
+            const blob = new Blob(recordedChunks, { type: preferredMime });
+            const outputExt = targetFormat;
+            outputURL = URL.createObjectURL(blob);
+            outputPreview.src = outputURL;
+            downloadLink.href = outputURL;
+            downloadLink.download = `${(sourceFile.name.replace(/\.[^.]+$/, '') || 'converted-video')}.${outputExt}`;
+            downloadLink.setAttribute('aria-disabled', 'false');
+
+            outputInfo.textContent = `Output: ${downloadLink.download} • ${formatBytes(blob.size)} • ${width}×${height} • ${targetFormat.toUpperCase()}`;
+            setStatus('Conversion complete. Ready to download.');
+          } catch (error) {
+            setStatus(error.message || 'Conversion failed. Try another format or lower settings.');
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
