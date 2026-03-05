@@ -6,7 +6,7 @@
     <title>Video Compressor – Free Online Video Compressor Tool | MediaTools Pro</title>
     <meta
       name="description"
-      content="Compress MP4, WebM, and MOV videos right in your browser. Reduce file size with selectable compression levels using this free tool from MediaTools Pro."
+      content="Compress MP4, WebM, and MOV videos right in your browser. Set a target size, quality, and resolution with this free tool from MediaTools Pro."
     />
     <meta
       name="keywords"
@@ -15,7 +15,7 @@
     <meta property="og:title" content="Video Compressor – Free Online Video Compressor Tool | MediaTools Pro" />
     <meta
       property="og:description"
-      content="Compress MP4, WebM, and MOV videos in your browser with low, medium, and high compression levels."
+      content="Compress MP4, WebM, and MOV videos in your browser with target-size, quality, and resolution controls."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/video-compressor.html" />
@@ -25,6 +25,64 @@
       .video-tool-grid {
         display: grid;
         gap: 1rem;
+      }
+
+      .control-panel {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: color-mix(in srgb, var(--surface-2) 50%, transparent);
+        padding: 1rem;
+        display: grid;
+        gap: 1rem;
+      }
+
+      .control-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.85rem;
+      }
+
+      .control-field {
+        display: grid;
+        gap: 0.4rem;
+      }
+
+      .input-field,
+      .select-input,
+      .range-input {
+        width: 100%;
+      }
+
+      .range-row {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+      }
+
+      .range-value {
+        min-width: 3ch;
+        text-align: right;
+        font-weight: 700;
+      }
+
+      .info-panel {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .info-chip {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0.7rem;
+        background: var(--surface);
+      }
+
+      .info-chip strong {
+        display: block;
+        font-size: 0.82rem;
+        margin-bottom: 0.25rem;
+        color: var(--muted);
       }
 
       .video-preview-grid {
@@ -65,19 +123,6 @@
         border: 1px solid var(--border);
       }
 
-      .meta-row {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.75rem;
-      }
-
-      .meta-chip {
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 0.7rem;
-        background: var(--surface);
-      }
-
       .status-text {
         margin: 0;
         color: var(--muted);
@@ -88,9 +133,15 @@
         display: none;
       }
 
+      @media (max-width: 980px) {
+        .control-grid,
+        .info-panel {
+          grid-template-columns: 1fr;
+        }
+      }
+
       @media (max-width: 860px) {
-        .video-preview-grid,
-        .meta-row {
+        .video-preview-grid {
           grid-template-columns: 1fr;
         }
       }
@@ -102,12 +153,12 @@
     <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Video Compressor</h1>
-        <p class="meta-text">Compress MP4, WebM, and MOV files directly in your browser with no backend uploads.</p>
+        <p class="meta-text">Compress MP4, WebM, and MOV files directly in your browser with advanced professional controls.</p>
       </section>
 
       <section class="tool-panel tool-content">
         <h2>Tool Interface</h2>
-        <p class="meta-text">Upload a video, select a compression level, and generate a smaller file in a few clicks.</p>
+        <p class="meta-text">Set your desired size, quality, and output resolution, then compress with browser-based video + canvas processing.</p>
 
         <div class="video-tool-grid">
           <div class="upload-box">
@@ -115,14 +166,47 @@
             <input id="video-upload" class="file-input" type="file" accept="video/mp4,video/webm,video/quicktime,.mov" />
           </div>
 
-          <div>
-            <label for="compression-level">Compression level</label>
-            <select id="compression-level" class="select-input">
-              <option value="low">Low Compression (Best Quality)</option>
-              <option value="medium" selected>Medium Compression</option>
-              <option value="high">High Compression (Small Size)</option>
-            </select>
-          </div>
+          <section class="control-panel" aria-label="Compression controls">
+            <div class="control-grid">
+              <div class="control-field">
+                <label for="target-size">Target Size (MB)</label>
+                <input id="target-size" class="input-field" type="number" min="1" step="0.1" placeholder="e.g. 25" />
+              </div>
+
+              <div class="control-field">
+                <label for="quality-range">Quality</label>
+                <div class="range-row">
+                  <input id="quality-range" class="range-input" type="range" min="10" max="100" value="70" />
+                  <span id="quality-value" class="range-value">70</span>
+                </div>
+              </div>
+
+              <div class="control-field">
+                <label for="resolution-select">Resolution</label>
+                <select id="resolution-select" class="select-input">
+                  <option value="original" selected>Original</option>
+                  <option value="1080">1080p</option>
+                  <option value="720">720p</option>
+                  <option value="480">480p</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="info-panel" aria-live="polite">
+              <div class="info-chip">
+                <strong>Original Video Size</strong>
+                <span id="original-size">—</span>
+              </div>
+              <div class="info-chip">
+                <strong>Target Size</strong>
+                <span id="target-size-info">—</span>
+              </div>
+              <div class="info-chip">
+                <strong>Estimated Output Size</strong>
+                <span id="estimated-size">—</span>
+              </div>
+            </div>
+          </section>
 
           <div class="tool-actions">
             <button id="compress-btn" class="btn" type="button">Compress Video</button>
@@ -141,41 +225,7 @@
               <video id="compressed-preview" class="preview-video" controls playsinline></video>
             </article>
           </div>
-
-          <div class="meta-row">
-            <div class="meta-chip"><strong>Original size:</strong> <span id="original-size">—</span></div>
-            <div class="meta-chip"><strong>Compressed size:</strong> <span id="compressed-size">—</span></div>
-          </div>
         </div>
-      </section>
-
-      <section class="tool-panel tool-description">
-        <h2>How to Use</h2>
-        <ul>
-          <li>Choose an MP4, WebM, or MOV video file from your device.</li>
-          <li>Pick a compression level based on your quality and file-size needs.</li>
-          <li>Click <strong>Compress Video</strong> and wait for browser-side processing to complete.</li>
-          <li>Preview the compressed output and click the download button to save it.</li>
-        </ul>
-      </section>
-
-      <section class="tool-panel tool-description">
-        <h2>Why Use This Tool</h2>
-        <p>
-          This Video Compressor runs completely in your browser, so your files stay local while processing. It is ideal for
-          quick size reduction before sharing videos by email, chat, or social platforms.
-        </p>
-      </section>
-
-      <section class="tool-panel tool-description">
-        <h2>Features</h2>
-        <ul>
-          <li>Supports MP4, WebM, and MOV uploads.</li>
-          <li>Compression levels for quality-first or size-first output.</li>
-          <li>Live original and compressed video previews.</li>
-          <li>Automatic file size comparison after processing.</li>
-          <li>Client-side only workflow compatible with GitHub Pages hosting.</li>
-        </ul>
       </section>
     </main>
     <footer id="site-footer"></footer>
@@ -185,24 +235,22 @@
     <script>
       (() => {
         const uploadInput = document.getElementById("video-upload");
-        const compressionSelect = document.getElementById("compression-level");
+        const targetSizeInput = document.getElementById("target-size");
+        const qualityRange = document.getElementById("quality-range");
+        const qualityValue = document.getElementById("quality-value");
+        const resolutionSelect = document.getElementById("resolution-select");
         const compressBtn = document.getElementById("compress-btn");
         const downloadBtn = document.getElementById("download-btn");
         const sourcePreview = document.getElementById("source-preview");
         const compressedPreview = document.getElementById("compressed-preview");
         const statusText = document.getElementById("status-text");
         const originalSizeEl = document.getElementById("original-size");
-        const compressedSizeEl = document.getElementById("compressed-size");
+        const targetSizeInfoEl = document.getElementById("target-size-info");
+        const estimatedSizeEl = document.getElementById("estimated-size");
 
         let sourceFile = null;
         let sourceUrl = "";
         let compressedUrl = "";
-
-        const profiles = {
-          low: { scale: 1, bitrate: 2_500_000, fps: 30 },
-          medium: { scale: 0.75, bitrate: 1_250_000, fps: 24 },
-          high: { scale: 0.55, bitrate: 750_000, fps: 18 }
-        };
 
         const formatBytes = (bytes) => {
           if (!Number.isFinite(bytes) || bytes <= 0) return "0 B";
@@ -212,8 +260,53 @@
           return `${value.toFixed(value >= 10 || i === 0 ? 0 : 2)} ${sizes[i]}`;
         };
 
+        const toBytesFromMB = (mb) => (Number.isFinite(mb) && mb > 0 ? mb * 1024 * 1024 : null);
+
         const cleanUrl = (url) => {
           if (url) URL.revokeObjectURL(url);
+        };
+
+        const calculateScaleForResolution = (width, height, targetHeight) => {
+          if (!targetHeight || height <= targetHeight) return 1;
+          const ratio = targetHeight / height;
+          const projectedWidth = Math.floor(width * ratio);
+          if (projectedWidth < 2) return 2 / width;
+          return ratio;
+        };
+
+        const estimateOutputSize = () => {
+          if (!sourceFile) {
+            estimatedSizeEl.textContent = "—";
+            return;
+          }
+
+          const quality = Number(qualityRange.value) / 100;
+          const baseRatio = 0.18 + quality * 0.82;
+
+          const resolutionMap = { original: 1, "1080": 1080, "720": 720, "480": 480 };
+          const selected = resolutionMap[resolutionSelect.value];
+          let scaleFactor = 1;
+
+          if (selected !== 1 && sourcePreview.videoWidth && sourcePreview.videoHeight) {
+            scaleFactor = calculateScaleForResolution(sourcePreview.videoWidth, sourcePreview.videoHeight, selected);
+          }
+
+          const pixelFactor = Math.max(0.22, scaleFactor * scaleFactor);
+          let estimate = sourceFile.size * baseRatio * pixelFactor;
+
+          const targetBytes = toBytesFromMB(Number(targetSizeInput.value));
+          if (targetBytes) {
+            estimate = Math.min(estimate, targetBytes * 1.08);
+          }
+
+          estimatedSizeEl.textContent = formatBytes(Math.max(1024, estimate));
+        };
+
+        const refreshInfoPanel = () => {
+          originalSizeEl.textContent = sourceFile ? formatBytes(sourceFile.size) : "—";
+          const targetBytes = toBytesFromMB(Number(targetSizeInput.value));
+          targetSizeInfoEl.textContent = targetBytes ? formatBytes(targetBytes) : "—";
+          estimateOutputSize();
         };
 
         const resetCompressed = () => {
@@ -221,10 +314,17 @@
           compressedUrl = "";
           compressedPreview.removeAttribute("src");
           compressedPreview.load();
-          compressedSizeEl.textContent = "—";
           downloadBtn.classList.add("hidden");
           downloadBtn.removeAttribute("href");
         };
+
+        qualityRange.addEventListener("input", () => {
+          qualityValue.textContent = qualityRange.value;
+          refreshInfoPanel();
+        });
+
+        targetSizeInput.addEventListener("input", refreshInfoPanel);
+        resolutionSelect.addEventListener("change", refreshInfoPanel);
 
         uploadInput.addEventListener("change", () => {
           const [file] = uploadInput.files || [];
@@ -243,10 +343,12 @@
           sourcePreview.src = sourceUrl;
           sourcePreview.load();
 
-          originalSizeEl.textContent = formatBytes(file.size);
-          statusText.textContent = "Video loaded. Choose a compression level and click Compress Video.";
+          statusText.textContent = "Video loaded. Adjust controls and click Compress Video.";
           resetCompressed();
+          refreshInfoPanel();
         });
+
+        sourcePreview.addEventListener("loadedmetadata", refreshInfoPanel);
 
         compressBtn.addEventListener("click", async () => {
           if (!sourceFile || !sourcePreview.src) {
@@ -259,7 +361,6 @@
             return;
           }
 
-          const profile = profiles[compressionSelect.value] || profiles.medium;
           compressBtn.disabled = true;
           downloadBtn.classList.add("hidden");
           statusText.textContent = "Processing video in your browser...";
@@ -274,9 +375,27 @@
               throw new Error("Could not read video dimensions.");
             }
 
+            const quality = Number(qualityRange.value) / 100;
+            const resolutionTargets = { original: null, "1080": 1080, "720": 720, "480": 480 };
+            const targetHeight = resolutionTargets[resolutionSelect.value];
+            const scale = calculateScaleForResolution(baseWidth, baseHeight, targetHeight);
+
+            const outputWidth = Math.max(2, Math.floor(baseWidth * scale));
+            const outputHeight = Math.max(2, Math.floor(baseHeight * scale));
+
+            const fps = Math.max(12, Math.round(15 + quality * 15));
+            let bitrate = Math.round(350_000 + quality * 2_800_000);
+
+            const targetBytes = toBytesFromMB(Number(targetSizeInput.value));
+            const duration = sourcePreview.duration;
+            if (targetBytes && Number.isFinite(duration) && duration > 0) {
+              const targetBitsPerSecond = Math.floor((targetBytes * 8) / duration);
+              bitrate = Math.min(bitrate, Math.max(180_000, targetBitsPerSecond));
+            }
+
             const canvas = document.createElement("canvas");
-            canvas.width = Math.max(2, Math.floor(baseWidth * profile.scale));
-            canvas.height = Math.max(2, Math.floor(baseHeight * profile.scale));
+            canvas.width = outputWidth;
+            canvas.height = outputHeight;
             const ctx = canvas.getContext("2d", { alpha: false });
 
             if (!ctx) {
@@ -287,11 +406,11 @@
             sourcePreview.muted = true;
             await sourcePreview.play();
 
-            const stream = canvas.captureStream(profile.fps);
+            const stream = canvas.captureStream(fps);
             const chunks = [];
             const recorder = new MediaRecorder(stream, {
               mimeType: "video/webm;codecs=vp9,opus",
-              videoBitsPerSecond: profile.bitrate
+              videoBitsPerSecond: bitrate
             });
 
             const drawFrame = () => {
@@ -323,7 +442,7 @@
             compressedPreview.src = compressedUrl;
             compressedPreview.load();
 
-            compressedSizeEl.textContent = formatBytes(compressedBlob.size);
+            estimatedSizeEl.textContent = formatBytes(compressedBlob.size);
             downloadBtn.href = compressedUrl;
             downloadBtn.download = `${(sourceFile.name || "video").replace(/\.[^.]+$/, "")}-compressed.webm`;
             downloadBtn.classList.remove("hidden");
