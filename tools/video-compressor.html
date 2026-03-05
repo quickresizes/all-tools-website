@@ -4,65 +4,344 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Video Compressor – Free Online Video Compressor Tool | MediaTools Pro</title>
-    <meta name="description" content="Compress large videos to save storage and speed up sharing. Use this free online video compressor at MediaTools Pro." />
-    <meta name="keywords" content="video compressor, video compressor online, free video compressor, media tools pro, video, compressor, online tool" />
+    <meta
+      name="description"
+      content="Compress MP4, WebM, and MOV videos right in your browser. Reduce file size with selectable compression levels using this free tool from MediaTools Pro."
+    />
+    <meta
+      name="keywords"
+      content="video compressor, compress mp4, compress webm, compress mov, online video compressor, media tools pro"
+    />
     <meta property="og:title" content="Video Compressor – Free Online Video Compressor Tool | MediaTools Pro" />
-    <meta property="og:description" content="Compress large videos to save storage and speed up sharing. Use this free online video compressor at MediaTools Pro." />
+    <meta
+      property="og:description"
+      content="Compress MP4, WebM, and MOV videos in your browser with low, medium, and high compression levels."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/video-compressor.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      .video-tool-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .video-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .preview-card {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 0.85rem;
+        background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+      }
+
+      .preview-card h3 {
+        margin: 0 0 0.55rem;
+        font-size: 1rem;
+      }
+
+      .preview-video {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: #000;
+        max-height: 300px;
+      }
+
+      .tool-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .btn.secondary-btn {
+        background: var(--surface-2);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .meta-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .meta-chip {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0.7rem;
+        background: var(--surface);
+      }
+
+      .status-text {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 860px) {
+        .video-preview-grid,
+        .meta-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Video Compressor</h1>
-        <p class="meta-text">Compress large videos to save storage and speed up sharing.</p>
+        <p class="meta-text">Compress MP4, WebM, and MOV files directly in your browser with no backend uploads.</p>
       </section>
 
       <section class="tool-panel tool-content">
         <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <p class="meta-text">Upload a video, select a compression level, and generate a smaller file in a few clicks.</p>
 
+        <div class="video-tool-grid">
           <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
+            <label for="video-upload">Upload video (MP4, WebM, MOV)</label>
+            <input id="video-upload" class="file-input" type="file" accept="video/mp4,video/webm,video/quicktime,.mov" />
           </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
 
+          <div>
+            <label for="compression-level">Compression level</label>
+            <select id="compression-level" class="select-input">
+              <option value="low">Low Compression (Best Quality)</option>
+              <option value="medium" selected>Medium Compression</option>
+              <option value="high">High Compression (Small Size)</option>
+            </select>
+          </div>
+
+          <div class="tool-actions">
+            <button id="compress-btn" class="btn" type="button">Compress Video</button>
+            <a id="download-btn" class="btn secondary-btn hidden" download="compressed-video.webm">Download Compressed Video</a>
+          </div>
+
+          <p id="status-text" class="status-text">Waiting for a video file.</p>
+
+          <div class="video-preview-grid">
+            <article class="preview-card">
+              <h3>Original Preview</h3>
+              <video id="source-preview" class="preview-video" controls playsinline></video>
+            </article>
+            <article class="preview-card">
+              <h3>Compressed Preview</h3>
+              <video id="compressed-preview" class="preview-video" controls playsinline></video>
+            </article>
+          </div>
+
+          <div class="meta-row">
+            <div class="meta-chip"><strong>Original size:</strong> <span id="original-size">—</span></div>
+            <div class="meta-chip"><strong>Compressed size:</strong> <span id="compressed-size">—</span></div>
+          </div>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>Video Compressor is designed to help you work faster with dependable results. Compress large videos to save storage and speed up sharing.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Video Compressor is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
+        <h2>How to Use</h2>
+        <ul>
+          <li>Choose an MP4, WebM, or MOV video file from your device.</li>
+          <li>Pick a compression level based on your quality and file-size needs.</li>
+          <li>Click <strong>Compress Video</strong> and wait for browser-side processing to complete.</li>
+          <li>Preview the compressed output and click the download button to save it.</li>
+        </ul>
+      </section>
+
+      <section class="tool-panel tool-description">
+        <h2>Why Use This Tool</h2>
+        <p>
+          This Video Compressor runs completely in your browser, so your files stay local while processing. It is ideal for
+          quick size reduction before sharing videos by email, chat, or social platforms.
+        </p>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>Features</h2>
         <ul>
-          <li>Focused workflow for video compressor tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
+          <li>Supports MP4, WebM, and MOV uploads.</li>
+          <li>Compression levels for quality-first or size-first output.</li>
+          <li>Live original and compressed video previews.</li>
+          <li>Automatic file size comparison after processing.</li>
+          <li>Client-side only workflow compatible with GitHub Pages hosting.</li>
         </ul>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script>
+      (() => {
+        const uploadInput = document.getElementById("video-upload");
+        const compressionSelect = document.getElementById("compression-level");
+        const compressBtn = document.getElementById("compress-btn");
+        const downloadBtn = document.getElementById("download-btn");
+        const sourcePreview = document.getElementById("source-preview");
+        const compressedPreview = document.getElementById("compressed-preview");
+        const statusText = document.getElementById("status-text");
+        const originalSizeEl = document.getElementById("original-size");
+        const compressedSizeEl = document.getElementById("compressed-size");
+
+        let sourceFile = null;
+        let sourceUrl = "";
+        let compressedUrl = "";
+
+        const profiles = {
+          low: { scale: 1, bitrate: 2_500_000, fps: 30 },
+          medium: { scale: 0.75, bitrate: 1_250_000, fps: 24 },
+          high: { scale: 0.55, bitrate: 750_000, fps: 18 }
+        };
+
+        const formatBytes = (bytes) => {
+          if (!Number.isFinite(bytes) || bytes <= 0) return "0 B";
+          const sizes = ["B", "KB", "MB", "GB"];
+          const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), sizes.length - 1);
+          const value = bytes / 1024 ** i;
+          return `${value.toFixed(value >= 10 || i === 0 ? 0 : 2)} ${sizes[i]}`;
+        };
+
+        const cleanUrl = (url) => {
+          if (url) URL.revokeObjectURL(url);
+        };
+
+        const resetCompressed = () => {
+          cleanUrl(compressedUrl);
+          compressedUrl = "";
+          compressedPreview.removeAttribute("src");
+          compressedPreview.load();
+          compressedSizeEl.textContent = "—";
+          downloadBtn.classList.add("hidden");
+          downloadBtn.removeAttribute("href");
+        };
+
+        uploadInput.addEventListener("change", () => {
+          const [file] = uploadInput.files || [];
+          if (!file) return;
+
+          const allowed = ["video/mp4", "video/webm", "video/quicktime"];
+          if (!allowed.includes(file.type) && !/\.mov$/i.test(file.name)) {
+            statusText.textContent = "Unsupported format. Please upload MP4, WebM, or MOV.";
+            uploadInput.value = "";
+            return;
+          }
+
+          sourceFile = file;
+          cleanUrl(sourceUrl);
+          sourceUrl = URL.createObjectURL(file);
+          sourcePreview.src = sourceUrl;
+          sourcePreview.load();
+
+          originalSizeEl.textContent = formatBytes(file.size);
+          statusText.textContent = "Video loaded. Choose a compression level and click Compress Video.";
+          resetCompressed();
+        });
+
+        compressBtn.addEventListener("click", async () => {
+          if (!sourceFile || !sourcePreview.src) {
+            statusText.textContent = "Please upload a video file first.";
+            return;
+          }
+
+          if (!window.MediaRecorder) {
+            statusText.textContent = "MediaRecorder is not supported in this browser.";
+            return;
+          }
+
+          const profile = profiles[compressionSelect.value] || profiles.medium;
+          compressBtn.disabled = true;
+          downloadBtn.classList.add("hidden");
+          statusText.textContent = "Processing video in your browser...";
+
+          try {
+            await sourcePreview.play().catch(() => undefined);
+
+            const baseWidth = sourcePreview.videoWidth;
+            const baseHeight = sourcePreview.videoHeight;
+
+            if (!baseWidth || !baseHeight) {
+              throw new Error("Could not read video dimensions.");
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(2, Math.floor(baseWidth * profile.scale));
+            canvas.height = Math.max(2, Math.floor(baseHeight * profile.scale));
+            const ctx = canvas.getContext("2d", { alpha: false });
+
+            if (!ctx) {
+              throw new Error("Canvas is unavailable in this browser.");
+            }
+
+            sourcePreview.currentTime = 0;
+            sourcePreview.muted = true;
+            await sourcePreview.play();
+
+            const stream = canvas.captureStream(profile.fps);
+            const chunks = [];
+            const recorder = new MediaRecorder(stream, {
+              mimeType: "video/webm;codecs=vp9,opus",
+              videoBitsPerSecond: profile.bitrate
+            });
+
+            const drawFrame = () => {
+              if (sourcePreview.paused || sourcePreview.ended) return;
+              ctx.drawImage(sourcePreview, 0, 0, canvas.width, canvas.height);
+              requestAnimationFrame(drawFrame);
+            };
+
+            drawFrame();
+            recorder.ondataavailable = (event) => {
+              if (event.data && event.data.size > 0) chunks.push(event.data);
+            };
+
+            const compressedBlob = await new Promise((resolve, reject) => {
+              recorder.onerror = () => reject(new Error("Compression recorder failed."));
+              recorder.onstop = () => resolve(new Blob(chunks, { type: "video/webm" }));
+              sourcePreview.onended = () => {
+                if (recorder.state !== "inactive") recorder.stop();
+              };
+              recorder.start(250);
+            });
+
+            if (!compressedBlob.size) {
+              throw new Error("Compression output is empty.");
+            }
+
+            cleanUrl(compressedUrl);
+            compressedUrl = URL.createObjectURL(compressedBlob);
+            compressedPreview.src = compressedUrl;
+            compressedPreview.load();
+
+            compressedSizeEl.textContent = formatBytes(compressedBlob.size);
+            downloadBtn.href = compressedUrl;
+            downloadBtn.download = `${(sourceFile.name || "video").replace(/\.[^.]+$/, "")}-compressed.webm`;
+            downloadBtn.classList.remove("hidden");
+
+            statusText.textContent = "Compression complete. Preview and download your compressed video.";
+          } catch (error) {
+            statusText.textContent = `Compression failed: ${error.message}`;
+          } finally {
+            compressBtn.disabled = false;
+            sourcePreview.pause();
+          }
+        });
+
+        window.addEventListener("beforeunload", () => {
+          cleanUrl(sourceUrl);
+          cleanUrl(compressedUrl);
+        });
+      })();
+    </script>
   </body>
 </html>
