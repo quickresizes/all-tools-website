@@ -4,65 +4,397 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Video Resizer – Free Online Video Resizer Tool | MediaTools Pro</title>
-    <meta name="description" content="Resize videos for social media, websites, and messaging platforms. Use this free online video resizer at MediaTools Pro." />
-    <meta name="keywords" content="video resizer, video resizer online, free video resizer, media tools pro, video, resizer, online tool" />
+    <meta name="description" content="Resize MP4, WebM, and MOV videos directly in your browser with this free MediaTools Pro video resizer." />
+    <meta name="keywords" content="video resizer, resize mp4, resize webm, resize mov, online video tool, mediatools pro" />
     <meta property="og:title" content="Video Resizer – Free Online Video Resizer Tool | MediaTools Pro" />
-    <meta property="og:description" content="Resize videos for social media, websites, and messaging platforms. Use this free online video resizer at MediaTools Pro." />
+    <meta property="og:description" content="Upload a video, choose a preset, preview the result, and download your resized video. 100% client-side." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/video-resizer.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      .video-tool-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+
+      .control-stack {
+        display: grid;
+        gap: 0.85rem;
+      }
+
+      .input-row {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .preview-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .preview-card {
+        padding: 1rem;
+        border: 1px solid var(--border-color, #2e2e2e);
+        border-radius: 12px;
+        background: var(--panel-bg, rgba(255, 255, 255, 0.02));
+      }
+
+      .preview-card video {
+        width: 100%;
+        max-height: 280px;
+        border-radius: 8px;
+        background: #000;
+      }
+
+      .ad-container {
+        margin-top: 1rem;
+        padding: 1rem;
+        text-align: center;
+        border: 1px dashed var(--border-color, #3e3e3e);
+        border-radius: 10px;
+        color: var(--muted-text, #999);
+      }
+
+      @media (max-width: 620px) {
+        .input-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Video Resizer</h1>
-        <p class="meta-text">Resize videos for social media, websites, and messaging platforms.</p>
+        <p class="meta-text">Resize MP4, WebM, and MOV videos right in your browser—no upload to a server.</p>
       </section>
 
       <section class="tool-panel tool-content">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <h2>Resize Your Video</h2>
+        <p class="meta-text">Select a preset, process your video client-side, preview it, and download the result.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="video-tool-grid">
+          <div class="control-stack">
+            <div class="upload-box">
+              <label for="video-upload">Upload video (MP4, WebM, MOV)</label>
+              <input id="video-upload" class="file-input" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" />
+            </div>
 
+            <div>
+              <label for="size-preset">Size preset</label>
+              <select id="size-preset" class="select-input">
+                <option value="720p">720p (1280 × 720)</option>
+                <option value="1080p">1080p (1920 × 1080)</option>
+                <option value="2k">2K (2560 × 1440)</option>
+                <option value="4k">4K (3840 × 2160)</option>
+                <option value="custom-width">Custom Width</option>
+                <option value="custom-height">Custom Height</option>
+              </select>
+            </div>
+
+            <div class="input-row">
+              <div>
+                <label for="custom-width">Custom width (px)</label>
+                <input id="custom-width" class="text-input" type="number" min="1" placeholder="e.g. 1280" disabled />
+              </div>
+              <div>
+                <label for="custom-height">Custom height (px)</label>
+                <input id="custom-height" class="text-input" type="number" min="1" placeholder="e.g. 720" disabled />
+              </div>
+            </div>
+
+            <div class="button-row tool-actions">
+              <button id="resize-button" class="btn" type="button" disabled>Resize Video</button>
+              <button id="download-button" class="btn btn-secondary" type="button" disabled>Download Resized Video</button>
+            </div>
+            <p id="tool-message" class="meta-text" aria-live="polite">Upload a video to start resizing.</p>
+          </div>
+
+          <div class="preview-grid">
+            <div class="preview-card">
+              <h3>Original Preview</h3>
+              <video id="original-preview" controls playsinline preload="metadata"></video>
+            </div>
+            <div class="preview-card">
+              <h3>Resized Preview</h3>
+              <video id="resized-preview" controls playsinline preload="metadata"></video>
+            </div>
+          </div>
+        </div>
+
+        <div class="ad-container">Ad Space</div>
       </section>
 
       <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>Video Resizer is designed to help you work faster with dependable results. Resize videos for social media, websites, and messaging platforms.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Video Resizer is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
+        <h2>How to Use</h2>
+        <ol>
+          <li>Upload an MP4, WebM, or MOV file.</li>
+          <li>Choose a size preset like 720p, 1080p, 2K, or 4K.</li>
+          <li>For custom options, enter a width or height as needed.</li>
+          <li>Click <strong>Resize Video</strong> and wait for processing to complete.</li>
+          <li>Preview the resized video and click <strong>Download Resized Video</strong>.</li>
+        </ol>
+      </section>
+
+      <section class="tool-panel tool-description">
+        <h2>Why Use This Tool</h2>
+        <p>This Video Resizer gives you quick control over video dimensions without extra software.</p>
+        <p>It runs fully in your browser, keeping processing local and private.</p>
+        <p>The streamlined design works well for creators, teams, and beginners who want fast results.</p>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>Features</h2>
         <ul>
-          <li>Focused workflow for video resizer tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
+          <li>Supports MP4, WebM, and MOV uploads.</li>
+          <li>Preset sizing for 720p, 1080p, 2K, and 4K outputs.</li>
+          <li>Custom width and custom height options for flexible resizing.</li>
+          <li>Original and resized preview players in one responsive layout.</li>
+          <li>Client-side processing using HTML5 video, canvas, and MediaRecorder.</li>
         </ul>
+
+        <div class="ad-container">Ad Space</div>
       </section>
     </main>
+
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script>
+      (() => {
+        const uploadInput = document.getElementById('video-upload');
+        const presetSelect = document.getElementById('size-preset');
+        const widthInput = document.getElementById('custom-width');
+        const heightInput = document.getElementById('custom-height');
+        const resizeButton = document.getElementById('resize-button');
+        const downloadButton = document.getElementById('download-button');
+        const originalPreview = document.getElementById('original-preview');
+        const resizedPreview = document.getElementById('resized-preview');
+        const message = document.getElementById('tool-message');
+
+        const presetMap = {
+          '720p': { width: 1280, height: 720 },
+          '1080p': { width: 1920, height: 1080 },
+          '2k': { width: 2560, height: 1440 },
+          '4k': { width: 3840, height: 2160 }
+        };
+
+        let sourceFile = null;
+        let sourceUrl = '';
+        let resultUrl = '';
+
+        function setMessage(text) {
+          message.textContent = text;
+        }
+
+        function clearResult() {
+          if (resultUrl) {
+            URL.revokeObjectURL(resultUrl);
+            resultUrl = '';
+          }
+          resizedPreview.removeAttribute('src');
+          resizedPreview.load();
+          downloadButton.disabled = true;
+        }
+
+        function updateCustomInputs() {
+          const preset = presetSelect.value;
+          widthInput.disabled = preset !== 'custom-width';
+          heightInput.disabled = preset !== 'custom-height';
+        }
+
+        function getTargetSize() {
+          const preset = presetSelect.value;
+
+          if (presetMap[preset]) {
+            return presetMap[preset];
+          }
+
+          const sourceWidth = originalPreview.videoWidth;
+          const sourceHeight = originalPreview.videoHeight;
+
+          if (!sourceWidth || !sourceHeight) {
+            return null;
+          }
+
+          if (preset === 'custom-width') {
+            const customWidth = Number(widthInput.value);
+            if (!customWidth || customWidth < 1) {
+              return null;
+            }
+            return {
+              width: customWidth,
+              height: Math.max(1, Math.round((sourceHeight / sourceWidth) * customWidth))
+            };
+          }
+
+          if (preset === 'custom-height') {
+            const customHeight = Number(heightInput.value);
+            if (!customHeight || customHeight < 1) {
+              return null;
+            }
+            return {
+              width: Math.max(1, Math.round((sourceWidth / sourceHeight) * customHeight)),
+              height: customHeight
+            };
+          }
+
+          return null;
+        }
+
+        function waitForEvent(target, eventName) {
+          return new Promise((resolve) => {
+            target.addEventListener(eventName, resolve, { once: true });
+          });
+        }
+
+        async function resizeVideo() {
+          const target = getTargetSize();
+          if (!target) {
+            setMessage('Please provide a valid custom value or choose a preset.');
+            return;
+          }
+
+          resizeButton.disabled = true;
+          downloadButton.disabled = true;
+          setMessage('Processing video... Please keep this tab open.');
+          clearResult();
+
+          const processingVideo = document.createElement('video');
+          processingVideo.src = sourceUrl;
+          processingVideo.muted = true;
+          processingVideo.playsInline = true;
+          processingVideo.preload = 'auto';
+
+          await waitForEvent(processingVideo, 'loadedmetadata');
+
+          const fps = 30;
+          const canvas = document.createElement('canvas');
+          canvas.width = target.width;
+          canvas.height = target.height;
+          const context = canvas.getContext('2d');
+
+          const stream = canvas.captureStream(fps);
+          const sourceAudio = processingVideo.captureStream();
+          sourceAudio.getAudioTracks().forEach((track) => stream.addTrack(track));
+
+          let mimeType = '';
+          if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) {
+            mimeType = 'video/webm;codecs=vp9,opus';
+          } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) {
+            mimeType = 'video/webm;codecs=vp8,opus';
+          } else if (MediaRecorder.isTypeSupported('video/webm')) {
+            mimeType = 'video/webm';
+          }
+
+          if (!mimeType) {
+            setMessage('Your browser does not support in-browser video encoding for this tool.');
+            resizeButton.disabled = false;
+            return;
+          }
+
+          const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 4_000_000 });
+          const chunks = [];
+
+          recorder.addEventListener('dataavailable', (event) => {
+            if (event.data.size > 0) {
+              chunks.push(event.data);
+            }
+          });
+
+          const stopPromise = new Promise((resolve) => {
+            recorder.addEventListener('stop', resolve, { once: true });
+          });
+
+          const drawFrame = () => {
+            if (processingVideo.paused || processingVideo.ended) {
+              return;
+            }
+            context.drawImage(processingVideo, 0, 0, canvas.width, canvas.height);
+            requestAnimationFrame(drawFrame);
+          };
+
+          recorder.start();
+          processingVideo.currentTime = 0;
+          await processingVideo.play();
+          drawFrame();
+
+          await waitForEvent(processingVideo, 'ended');
+          recorder.stop();
+          await stopPromise;
+
+          const outputBlob = new Blob(chunks, { type: mimeType });
+          resultUrl = URL.createObjectURL(outputBlob);
+          resizedPreview.src = resultUrl;
+          downloadButton.disabled = false;
+          resizeButton.disabled = false;
+          setMessage(`Done! Output size: ${target.width} × ${target.height}`);
+        }
+
+        uploadInput.addEventListener('change', () => {
+          const file = uploadInput.files?.[0];
+          if (!file) {
+            return;
+          }
+
+          const allowedExtensions = ['video/mp4', 'video/webm', 'video/quicktime'];
+          if (!allowedExtensions.includes(file.type) && !/\.(mp4|webm|mov)$/i.test(file.name)) {
+            setMessage('Unsupported format. Please upload MP4, WebM, or MOV.');
+            uploadInput.value = '';
+            return;
+          }
+
+          sourceFile = file;
+          resizeButton.disabled = false;
+          clearResult();
+
+          if (sourceUrl) {
+            URL.revokeObjectURL(sourceUrl);
+          }
+          sourceUrl = URL.createObjectURL(file);
+          originalPreview.src = sourceUrl;
+
+          setMessage('Video loaded. Choose a preset and click Resize Video.');
+        });
+
+        presetSelect.addEventListener('change', updateCustomInputs);
+
+        resizeButton.addEventListener('click', async () => {
+          if (!sourceFile || !sourceUrl) {
+            setMessage('Please upload a video first.');
+            return;
+          }
+
+          try {
+            await resizeVideo();
+          } catch (error) {
+            resizeButton.disabled = false;
+            setMessage('Something went wrong during processing. Please try another file or preset.');
+          }
+        });
+
+        downloadButton.addEventListener('click', () => {
+          if (!resultUrl) {
+            return;
+          }
+          const link = document.createElement('a');
+          const baseName = sourceFile ? sourceFile.name.replace(/\.[^/.]+$/, '') : 'resized-video';
+          link.href = resultUrl;
+          link.download = `${baseName}-resized.webm`;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        });
+
+        updateCustomInputs();
+      })();
+    </script>
   </body>
 </html>
