@@ -43,18 +43,14 @@
       .preview-video,
       .preview-audio {
         width: 100%;
-        border-radius: 10px;
-        border: 1px solid var(--border-color, rgba(128, 128, 128, 0.28));
-      }
-
-      .preview-video {
         max-height: 340px;
+        border-radius: 10px;
         background: #000;
       }
 
       .preview-audio {
-        background: var(--surface-color, rgba(127, 127, 127, 0.06));
-        padding: 0.6rem;
+        max-height: none;
+        background: transparent;
       }
 
       .hidden {
@@ -82,17 +78,6 @@
         width: 100%;
       }
 
-      .type-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        margin-top: 0.5rem;
-        border: 1px solid var(--border-color, rgba(128, 128, 128, 0.28));
-        border-radius: 999px;
-        padding: 0.3rem 0.65rem;
-        font-size: 0.85rem;
-      }
-
       .action-row {
         display: flex;
         flex-wrap: wrap;
@@ -115,6 +100,19 @@
       .download-btn[aria-disabled='true'] {
         opacity: 0.5;
         pointer-events: none;
+      }
+
+      .progress-wrap {
+        margin-top: 0.8rem;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 10px;
+      }
+
+      .drop-active {
+        border-color: var(--accent-color, #3b82f6);
       }
 
       @media (max-width: 960px) {
@@ -143,19 +141,20 @@
 
       <section class="tool-panel tool-content">
         <h2>Tool Interface</h2>
-        <p class="meta-text">Upload a media file, select your output format, and click Convert. Conversion runs client-side for speed and privacy.</p>
+        <p class="meta-text">
+          Upload a media file, choose output settings, and click Convert. Processing is fully client-side for speed and privacy.
+        </p>
 
         <div class="converter-grid">
-          <div class="converter-card">
-            <h3>Source Media</h3>
+          <div class="converter-card" id="source-card">
+            <h3>Source Video</h3>
             <div class="field-group">
-              <label for="video-upload">Upload Media File</label>
+              <label for="video-upload">Video Upload</label>
               <input id="video-upload" class="file-input" type="file" accept="video/*,audio/*,.mp4,.webm,.mov,.avi,.mkv,.flv,.wmv,.3gp,.m4v,.mpeg,.mpg,.ts,.ogv,.vob,.asf,.mp3,.wav,.aac,.ogg,.m4a,.flac,.ac3,.amr,.aiff" />
             </div>
-            <video id="source-preview-video" class="preview-video hidden" controls playsinline></video>
+            <video id="source-preview-video" class="preview-video" controls playsinline></video>
             <audio id="source-preview-audio" class="preview-audio hidden" controls></audio>
             <p class="result-meta" id="source-info">No file selected.</p>
-            <p id="detected-type" class="type-chip hidden" aria-live="polite"></p>
           </div>
 
           <div class="converter-card">
@@ -181,7 +180,7 @@
                     <option value="vob">VOB</option>
                     <option value="asf">ASF</option>
                   </optgroup>
-                  <optgroup label="Audio Formats">
+                  <optgroup label="Audio Extraction">
                     <option value="mp3">MP3</option>
                     <option value="wav">WAV</option>
                     <option value="aac">AAC</option>
@@ -197,46 +196,52 @@
               <div class="field-group">
                 <label for="quality-select">Quality</label>
                 <select id="quality-select" class="select-input">
-                  <option value="original">Original Quality</option>
-                  <option value="high">High</option>
-                  <option value="medium" selected>Medium</option>
                   <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                  <option value="ultra">Ultra</option>
                 </select>
               </div>
               <div class="field-group">
                 <label for="resolution-select">Resolution</label>
                 <select id="resolution-select" class="select-input">
-                  <option value="original" selected>Original</option>
-                  <option value="1080">1080p</option>
-                  <option value="720">720p</option>
+                  <option value="144">144p</option>
+                  <option value="240">240p</option>
+                  <option value="360" selected>360p</option>
                   <option value="480">480p</option>
+                  <option value="720">720p</option>
+                  <option value="1080">1080p</option>
                 </select>
               </div>
             </div>
 
             <div class="action-row">
-              <button id="convert-btn" class="btn" type="button">Convert Media</button>
+              <button id="convert-btn" class="btn" type="button">Convert Video</button>
               <p id="status-text" class="status-text" aria-live="polite">Ready.</p>
+            </div>
+            <div class="progress-wrap">
+              <progress id="progress-bar" class="progress-bar" max="100" value="0"></progress>
+              <p id="progress-text" class="status-text">Progress: 0%</p>
             </div>
           </div>
         </div>
 
         <div class="converter-card" style="margin-top: 1rem">
-          <h3>Converted Output</h3>
-          <video id="output-preview-video" class="preview-video hidden" controls playsinline></video>
+          <h3>Converted Video</h3>
+          <video id="output-preview-video" class="preview-video" controls playsinline></video>
           <audio id="output-preview-audio" class="preview-audio hidden" controls></audio>
           <p class="result-meta" id="output-info">No converted file yet.</p>
-          <a id="download-link" class="btn download-btn" aria-disabled="true" href="#" download>Download Converted File</a>
+          <a id="download-link" class="btn download-btn" aria-disabled="true" href="#" download>Download Converted Video</a>
         </div>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>How to Use</h2>
         <ol>
-          <li>Upload a supported video or audio file.</li>
-          <li>Select an output format from the complete Video and Audio format lists.</li>
-          <li>Choose quality and resolution options (resolution applies to video output only).</li>
-          <li>Click <strong>Convert Media</strong>, then preview and download the converted file.</li>
+          <li>Upload a supported video or audio file or drag and drop it into the Source card.</li>
+          <li>Choose your target format, quality level, and preferred resolution.</li>
+          <li>Click <strong>Convert Video</strong> and wait for processing to complete.</li>
+          <li>Preview the converted output and click Download to save your file.</li>
         </ol>
       </section>
 
@@ -245,9 +250,9 @@
         <ul>
           <li>Supports full video output set: MP4, WebM, MOV, AVI, MKV, FLV, WMV, 3GP, M4V, MPEG, MPG, TS, OGV, VOB, ASF.</li>
           <li>Supports full audio extraction set: MP3, WAV, AAC, OGG, M4A, FLAC, AC3, AMR, AIFF.</li>
-          <li>Automatic media-type detection with clear unsupported-format validation.</li>
-          <li>Client-side FFmpeg conversion with live progress messaging and fast download.</li>
-          <li>Responsive, modern interface with video and audio preview support.</li>
+          <li>Client-side FFmpeg conversion with progress bar and fast download output.</li>
+          <li>Drag-and-drop upload support with source file size indicator.</li>
+          <li>Responsive, professional interface matching the site style.</li>
         </ul>
       </section>
     </main>
@@ -261,10 +266,10 @@
 
       (function () {
         const uploadInput = document.getElementById('video-upload');
+        const sourceCard = document.getElementById('source-card');
         const sourcePreviewVideo = document.getElementById('source-preview-video');
         const sourcePreviewAudio = document.getElementById('source-preview-audio');
         const sourceInfo = document.getElementById('source-info');
-        const detectedType = document.getElementById('detected-type');
         const formatSelect = document.getElementById('format-select');
         const qualitySelect = document.getElementById('quality-select');
         const resolutionSelect = document.getElementById('resolution-select');
@@ -274,53 +279,26 @@
         const outputPreviewAudio = document.getElementById('output-preview-audio');
         const outputInfo = document.getElementById('output-info');
         const downloadLink = document.getElementById('download-link');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
 
         const VIDEO_FORMATS = new Set(['mp4', 'webm', 'mov', 'avi', 'mkv', 'flv', 'wmv', '3gp', 'm4v', 'mpeg', 'mpg', 'ts', 'ogv', 'vob', 'asf']);
         const AUDIO_FORMATS = new Set(['mp3', 'wav', 'aac', 'ogg', 'm4a', 'flac', 'ac3', 'amr', 'aiff']);
-
-        const SUPPORTED_INPUT_EXTENSIONS = new Set([
-          ...VIDEO_FORMATS,
-          ...AUDIO_FORMATS,
-          'm2ts',
-          'mka',
-          'opus',
-          'wma',
-          'aif',
-          'aifc',
-        ]);
+        const SUPPORTED_INPUT_EXTENSIONS = new Set([...VIDEO_FORMATS, ...AUDIO_FORMATS, 'm2ts', 'mka', 'opus', 'wma', 'aif', 'aifc']);
 
         const QUALITY_CONFIG = {
-          original: { crf: '18', audioBitrate: '320k' },
-          high: { crf: '22', audioBitrate: '256k' },
-          medium: { crf: '26', audioBitrate: '192k' },
           low: { crf: '31', audioBitrate: '128k' },
+          medium: { crf: '26', audioBitrate: '192k' },
+          high: { crf: '22', audioBitrate: '256k' },
+          ultra: { crf: '18', audioBitrate: '320k' },
         };
 
         const MIME_BY_EXTENSION = {
-          mp4: 'video/mp4',
-          webm: 'video/webm',
-          mov: 'video/quicktime',
-          avi: 'video/x-msvideo',
-          mkv: 'video/x-matroska',
-          flv: 'video/x-flv',
-          wmv: 'video/x-ms-wmv',
-          '3gp': 'video/3gpp',
-          m4v: 'video/x-m4v',
-          mpeg: 'video/mpeg',
-          mpg: 'video/mpeg',
-          ts: 'video/mp2t',
-          ogv: 'video/ogg',
-          vob: 'video/mpeg',
-          asf: 'video/x-ms-asf',
-          mp3: 'audio/mpeg',
-          wav: 'audio/wav',
-          aac: 'audio/aac',
-          ogg: 'audio/ogg',
-          m4a: 'audio/mp4',
-          flac: 'audio/flac',
-          ac3: 'audio/ac3',
-          amr: 'audio/amr',
-          aiff: 'audio/aiff',
+          mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime', avi: 'video/x-msvideo', mkv: 'video/x-matroska',
+          flv: 'video/x-flv', wmv: 'video/x-ms-wmv', '3gp': 'video/3gpp', m4v: 'video/x-m4v', mpeg: 'video/mpeg',
+          mpg: 'video/mpeg', ts: 'video/mp2t', ogv: 'video/ogg', vob: 'video/mpeg', asf: 'video/x-ms-asf',
+          mp3: 'audio/mpeg', wav: 'audio/wav', aac: 'audio/aac', ogg: 'audio/ogg', m4a: 'audio/mp4',
+          flac: 'audio/flac', ac3: 'audio/ac3', amr: 'audio/amr', aiff: 'audio/aiff',
         };
 
         let sourceFile = null;
@@ -342,8 +320,12 @@
           return `${value.toFixed(value >= 10 || idx === 0 ? 0 : 2)} ${units[idx]}`;
         };
 
-        const setStatus = (msg) => {
-          statusText.textContent = msg;
+        const setStatus = (message) => { statusText.textContent = message; };
+
+        const setProgress = (value) => {
+          const safe = Math.max(0, Math.min(100, Math.round(value)));
+          progressBar.value = safe;
+          progressText.textContent = `Progress: ${safe}%`;
         };
 
         const getExtension = (name) => {
@@ -388,10 +370,10 @@
           outputInfo.textContent = 'No converted file yet.';
           downloadLink.setAttribute('aria-disabled', 'true');
           downloadLink.removeAttribute('href');
+          setProgress(0);
         };
 
         const getScaledVideoArgs = (resolution) => {
-          if (resolution === 'original') return [];
           const maxHeight = Number(resolution);
           if (!Number.isFinite(maxHeight) || maxHeight < 2) return [];
           return ['-vf', `scale='if(gt(ih,${maxHeight}),trunc(iw*${maxHeight}/ih/2)*2,iw)':'if(gt(ih,${maxHeight}),${maxHeight},ih)'`];
@@ -400,8 +382,6 @@
         const getVideoCommand = (format, quality, resolution) => {
           const preset = QUALITY_CONFIG[quality] || QUALITY_CONFIG.medium;
           const resizeArgs = getScaledVideoArgs(resolution);
-
-          const baseArgs = ['-i', 'input'];
           const videoConfigs = {
             mp4: ['-c:v', 'libx264', '-crf', preset.crf, '-preset', 'veryfast', '-c:a', 'aac', '-b:a', preset.audioBitrate],
             webm: ['-c:v', 'libvpx-vp9', '-crf', preset.crf, '-b:v', '0', '-c:a', 'libopus', '-b:a', '128k'],
@@ -419,13 +399,11 @@
             vob: ['-c:v', 'mpeg2video', '-q:v', '5', '-c:a', 'ac3', '-b:a', '192k'],
             asf: ['-c:v', 'wmv2', '-q:v', '5', '-c:a', 'wmav2'],
           };
-
-          return [...baseArgs, ...resizeArgs, ...(videoConfigs[format] || videoConfigs.mp4), '-y', `output.${format}`];
+          return ['-i', 'input', ...resizeArgs, ...(videoConfigs[format] || videoConfigs.mp4), '-y', `output.${format}`];
         };
 
         const getAudioCommand = (format, quality) => {
           const preset = QUALITY_CONFIG[quality] || QUALITY_CONFIG.medium;
-
           const configs = {
             mp3: ['-vn', '-c:a', 'libmp3lame', '-b:a', preset.audioBitrate],
             wav: ['-vn', '-c:a', 'pcm_s16le'],
@@ -437,29 +415,26 @@
             amr: ['-vn', '-c:a', 'libopencore_amrnb', '-ar', '8000', '-ac', '1', '-b:a', '12.2k'],
             aiff: ['-vn', '-c:a', 'pcm_s16be'],
           };
-
           return ['-i', 'input', ...(configs[format] || configs.mp3), '-y', `output.${format}`];
         };
 
-        const getConvertArgs = (targetFormat, quality, resolution) => {
-          return AUDIO_FORMATS.has(targetFormat) ? getAudioCommand(targetFormat, quality) : getVideoCommand(targetFormat, quality, resolution);
-        };
+        const getConvertArgs = (targetFormat, quality, resolution) => (
+          AUDIO_FORMATS.has(targetFormat) ? getAudioCommand(targetFormat, quality) : getVideoCommand(targetFormat, quality, resolution)
+        );
 
         const loadFFmpeg = async () => {
           if (ffmpegReady) return;
-
           setStatus('Loading FFmpeg engine...');
           ffmpeg = new FFmpeg();
-
+          ffmpeg.on('progress', ({ progress }) => setProgress(progress * 100));
           const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm';
           const coreURL = await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript');
           const wasmURL = await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm');
-
           await ffmpeg.load({ coreURL, wasmURL });
           ffmpegReady = true;
         };
 
-        uploadInput.addEventListener('change', () => {
+        const handleSelectedFile = (file) => {
           resetOutput();
           setStatus('Ready.');
 
@@ -468,27 +443,22 @@
             sourceURL = '';
           }
 
-          const file = uploadInput.files && uploadInput.files[0];
           if (!file) {
             sourceFile = null;
             sourceKind = '';
             togglePreview(sourcePreviewVideo, sourcePreviewAudio, '', '');
             sourceInfo.textContent = 'No file selected.';
-            detectedType.classList.add('hidden');
             return;
           }
 
           const extension = getExtension(file.name);
           const kind = detectSourceKind(file);
-
           if (!SUPPORTED_INPUT_EXTENSIONS.has(extension) || !kind) {
             sourceFile = null;
             sourceKind = '';
-            uploadInput.value = '';
             togglePreview(sourcePreviewVideo, sourcePreviewAudio, '', '');
             sourceInfo.textContent = 'No file selected.';
-            detectedType.classList.add('hidden');
-            setStatus('Unsupported file type. Please upload a common video/audio format listed in the tool.');
+            setStatus('Unsupported file type. Please upload a supported video or audio format.');
             return;
           }
 
@@ -497,12 +467,38 @@
           sourceURL = URL.createObjectURL(file);
           togglePreview(sourcePreviewVideo, sourcePreviewAudio, kind, sourceURL);
           sourceInfo.textContent = `Selected: ${file.name} • ${formatBytes(file.size)}`;
-          detectedType.classList.remove('hidden');
-          detectedType.textContent = `Detected Input: ${kind.toUpperCase()} (${extension.toUpperCase()})`;
+        };
 
-          if (kind === 'audio' && VIDEO_FORMATS.has(formatSelect.value)) {
-            setStatus('Audio file detected. Select an audio output format for best compatibility.');
-          }
+        uploadInput.addEventListener('change', () => {
+          handleSelectedFile(uploadInput.files && uploadInput.files[0]);
+        });
+
+        ['dragenter', 'dragover'].forEach((eventName) => {
+          sourceCard.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            sourceCard.classList.add('drop-active');
+          });
+        });
+
+        ['dragleave', 'drop'].forEach((eventName) => {
+          sourceCard.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            sourceCard.classList.remove('drop-active');
+          });
+        });
+
+        sourceCard.addEventListener('drop', (event) => {
+          const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+          if (!file) return;
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          uploadInput.files = dt.files;
+          handleSelectedFile(file);
+        });
+
+        formatSelect.addEventListener('change', () => {
+          const isAudioOutput = AUDIO_FORMATS.has(formatSelect.value);
+          resolutionSelect.disabled = isAudioOutput;
         });
 
         convertBtn.addEventListener('click', async () => {
@@ -521,7 +517,7 @@
           }
 
           if (sourceKind === 'audio' && isVideoOutput) {
-            setStatus('Audio-to-video conversion is not supported in this tool. Please choose an audio output format.');
+            setStatus('Audio-to-video conversion is not supported. Choose an audio output format.');
             return;
           }
 
@@ -530,31 +526,23 @@
 
           try {
             await loadFFmpeg();
-
             const args = getConvertArgs(targetFormat, qualitySelect.value, resolutionSelect.value);
-
             setStatus('Reading media file...');
             await ffmpeg.writeFile('input', await fetchFile(sourceFile));
-
             setStatus('Converting media...');
             await ffmpeg.exec(args);
-
+            setProgress(100);
             setStatus('Preparing output...');
             const outputData = await ffmpeg.readFile(`output.${targetFormat}`);
             const blob = new Blob([outputData], { type: MIME_BY_EXTENSION[targetFormat] || 'application/octet-stream' });
-
             outputURL = URL.createObjectURL(blob);
-            const outputKind = isAudioOutput ? 'audio' : 'video';
-            togglePreview(outputPreviewVideo, outputPreviewAudio, outputKind, outputURL);
-
+            togglePreview(outputPreviewVideo, outputPreviewAudio, isAudioOutput ? 'audio' : 'video', outputURL);
             const outputName = `${(sourceFile.name.replace(/\.[^.]+$/, '') || 'converted-media')}.${targetFormat}`;
             downloadLink.href = outputURL;
             downloadLink.download = outputName;
             downloadLink.setAttribute('aria-disabled', 'false');
-
             outputInfo.textContent = `Output: ${outputName} • ${formatBytes(blob.size)} • ${targetFormat.toUpperCase()}`;
             setStatus('Conversion complete. Ready to download.');
-
             await ffmpeg.deleteFile('input');
             await ffmpeg.deleteFile(`output.${targetFormat}`);
           } catch (error) {
