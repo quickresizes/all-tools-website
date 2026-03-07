@@ -312,11 +312,10 @@
 
     <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
-    <script type="module">
-      import { FFmpeg } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/ffmpeg.min.js';
-      import { fetchFile, toBlobURL } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js';
-
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
+    <script>
       (function () {
+        const { FFmpeg } = window.FFmpegWASM || {};
         const uploadInput = document.getElementById('video-upload');
         const sourceCard = document.getElementById('source-card');
         const sourcePreviewVideo = document.getElementById('source-preview-video');
@@ -371,6 +370,8 @@
         let ffmpeg = null;
         let ffmpegReady = false;
         let convertStartTime = 0;
+
+        const toUint8Array = async (file) => new Uint8Array(await file.arrayBuffer());
 
         const formatBytes = (bytes) => {
           if (!Number.isFinite(bytes)) return 'Unknown size';
@@ -557,6 +558,9 @@
 
         const loadFFmpeg = async () => {
           if (ffmpegReady) return;
+          if (!FFmpeg) {
+            throw new Error('FFmpeg library failed to load. Please refresh and try again.');
+          }
           setStatus('Loading FFmpeg engine...');
           ffmpeg = new FFmpeg();
           ffmpeg.on('progress', ({ progress }) => {
@@ -568,10 +572,10 @@
               setEta(estimatedTotal - elapsedSec);
             }
           });
-          const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm';
-          const coreURL = await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript');
-          const wasmURL = await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm');
-          const workerURL = await toBlobURL(`${baseURL}/ffmpeg-core.worker.js`, 'text/javascript');
+          const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+          const coreURL = `${baseURL}/ffmpeg-core.js`;
+          const wasmURL = `${baseURL}/ffmpeg-core.wasm`;
+          const workerURL = `${baseURL}/ffmpeg-core.worker.js`;
           await ffmpeg.load({ coreURL, wasmURL, workerURL });
           ffmpegReady = true;
         };
@@ -608,6 +612,7 @@
           sourceKind = kind;
           sourceInputName = `input.${extension || (kind === 'audio' ? 'mp3' : 'mp4')}`;
           sourceURL = URL.createObjectURL(file);
+          sourcePreviewVideo.src = sourceURL;
           togglePreview(sourcePreviewVideo, sourcePreviewAudio, kind, sourceURL);
           sourceInfo.textContent = `Selected: ${file.name} • ${formatBytes(file.size)}`;
         };
@@ -677,13 +682,17 @@
           }
 
           convertBtn.disabled = true;
+          convertBtn.textContent = 'Converting...';
           resetOutput();
+          if (progressWrap) {
+            progressWrap.dataset.active = 'true';
+          }
           setEta(NaN);
 
           try {
             await loadFFmpeg();
             setStatus('Reading media file...');
-            await ffmpeg.writeFile(sourceInputName, await fetchFile(sourceFile));
+            await ffmpeg.writeFile(sourceInputName, await toUint8Array(sourceFile));
 
             const durationSec = Number.isFinite(sourcePreviewVideo.duration)
               ? sourcePreviewVideo.duration
@@ -737,6 +746,7 @@
               await ffmpeg.deleteFile(`output.${targetFormat}`).catch(() => {});
             }
             convertBtn.disabled = false;
+            convertBtn.textContent = 'Convert Video';
             convertStartTime = 0;
             if (progressWrap) {
               progressWrap.dataset.active = 'false';
