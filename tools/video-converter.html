@@ -315,7 +315,7 @@
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
     <script>
       (function () {
-        const { FFmpeg } = window.FFmpegWASM || {};
+        const { createFFmpeg, fetchFile } = window.FFmpeg || {};
         const uploadInput = document.getElementById('video-upload');
         const sourceCard = document.getElementById('source-card');
         const sourcePreviewVideo = document.getElementById('source-preview-video');
@@ -369,9 +369,8 @@
         let sourceKind = '';
         let ffmpeg = null;
         let ffmpegReady = false;
+        let ffmpegLoadPromise = null;
         let convertStartTime = 0;
-
-        const toUint8Array = async (file) => new Uint8Array(await file.arrayBuffer());
 
         const formatBytes = (bytes) => {
           if (!Number.isFinite(bytes)) return 'Unknown size';
@@ -557,14 +556,24 @@
         };
 
         const loadFFmpeg = async () => {
-          if (ffmpegReady) return;
-          if (!FFmpeg) {
-            throw new Error('FFmpeg library failed to load. Please refresh and try again.');
+          if (ffmpegReady) return ffmpeg;
+          if (ffmpegLoadPromise) {
+            await ffmpegLoadPromise;
+            return ffmpeg;
           }
+          if (!createFFmpeg || !fetchFile) {
+            throw new Error('FFmpeg library failed to load from CDN. Please refresh and try again.');
+          }
+
+          ffmpeg = createFFmpeg({
+            log: true,
+            corePath: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+          });
+
           setStatus('Loading FFmpeg engine...');
-          ffmpeg = new FFmpeg();
-          ffmpeg.on('progress', ({ progress }) => {
-            const pct = progress * 100;
+
+          ffmpeg.setProgress(({ ratio }) => {
+            const pct = (Number.isFinite(ratio) ? ratio : 0) * 100;
             setProgress(pct);
             if (pct > 1 && pct < 100 && convertStartTime > 0) {
               const elapsedSec = (performance.now() - convertStartTime) / 1000;
@@ -572,12 +581,22 @@
               setEta(estimatedTotal - elapsedSec);
             }
           });
-          const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
-          const coreURL = `${baseURL}/ffmpeg-core.js`;
-          const wasmURL = `${baseURL}/ffmpeg-core.wasm`;
-          const workerURL = `${baseURL}/ffmpeg-core.worker.js`;
-          await ffmpeg.load({ coreURL, wasmURL, workerURL });
-          ffmpegReady = true;
+
+          ffmpegLoadPromise = ffmpeg.load()
+            .then(() => {
+              ffmpegReady = true;
+            })
+            .catch((error) => {
+              ffmpeg = null;
+              ffmpegReady = false;
+              throw new Error(`Unable to initialize FFmpeg from CDN: ${error.message || error}`);
+            })
+            .finally(() => {
+              ffmpegLoadPromise = null;
+            });
+
+          await ffmpegLoadPromise;
+          return ffmpeg;
         };
 
         const handleSelectedFile = (file) => {
@@ -692,7 +711,7 @@
           try {
             await loadFFmpeg();
             setStatus('Reading media file...');
-            await ffmpeg.writeFile(sourceInputName, await toUint8Array(sourceFile));
+            await ffmpeg.FS('writeFile', sourceInputName, await fetchFile(sourceFile));
 
             const durationSec = Number.isFinite(sourcePreviewVideo.duration)
               ? sourcePreviewVideo.duration
@@ -714,17 +733,17 @@
             setStatus('Converting media...');
             convertStartTime = performance.now();
             try {
-              await ffmpeg.exec(args);
+              await ffmpeg.run(...args);
             } catch (primaryError) {
               if (!isVideoOutput) throw primaryError;
               const fallbackArgs = getFallbackVideoCommand(sourceInputName, targetFormat, convertOptions);
               setStatus('Primary codec unavailable. Retrying with compatible fallback...');
-              await ffmpeg.exec(fallbackArgs);
+              await ffmpeg.run(...fallbackArgs);
             }
             setProgress(100);
             setEta(0);
             setStatus('Preparing output...');
-            const outputData = await ffmpeg.readFile(`output.${targetFormat}`);
+            const outputData = ffmpeg.FS('readFile', `output.${targetFormat}`);
             const blob = new Blob([outputData], { type: MIME_BY_EXTENSION[targetFormat] || 'application/octet-stream' });
             outputURL = URL.createObjectURL(blob);
             togglePreview(outputPreviewVideo, outputPreviewAudio, isAudioOutput ? 'audio' : 'video', outputURL);
@@ -734,16 +753,24 @@
             downloadLink.setAttribute('aria-disabled', 'false');
             outputInfo.textContent = `Output: ${outputName} • ${formatBytes(blob.size)} • ${targetFormat.toUpperCase()}`;
             setStatus('Conversion complete. Ready to download.');
-            await ffmpeg.deleteFile(sourceInputName);
-            await ffmpeg.deleteFile(`output.${targetFormat}`);
+            ffmpeg.FS('unlink', sourceInputName);
+            ffmpeg.FS('unlink', `output.${targetFormat}`);
           } catch (error) {
             setStatus(error.message || 'Conversion failed. Try a different output format or quality setting.');
           } finally {
             if (ffmpeg && sourceInputName) {
-              await ffmpeg.deleteFile(sourceInputName).catch(() => {});
+              try {
+                ffmpeg.FS('unlink', sourceInputName);
+              } catch (e) {
+                // no-op cleanup
+              }
             }
             if (ffmpeg) {
-              await ffmpeg.deleteFile(`output.${targetFormat}`).catch(() => {});
+              try {
+                ffmpeg.FS('unlink', `output.${targetFormat}`);
+              } catch (e) {
+                // no-op cleanup
+              }
             }
             convertBtn.disabled = false;
             convertBtn.textContent = 'Convert Video';
