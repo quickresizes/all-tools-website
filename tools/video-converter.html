@@ -364,6 +364,7 @@
         };
 
         let sourceFile = null;
+        let sourceInputName = 'input';
         let sourceURL = '';
         let outputURL = '';
         let sourceKind = '';
@@ -475,7 +476,7 @@
           return ['-b:v', `${videoKbps}k`];
         };
 
-        const getVideoCommand = (format, quality, resolution, options = {}) => {
+        const getVideoCommand = (inputName, format, quality, resolution, options = {}) => {
           const preset = QUALITY_CONFIG[quality] || QUALITY_CONFIG.medium;
           const resizeArgs = getScaledVideoArgs(resolution);
           const frameRateArgs = options.frameRate ? ['-r', String(options.frameRate)] : [];
@@ -504,7 +505,7 @@
           const baseConfig = [...(videoConfigs[format] || videoConfigs.mp4)];
           const audioCodec = AUDIO_CODEC_BY_FORMAT[format] || 'aac';
           if (options.disableAudio) {
-            return ['-i', 'input', ...resizeArgs, ...frameRateArgs, ...sizeDrivenBitrateArgs, ...manualVideoBitrateArgs, ...baseConfig.filter((v, i, arr) => {
+            return ['-i', inputName, ...resizeArgs, ...frameRateArgs, ...sizeDrivenBitrateArgs, ...manualVideoBitrateArgs, ...baseConfig.filter((v, i, arr) => {
               if (v === '-c:a' || v === '-b:a' || v === '-ar') return false;
               if (arr[i - 1] === '-c:a' || arr[i - 1] === '-b:a' || arr[i - 1] === '-ar') return false;
               return true;
@@ -516,10 +517,10 @@
           if (!baseConfig.includes('-c:a')) {
             baseConfig.push('-c:a', audioCodec, '-b:a', outputAudioBitrate);
           }
-          return ['-i', 'input', ...resizeArgs, ...frameRateArgs, ...sizeDrivenBitrateArgs, ...manualVideoBitrateArgs, ...baseConfig, '-y', `output.${format}`];
+          return ['-i', inputName, ...resizeArgs, ...frameRateArgs, ...sizeDrivenBitrateArgs, ...manualVideoBitrateArgs, ...baseConfig, '-y', `output.${format}`];
         };
 
-        const getAudioCommand = (format, quality, audioBitrate) => {
+        const getAudioCommand = (inputName, format, quality, audioBitrate) => {
           const preset = QUALITY_CONFIG[quality] || QUALITY_CONFIG.medium;
           const selectedAudioBitrate = audioBitrate || preset.audioBitrate;
           const configs = {
@@ -533,14 +534,26 @@
             amr: ['-vn', '-c:a', 'libopencore_amrnb', '-ar', '8000', '-ac', '1', '-b:a', '12.2k'],
             aiff: ['-vn', '-c:a', 'pcm_s16be'],
           };
-          return ['-i', 'input', ...(configs[format] || configs.mp3), '-y', `output.${format}`];
+          return ['-i', inputName, ...(configs[format] || configs.mp3), '-y', `output.${format}`];
         };
 
-        const getConvertArgs = (targetFormat, quality, resolution, options) => (
+        const getConvertArgs = (inputName, targetFormat, quality, resolution, options) => (
           AUDIO_FORMATS.has(targetFormat)
-            ? getAudioCommand(targetFormat, quality, options.audioBitrate)
-            : getVideoCommand(targetFormat, quality, resolution, options)
+            ? getAudioCommand(inputName, targetFormat, quality, options.audioBitrate)
+            : getVideoCommand(inputName, targetFormat, quality, resolution, options)
         );
+
+        const getFallbackVideoCommand = (inputName, format, options = {}) => {
+          const resizeArgs = getScaledVideoArgs(options.resolution);
+          const frameRateArgs = options.frameRate ? ['-r', String(options.frameRate)] : [];
+          const videoBitrateArgs = options.videoBitrateKbps ? ['-b:v', `${options.videoBitrateKbps}k`] : [];
+          const audioBitrate = options.audioBitrate || '192k';
+          const base = ['-i', inputName, ...resizeArgs, ...frameRateArgs, ...videoBitrateArgs, '-c:v', 'mpeg4'];
+          if (options.disableAudio) {
+            return [...base, '-an', '-y', `output.${format}`];
+          }
+          return [...base, '-c:a', 'aac', '-b:a', audioBitrate, '-y', `output.${format}`];
+        };
 
         const loadFFmpeg = async () => {
           if (ffmpegReady) return;
@@ -558,7 +571,8 @@
           const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm';
           const coreURL = await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript');
           const wasmURL = await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm');
-          await ffmpeg.load({ coreURL, wasmURL });
+          const workerURL = await toBlobURL(`${baseURL}/ffmpeg-core.worker.js`, 'text/javascript');
+          await ffmpeg.load({ coreURL, wasmURL, workerURL });
           ffmpegReady = true;
         };
 
@@ -592,6 +606,7 @@
 
           sourceFile = file;
           sourceKind = kind;
+          sourceInputName = `input.${extension || (kind === 'audio' ? 'mp3' : 'mp4')}`;
           sourceURL = URL.createObjectURL(file);
           togglePreview(sourcePreviewVideo, sourcePreviewAudio, kind, sourceURL);
           sourceInfo.textContent = `Selected: ${file.name} • ${formatBytes(file.size)}`;
@@ -668,14 +683,14 @@
           try {
             await loadFFmpeg();
             setStatus('Reading media file...');
-            await ffmpeg.writeFile('input', await fetchFile(sourceFile));
+            await ffmpeg.writeFile(sourceInputName, await fetchFile(sourceFile));
 
             const durationSec = Number.isFinite(sourcePreviewVideo.duration)
               ? sourcePreviewVideo.duration
               : (Number.isFinite(sourcePreviewAudio.duration) ? sourcePreviewAudio.duration : Number.NaN);
             const hasAudio = sourceKind === 'audio' || sourceFile.type.startsWith('audio/') || sourceFile.type.startsWith('video/');
 
-            const args = getConvertArgs(targetFormat, qualitySelect.value, resolutionSelect.value, {
+            const convertOptions = {
               frameRate: Number(frameRateSelect.value),
               videoBitrateKbps: Number(videoBitrateInput.value) || 0,
               audioBitrate: audioBitrateSelect.value,
@@ -683,11 +698,20 @@
               durationSec,
               hasAudio,
               disableAudio: !hasAudio,
-            });
+              resolution: resolutionSelect.value,
+            };
+            const args = getConvertArgs(sourceInputName, targetFormat, qualitySelect.value, resolutionSelect.value, convertOptions);
 
             setStatus('Converting media...');
             convertStartTime = performance.now();
-            await ffmpeg.exec(args);
+            try {
+              await ffmpeg.exec(args);
+            } catch (primaryError) {
+              if (!isVideoOutput) throw primaryError;
+              const fallbackArgs = getFallbackVideoCommand(sourceInputName, targetFormat, convertOptions);
+              setStatus('Primary codec unavailable. Retrying with compatible fallback...');
+              await ffmpeg.exec(fallbackArgs);
+            }
             setProgress(100);
             setEta(0);
             setStatus('Preparing output...');
@@ -701,11 +725,17 @@
             downloadLink.setAttribute('aria-disabled', 'false');
             outputInfo.textContent = `Output: ${outputName} • ${formatBytes(blob.size)} • ${targetFormat.toUpperCase()}`;
             setStatus('Conversion complete. Ready to download.');
-            await ffmpeg.deleteFile('input');
+            await ffmpeg.deleteFile(sourceInputName);
             await ffmpeg.deleteFile(`output.${targetFormat}`);
           } catch (error) {
             setStatus(error.message || 'Conversion failed. Try a different output format or quality setting.');
           } finally {
+            if (ffmpeg && sourceInputName) {
+              await ffmpeg.deleteFile(sourceInputName).catch(() => {});
+            }
+            if (ffmpeg) {
+              await ffmpeg.deleteFile(`output.${targetFormat}`).catch(() => {});
+            }
             convertBtn.disabled = false;
             convertStartTime = 0;
             if (progressWrap) {
