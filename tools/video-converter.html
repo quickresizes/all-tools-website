@@ -315,7 +315,7 @@
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
     <script>
       (function () {
-        const { createFFmpeg, fetchFile } = window.FFmpeg || {};
+        const FFMPEG_CORE_CDN = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js';
         const uploadInput = document.getElementById('video-upload');
         const sourceCard = document.getElementById('source-card');
         const sourcePreviewVideo = document.getElementById('source-preview-video');
@@ -368,9 +368,27 @@
         let outputURL = '';
         let sourceKind = '';
         let ffmpeg = null;
+        let ffmpegFetchFile = null;
         let ffmpegReady = false;
         let ffmpegLoadPromise = null;
         let convertStartTime = 0;
+
+        const getFFmpegApi = () => {
+          const globalFFmpeg = (typeof FFmpeg !== 'undefined' && FFmpeg)
+            || (typeof window !== 'undefined' && window.FFmpeg)
+            || null;
+
+          if (!globalFFmpeg) {
+            throw new Error('FFmpeg library failed to load from CDN. Please refresh and try again.');
+          }
+
+          const { createFFmpeg, fetchFile } = globalFFmpeg;
+          if (typeof createFFmpeg !== 'function' || typeof fetchFile !== 'function') {
+            throw new Error('FFmpeg CDN script loaded, but createFFmpeg/fetchFile exports are unavailable.');
+          }
+
+          return { createFFmpeg, fetchFile };
+        };
 
         const formatBytes = (bytes) => {
           if (!Number.isFinite(bytes)) return 'Unknown size';
@@ -561,13 +579,12 @@
             await ffmpegLoadPromise;
             return ffmpeg;
           }
-          if (!createFFmpeg || !fetchFile) {
-            throw new Error('FFmpeg library failed to load from CDN. Please refresh and try again.');
-          }
+          const { createFFmpeg, fetchFile } = getFFmpegApi();
+          ffmpegFetchFile = fetchFile;
 
           ffmpeg = createFFmpeg({
             log: true,
-            corePath: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+            corePath: FFMPEG_CORE_CDN,
           });
 
           setStatus('Loading FFmpeg engine...');
@@ -588,8 +605,9 @@
             })
             .catch((error) => {
               ffmpeg = null;
+              ffmpegFetchFile = null;
               ffmpegReady = false;
-              throw new Error(`Unable to initialize FFmpeg from CDN: ${error.message || error}`);
+              throw new Error(`Unable to initialize FFmpeg from CDN: ${error && error.message ? error.message : error}`);
             })
             .finally(() => {
               ffmpegLoadPromise = null;
@@ -711,7 +729,7 @@
           try {
             await loadFFmpeg();
             setStatus('Reading media file...');
-            await ffmpeg.FS('writeFile', sourceInputName, await fetchFile(sourceFile));
+            await ffmpeg.FS('writeFile', sourceInputName, await ffmpegFetchFile(sourceFile));
 
             const durationSec = Number.isFinite(sourcePreviewVideo.duration)
               ? sourcePreviewVideo.duration
