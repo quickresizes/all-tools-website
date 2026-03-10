@@ -312,19 +312,12 @@
 
     <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script src="../assets/ffmpeg/ffmpeg.min.js"></script>
     <script>
       (function () {
-        const ASSET_BASE_PATH = window.location.pathname.includes('/tools/') ? '../assets/ffmpeg' : './assets/ffmpeg';
-        const LOCAL_FFMPEG_LIB_PATH = `${ASSET_BASE_PATH}/ffmpeg.min.js`;
-        const LOCAL_FFMPEG_CORE_PATH = `${ASSET_BASE_PATH}/ffmpeg-core.js`;
-        const REMOTE_FFMPEG_LIB_PATHS = [
-          'https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js',
-          'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js',
-        ];
-        const REMOTE_FFMPEG_CORE_PATHS = [
-          'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
-          'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
-        ];
+        const FFMPEG_CORE_PATH = window.location.pathname.includes('/tools/')
+          ? '../assets/ffmpeg/ffmpeg-core.js'
+          : './assets/ffmpeg/ffmpeg-core.js';
         const uploadInput = document.getElementById('video-upload');
         const sourceCard = document.getElementById('source-card');
         const sourcePreviewVideo = document.getElementById('source-preview-video');
@@ -382,76 +375,14 @@
         let ffmpegLoadPromise = null;
         let convertStartTime = 0;
 
-        const loadScript = (src) => new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = src;
-          script.async = true;
-          script.onload = () => resolve(src);
-          script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
-          document.head.appendChild(script);
-        });
+        if (typeof FFmpeg === 'undefined') {
+          statusText.textContent = 'FFmpeg library failed to load from local assets. Refresh the page and try again.';
+          convertBtn.disabled = true;
+          return;
+        }
 
-        const resolveCorePath = async () => {
-          try {
-            const localCore = await fetch(LOCAL_FFMPEG_CORE_PATH, { cache: 'no-store' });
-            if (localCore.ok) {
-              const coreBlob = await localCore.blob();
-              if (coreBlob.size > 0) return LOCAL_FFMPEG_CORE_PATH;
-            }
-          } catch (error) {
-            // Fall through to remote core paths when local files are unavailable.
-          }
-
-          for (const corePath of REMOTE_FFMPEG_CORE_PATHS) {
-            try {
-              const remoteCore = await fetch(corePath, { cache: 'no-store' });
-              if (remoteCore.ok) return corePath;
-            } catch (error) {
-              // Try the next mirror.
-            }
-          }
-
-          throw new Error('Unable to locate FFmpeg core assets. Add files to ./assets/ffmpeg/ and retry.');
-        };
-
-        const ensureFFmpegLibrary = async () => {
-          if ((typeof FFmpeg !== 'undefined' && FFmpeg) || (typeof window !== 'undefined' && window.FFmpeg)) {
-            return;
-          }
-
-          const scriptCandidates = [LOCAL_FFMPEG_LIB_PATH, ...REMOTE_FFMPEG_LIB_PATHS];
-          let lastError = null;
-
-          for (const scriptPath of scriptCandidates) {
-            try {
-              await loadScript(scriptPath);
-              if ((typeof FFmpeg !== 'undefined' && FFmpeg) || (typeof window !== 'undefined' && window.FFmpeg)) {
-                return;
-              }
-            } catch (error) {
-              lastError = error;
-            }
-          }
-
-          throw new Error(`FFmpeg library failed to load from local and CDN sources. ${lastError ? lastError.message : ''}`.trim());
-        };
-
-        const getFFmpegApi = () => {
-          const globalFFmpeg = (typeof FFmpeg !== 'undefined' && FFmpeg)
-            || (typeof window !== 'undefined' && window.FFmpeg)
-            || null;
-
-          if (!globalFFmpeg) {
-            throw new Error('FFmpeg library failed to load. Please refresh and try again.');
-          }
-
-          const { createFFmpeg, fetchFile } = globalFFmpeg;
-          if (typeof createFFmpeg !== 'function' || typeof fetchFile !== 'function') {
-            throw new Error('FFmpeg script loaded, but createFFmpeg/fetchFile exports are unavailable.');
-          }
-
-          return { createFFmpeg, fetchFile };
-        };
+        const { createFFmpeg, fetchFile } = FFmpeg;
+        ffmpegFetchFile = fetchFile;
 
         const formatBytes = (bytes) => {
           if (!Number.isFinite(bytes)) return 'Unknown size';
@@ -642,17 +573,13 @@
             await ffmpegLoadPromise;
             return ffmpeg;
           }
-          await ensureFFmpegLibrary();
-          const { createFFmpeg, fetchFile } = getFFmpegApi();
-          ffmpegFetchFile = fetchFile;
-          const corePath = await resolveCorePath();
 
           ffmpeg = createFFmpeg({
             log: true,
-            corePath,
+            corePath: FFMPEG_CORE_PATH,
           });
 
-          setStatus(`Loading FFmpeg engine... (${corePath === LOCAL_FFMPEG_CORE_PATH ? 'local core' : 'CDN core fallback'})`);
+          setStatus('Loading FFmpeg engine from local assets...');
 
           ffmpeg.setProgress(({ ratio }) => {
             const pct = (Number.isFinite(ratio) ? ratio : 0) * 100;
