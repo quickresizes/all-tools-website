@@ -315,7 +315,9 @@
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
     <script>
       (function () {
-        const FFMPEG_CORE_CDN = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js';
+        const FFMPEG_CORE_PATH = window.location.pathname.includes('/tools/')
+          ? '../assets/ffmpeg/ffmpeg-core.js'
+          : './assets/ffmpeg/ffmpeg-core.js';
         const uploadInput = document.getElementById('video-upload');
         const sourceCard = document.getElementById('source-card');
         const sourcePreviewVideo = document.getElementById('source-preview-video');
@@ -379,12 +381,12 @@
             || null;
 
           if (!globalFFmpeg) {
-            throw new Error('FFmpeg library failed to load from CDN. Please refresh and try again.');
+            throw new Error('FFmpeg library failed to load. Please refresh and try again.');
           }
 
           const { createFFmpeg, fetchFile } = globalFFmpeg;
           if (typeof createFFmpeg !== 'function' || typeof fetchFile !== 'function') {
-            throw new Error('FFmpeg CDN script loaded, but createFFmpeg/fetchFile exports are unavailable.');
+            throw new Error('FFmpeg script loaded, but createFFmpeg/fetchFile exports are unavailable.');
           }
 
           return { createFFmpeg, fetchFile };
@@ -584,7 +586,7 @@
 
           ffmpeg = createFFmpeg({
             log: true,
-            corePath: FFMPEG_CORE_CDN,
+            corePath: FFMPEG_CORE_PATH,
           });
 
           setStatus('Loading FFmpeg engine...');
@@ -607,7 +609,7 @@
               ffmpeg = null;
               ffmpegFetchFile = null;
               ffmpegReady = false;
-              throw new Error(`Unable to initialize FFmpeg from CDN: ${error && error.message ? error.message : error}`);
+              throw new Error(`Unable to initialize FFmpeg: ${error && error.message ? error.message : error}`);
             })
             .finally(() => {
               ffmpegLoadPromise = null;
