@@ -312,9 +312,7 @@
 
     <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
-<script src="https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js"></script>
-<script src="https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.wasm"></script>
-<script src="https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.worker.js"></script>
+    <script src="../assets/ffmpeg/ffmpeg.min.js"></script>
     <script>
       (function () {
         const uploadInput = document.getElementById('video-upload');
@@ -363,6 +361,18 @@
           flac: 'audio/flac', ac3: 'audio/ac3', amr: 'audio/amr', aiff: 'audio/aiff',
         };
 
+        const FFMPEG_LIB_SOURCES = [
+          '../assets/ffmpeg/ffmpeg.min.js',
+          'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js',
+          'https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js',
+        ];
+
+        const FFMPEG_CORE_SOURCES = [
+          '../assets/ffmpeg/ffmpeg-core.js',
+          'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+          'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+        ];
+
         let sourceFile = null;
         let sourceInputName = 'input';
         let sourceURL = '';
@@ -375,18 +385,31 @@
         let convertStartTime = 0;
         let ffmpegFailedToLoad = false;
 
-        if (!window.FFmpeg) {
-          statusText.textContent = 'FFmpeg library failed to load. Refresh the page and try again.';
-          convertBtn.disabled = true;
-          return;
-        }
-
-        const { createFFmpeg, fetchFile } = window.FFmpeg;
-        ffmpeg = createFFmpeg({
-          log: true,
-          corePath: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+        const loadScript = (src) => new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.async = true;
+          script.onload = () => resolve(src);
+          script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+          document.head.appendChild(script);
         });
-        ffmpegFetchFile = fetchFile;
+
+        const ensureFFmpegLibrary = async () => {
+          if (window.FFmpeg) return;
+
+          for (const src of FFMPEG_LIB_SOURCES) {
+            try {
+              await loadScript(src);
+              if (window.FFmpeg) {
+                return;
+              }
+            } catch (error) {
+              // continue and try next source
+            }
+          }
+
+          throw new Error('FFmpeg library failed to load from local and CDN sources.');
+        };
 
         const formatBytes = (bytes) => {
           if (!Number.isFinite(bytes)) return 'Unknown size';
@@ -584,21 +607,39 @@
 
           setStatus('Loading FFmpeg engine...');
 
-          ffmpeg.setProgress(({ ratio }) => {
-            const pct = (Number.isFinite(ratio) ? ratio : 0) * 100;
-            setProgress(pct);
-            if (pct > 1 && pct < 100 && convertStartTime > 0) {
-              const elapsedSec = (performance.now() - convertStartTime) / 1000;
-              const estimatedTotal = elapsedSec / (pct / 100);
-              setEta(estimatedTotal - elapsedSec);
-            }
-          });
+          ffmpegLoadPromise = ensureFFmpegLibrary()
+            .then(async () => {
+              const { createFFmpeg, fetchFile } = window.FFmpeg;
+              ffmpegFetchFile = fetchFile;
 
-          ffmpegLoadPromise = ffmpeg.load()
-            .then(() => {
-              ffmpegReady = true;
-              ffmpegFailedToLoad = false;
-              updateConvertButtonState();
+              for (const corePath of FFMPEG_CORE_SOURCES) {
+                const ffmpegInstance = createFFmpeg({
+                  log: true,
+                  corePath,
+                });
+                ffmpegInstance.setProgress(({ ratio }) => {
+                  const pct = (Number.isFinite(ratio) ? ratio : 0) * 100;
+                  setProgress(pct);
+                  if (pct > 1 && pct < 100 && convertStartTime > 0) {
+                    const elapsedSec = (performance.now() - convertStartTime) / 1000;
+                    const estimatedTotal = elapsedSec / (pct / 100);
+                    setEta(estimatedTotal - elapsedSec);
+                  }
+                });
+
+                try {
+                  await ffmpegInstance.load();
+                  ffmpeg = ffmpegInstance;
+                  ffmpegReady = true;
+                  ffmpegFailedToLoad = false;
+                  updateConvertButtonState();
+                  return;
+                } catch (error) {
+                  // try next core source
+                }
+              }
+
+              throw new Error('FFmpeg core failed to load from local and CDN sources.');
             })
             .catch((error) => {
               ffmpegFetchFile = null;
