@@ -3,66 +3,324 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Video Aspect Ratio Converter – Free Online Video Aspect Ratio Converter Tool | MediaTools Pro</title>
-    <meta name="description" content="Change video aspect ratios for reels, stories, widescreen, and other formats. Use this free online video aspect ratio converter at MediaTools Pro." />
-    <meta name="keywords" content="video aspect ratio converter, video aspect ratio converter online, free video aspect ratio converter, media tools pro, video, aspect, ratio, converter, online tool" />
-    <meta property="og:title" content="Video Aspect Ratio Converter – Free Online Video Aspect Ratio Converter Tool | MediaTools Pro" />
-    <meta property="og:description" content="Change video aspect ratios for reels, stories, widescreen, and other formats. Use this free online video aspect ratio converter at MediaTools Pro." />
+    <title>Video Aspect Ratio Converter – Free Online Video Reframing Tool | MediaTools Pro</title>
+    <meta name="description" content="Convert videos to 16:9, 9:16, 1:1, 4:5, 21:9, 3:2, or custom aspect ratios using FFmpeg WebAssembly directly in your browser." />
+    <meta name="keywords" content="video aspect ratio converter, 9:16 converter, youtube shorts converter, tiktok video ratio, online ffmpeg" />
+    <meta property="og:title" content="Video Aspect Ratio Converter – Free Online Video Reframing Tool | MediaTools Pro" />
+    <meta property="og:description" content="Upload a video, choose an aspect ratio preset, convert in-browser, preview instantly, and download your result." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/video-aspect-ratio-converter.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      .ratio-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+      .control-stack { display: grid; gap: 0.85rem; }
+      .input-row { display: grid; gap: 0.75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .preview-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      .preview-card { padding: 1rem; border: 1px solid var(--border-color, #2e2e2e); border-radius: 12px; background: linear-gradient(140deg, rgba(0, 255, 255, 0.05), rgba(140, 82, 255, 0.08)); }
+      .preview-card video { width: 100%; max-height: 300px; border-radius: 8px; background: #000; }
+      .status-line { color: var(--muted-text, #9ca3af); margin: 0; }
+      .progress-wrap { width: 100%; height: 12px; background: rgba(255, 255, 255, 0.08); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); }
+      .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #00e5ff, #8c52ff); transition: width 0.2s ease; }
+      .output-meta { display: grid; gap: 0.35rem; font-size: 0.95rem; }
+      .note-pill { display: inline-block; padding: 0.3rem 0.6rem; border-radius: 999px; border: 1px solid rgba(0, 255, 255, 0.35); background: rgba(0, 255, 255, 0.08); color: #9ff7ff; font-size: 0.8rem; }
+      @media (max-width: 620px) { .input-row { grid-template-columns: 1fr; } }
+    </style>
   </head>
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Video Aspect Ratio Converter</h1>
-        <p class="meta-text">Change video aspect ratios for reels, stories, widescreen, and other formats.</p>
+        <p class="meta-text">Convert videos for YouTube, Shorts, TikTok, Instagram, and cinematic screens with browser-based FFmpeg processing.</p>
       </section>
 
       <section class="tool-panel tool-content">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <h2>Convert Aspect Ratio</h2>
+        <p class="meta-text">Upload your video, pick a preset or custom ratio, then click <strong>Convert Aspect Ratio</strong>.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="ratio-layout">
+          <div class="control-stack">
+            <div class="upload-box">
+              <label for="video-upload">Upload video (MP4, MOV, WEBM, MKV, AVI)</label>
+              <input id="video-upload" class="file-input" type="file" accept="video/mp4,video/quicktime,video/webm,video/x-matroska,video/x-msvideo,.mp4,.mov,.webm,.mkv,.avi" />
+            </div>
 
+            <div>
+              <label for="ratio-select">Aspect ratio preset</label>
+              <select id="ratio-select" class="select-input">
+                <option value="16:9">16:9 (YouTube Landscape)</option>
+                <option value="9:16">9:16 (YouTube Shorts / TikTok)</option>
+                <option value="1:1">1:1 (Instagram Square)</option>
+                <option value="4:5">4:5 (Instagram Portrait)</option>
+                <option value="21:9">21:9 (Cinematic)</option>
+                <option value="3:2">3:2</option>
+                <option value="custom">Custom Width / Height</option>
+              </select>
+            </div>
+
+            <div id="custom-inputs" class="input-row" hidden>
+              <div>
+                <label for="custom-width">Custom width</label>
+                <input id="custom-width" class="text-input" type="number" min="1" placeholder="e.g. 1080" />
+              </div>
+              <div>
+                <label for="custom-height">Custom height</label>
+                <input id="custom-height" class="text-input" type="number" min="1" placeholder="e.g. 1920" />
+              </div>
+            </div>
+
+            <div class="button-row tool-actions">
+              <button id="convert-button" class="btn" type="button" disabled>Convert Aspect Ratio</button>
+              <button id="download-button" class="btn btn-secondary" type="button" disabled>Download Converted Video</button>
+            </div>
+
+            <div class="progress-wrap" aria-label="conversion progress">
+              <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <p id="tool-message" class="status-line" aria-live="polite">Load FFmpeg and upload a video to start.</p>
+            <span class="note-pill">100% client-side processing</span>
+          </div>
+
+          <div class="preview-grid">
+            <div class="preview-card">
+              <h3>Original Video</h3>
+              <video id="original-preview" controls playsinline preload="metadata"></video>
+            </div>
+            <div class="preview-card">
+              <h3>Converted Video</h3>
+              <video id="converted-preview" controls playsinline preload="metadata"></video>
+              <div id="output-meta" class="output-meta" hidden>
+                <div><strong>Output Size:</strong> <span id="output-size">-</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>Video Aspect Ratio Converter is designed to help you work faster with dependable results. Change video aspect ratios for reels, stories, widescreen, and other formats.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Video Aspect Ratio Converter is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
+        <h2>How to Use</h2>
+        <ol>
+          <li>Upload a video file in MP4, MOV, WEBM, MKV, or AVI format.</li>
+          <li>Choose one of the aspect ratio presets or select custom dimensions.</li>
+          <li>Click <strong>Convert Aspect Ratio</strong> and wait for progress to reach 100%.</li>
+          <li>Preview your converted video and download it to your device.</li>
+        </ol>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>Features</h2>
         <ul>
-          <li>Focused workflow for video aspect ratio converter tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
+          <li>Preset ratios: 16:9, 9:16, 1:1, 4:5, 21:9, and 3:2.</li>
+          <li>Custom width/height support for advanced workflows.</li>
+          <li>In-browser conversion with FFmpeg WebAssembly (no backend required).</li>
+          <li>Live progress bar, output preview, and one-click download.</li>
+          <li>Designed for creators publishing across multiple social platforms.</li>
         </ul>
       </section>
+
+      <section class="tool-panel tool-description">
+        <h2>Why Use This Tool</h2>
+        <p>This converter helps you quickly repurpose one video for multiple platforms without installing desktop software.</p>
+        <p>Since processing runs in your browser, your files stay on your device for improved privacy and speed.</p>
+        <p>It is ideal for creators, social media managers, and teams that need fast, format-ready video outputs.</p>
+      </section>
     </main>
+
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script src="../assets/ffmpeg/ffmpeg.min.js"></script>
+    <script>
+      (() => {
+        const uploadInput = document.getElementById('video-upload');
+        const ratioSelect = document.getElementById('ratio-select');
+        const customInputs = document.getElementById('custom-inputs');
+        const customWidth = document.getElementById('custom-width');
+        const customHeight = document.getElementById('custom-height');
+        const convertButton = document.getElementById('convert-button');
+        const downloadButton = document.getElementById('download-button');
+        const originalPreview = document.getElementById('original-preview');
+        const convertedPreview = document.getElementById('converted-preview');
+        const outputMeta = document.getElementById('output-meta');
+        const outputSize = document.getElementById('output-size');
+        const progressBar = document.getElementById('progress-bar');
+        const toolMessage = document.getElementById('tool-message');
+
+        const ratioMap = {
+          '16:9': { width: 1920, height: 1080 },
+          '9:16': { width: 1080, height: 1920 },
+          '1:1': { width: 1080, height: 1080 },
+          '4:5': { width: 1080, height: 1350 },
+          '21:9': { width: 2520, height: 1080 },
+          '3:2': { width: 1500, height: 1000 }
+        };
+
+        let ffmpeg;
+        let fetchFile;
+        let ffmpegReady = false;
+        let loadPromise = null;
+        let sourceFile = null;
+        let sourceUrl = '';
+        let resultUrl = '';
+
+        function setMessage(text) { toolMessage.textContent = text; }
+        function setProgress(percent) { progressBar.style.width = `${Math.max(0, Math.min(100, percent))}%`; }
+
+        function formatBytes(bytes) {
+          if (!bytes) return '0 B';
+          const units = ['B', 'KB', 'MB', 'GB'];
+          const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+          return `${(bytes / 1024 ** i).toFixed(i === 0 ? 0 : 2)} ${units[i]}`;
+        }
+
+        function updateCustomVisibility() {
+          customInputs.hidden = ratioSelect.value !== 'custom';
+        }
+
+        function getOutputSize() {
+          if (ratioSelect.value === 'custom') {
+            const width = Number(customWidth.value);
+            const height = Number(customHeight.value);
+            if (!Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0) return null;
+            return { width, height };
+          }
+          return ratioMap[ratioSelect.value] || null;
+        }
+
+        function clearResult() {
+          if (resultUrl) {
+            URL.revokeObjectURL(resultUrl);
+            resultUrl = '';
+          }
+          convertedPreview.removeAttribute('src');
+          convertedPreview.load();
+          outputMeta.hidden = true;
+          downloadButton.disabled = true;
+        }
+
+        function updateActionState() {
+          convertButton.disabled = !(sourceFile && ffmpegReady);
+        }
+
+        async function loadFFmpeg() {
+          if (ffmpegReady) return;
+          if (loadPromise) return loadPromise;
+
+          loadPromise = (async () => {
+            if (!window.FFmpeg) {
+              throw new Error('FFmpeg library failed to load.');
+            }
+
+            const { createFFmpeg, fetchFile: ffmpegFetchFile } = window.FFmpeg;
+            fetchFile = ffmpegFetchFile;
+
+            ffmpeg = createFFmpeg({
+              log: true,
+              corePath: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js'
+            });
+
+            ffmpeg.setProgress(({ ratio }) => {
+              const percentage = Number.isFinite(ratio) ? ratio * 100 : 0;
+              setProgress(percentage);
+            });
+
+            setMessage('Loading FFmpeg core... This can take a few seconds.');
+            await ffmpeg.load();
+            ffmpegReady = true;
+            setMessage('FFmpeg ready. Upload a video to convert.');
+            updateActionState();
+          })().catch((error) => {
+            setMessage(error.message || 'Unable to initialize FFmpeg. Please refresh and try again.');
+            throw error;
+          });
+
+          return loadPromise;
+        }
+
+        async function convertVideo() {
+          const target = getOutputSize();
+          if (!target) {
+            setMessage('Please enter valid custom width and height.');
+            return;
+          }
+
+          clearResult();
+          setProgress(2);
+          convertButton.disabled = true;
+          setMessage('Converting video... Keep this tab open.');
+
+          const inputName = `input_${Date.now()}_${sourceFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+          const outputName = `output_${Date.now()}.mp4`;
+
+          try {
+            await ffmpeg.FS('writeFile', inputName, await fetchFile(sourceFile));
+
+            await ffmpeg.run(
+              '-i', inputName,
+              '-vf', `scale=${target.width}:${target.height}:force_original_aspect_ratio=decrease,pad=${target.width}:${target.height}:(ow-iw)/2:(oh-ih)/2`,
+              '-c:v', 'libx264',
+              '-preset', 'veryfast',
+              '-crf', '23',
+              '-c:a', 'aac',
+              '-movflags', '+faststart',
+              outputName
+            );
+
+            const outputData = ffmpeg.FS('readFile', outputName);
+            const blob = new Blob([outputData.buffer], { type: 'video/mp4' });
+            resultUrl = URL.createObjectURL(blob);
+
+            convertedPreview.src = resultUrl;
+            outputSize.textContent = formatBytes(blob.size);
+            outputMeta.hidden = false;
+
+            downloadButton.onclick = () => {
+              const link = document.createElement('a');
+              link.href = resultUrl;
+              link.download = `${(sourceFile.name || 'video').replace(/\.[^/.]+$/, '')}-${target.width}x${target.height}.mp4`;
+              link.click();
+            };
+
+            downloadButton.disabled = false;
+            setProgress(100);
+            setMessage('Conversion complete. Preview and download your video.');
+          } catch (error) {
+            console.error(error);
+            setProgress(0);
+            setMessage('Conversion failed. Try a smaller file or a different format.');
+          } finally {
+            try { ffmpeg.FS('unlink', inputName); } catch (_) {}
+            try { ffmpeg.FS('unlink', outputName); } catch (_) {}
+            updateActionState();
+          }
+        }
+
+        uploadInput.addEventListener('change', () => {
+          const file = uploadInput.files && uploadInput.files[0];
+          if (!file) return;
+
+          sourceFile = file;
+          if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+          sourceUrl = URL.createObjectURL(file);
+          originalPreview.src = sourceUrl;
+
+          clearResult();
+          setProgress(0);
+          setMessage(`Ready: ${file.name}`);
+          updateActionState();
+        });
+
+        ratioSelect.addEventListener('change', updateCustomVisibility);
+        convertButton.addEventListener('click', convertVideo);
+
+        updateCustomVisibility();
+        loadFFmpeg().catch(() => {
+          convertButton.disabled = true;
+        });
+      })();
+    </script>
   </body>
 </html>
