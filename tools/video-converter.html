@@ -312,7 +312,9 @@
 
     <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
-    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
+<script src="https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js"></script>
+<script src="https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.wasm"></script>
+<script src="https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.worker.js"></script>
     <script>
       (function () {
         const uploadInput = document.getElementById('video-upload');
@@ -373,13 +375,13 @@
         let convertStartTime = 0;
         let ffmpegFailedToLoad = false;
 
-        if (typeof FFmpeg === 'undefined') {
+        if (!window.FFmpeg) {
           statusText.textContent = 'FFmpeg library failed to load. Refresh the page and try again.';
           convertBtn.disabled = true;
           return;
         }
 
-        const { createFFmpeg, fetchFile } = FFmpeg;
+        const { createFFmpeg, fetchFile } = window.FFmpeg;
         ffmpeg = createFFmpeg({
           log: true,
           corePath: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
