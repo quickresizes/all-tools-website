@@ -202,7 +202,9 @@
         }
 
         function updateActionState() {
-          convertButton.disabled = !(sourceFile && ffmpegReady);
+          const hasSource = Boolean(sourceFile);
+          const target = getOutputSize();
+          convertButton.disabled = !hasSource || !target;
         }
 
         async function loadFFmpeg() {
@@ -217,19 +219,38 @@
             const { createFFmpeg, fetchFile: ffmpegFetchFile } = window.FFmpeg;
             fetchFile = ffmpegFetchFile;
 
-            ffmpeg = createFFmpeg({
-              log: true,
-              corePath: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js'
-            });
+            const coreSources = [
+              '../assets/ffmpeg/ffmpeg-core.js',
+              'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js'
+            ];
 
-            ffmpeg.setProgress(({ ratio }) => {
-              const percentage = Number.isFinite(ratio) ? ratio * 100 : 0;
-              setProgress(percentage);
-            });
+            let lastError = null;
+            for (const corePath of coreSources) {
+              const instance = createFFmpeg({
+                log: true,
+                corePath
+              });
 
-            setMessage('Loading FFmpeg core... This can take a few seconds.');
-            await ffmpeg.load();
-            ffmpegReady = true;
+              instance.setProgress(({ ratio }) => {
+                const percentage = Number.isFinite(ratio) ? ratio * 100 : 0;
+                setProgress(percentage);
+              });
+
+              try {
+                setMessage('Loading FFmpeg core... This can take a few seconds.');
+                await instance.load();
+                ffmpeg = instance;
+                ffmpegReady = true;
+                break;
+              } catch (error) {
+                lastError = error;
+              }
+            }
+
+            if (!ffmpegReady) {
+              throw lastError || new Error('FFmpeg core failed to load.');
+            }
+
             setMessage('FFmpeg ready. Upload a video to convert.');
             updateActionState();
           })().catch((error) => {
@@ -247,15 +268,23 @@
             return;
           }
 
+          if (!sourceFile) {
+            setMessage('Please upload a video file first.');
+            updateActionState();
+            return;
+          }
+
           clearResult();
           setProgress(2);
           convertButton.disabled = true;
-          setMessage('Converting video... Keep this tab open.');
+          setMessage('Preparing FFmpeg engine...');
 
           const inputName = `input_${Date.now()}_${sourceFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
           const outputName = `output_${Date.now()}.mp4`;
 
           try {
+            await loadFFmpeg();
+            setMessage('Converting video... Keep this tab open.');
             await ffmpeg.FS('writeFile', inputName, await fetchFile(sourceFile));
 
             await ffmpeg.run(
@@ -300,7 +329,20 @@
 
         uploadInput.addEventListener('change', () => {
           const file = uploadInput.files && uploadInput.files[0];
-          if (!file) return;
+          if (!file) {
+            sourceFile = null;
+            if (sourceUrl) {
+              URL.revokeObjectURL(sourceUrl);
+              sourceUrl = '';
+            }
+            originalPreview.removeAttribute('src');
+            originalPreview.load();
+            clearResult();
+            setProgress(0);
+            setMessage('Load FFmpeg and upload a video to start.');
+            updateActionState();
+            return;
+          }
 
           sourceFile = file;
           if (sourceUrl) URL.revokeObjectURL(sourceUrl);
@@ -313,13 +355,16 @@
           updateActionState();
         });
 
-        ratioSelect.addEventListener('change', updateCustomVisibility);
+        ratioSelect.addEventListener('change', () => {
+          updateCustomVisibility();
+          updateActionState();
+        });
+        customWidth.addEventListener('input', updateActionState);
+        customHeight.addEventListener('input', updateActionState);
         convertButton.addEventListener('click', convertVideo);
 
         updateCustomVisibility();
-        loadFFmpeg().catch(() => {
-          convertButton.disabled = true;
-        });
+        updateActionState();
       })();
     </script>
   </body>
