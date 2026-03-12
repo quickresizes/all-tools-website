@@ -352,7 +352,7 @@
         };
 
         const updateButtonState = () => {
-          compressBtn.disabled = !selectedFile || !ffmpegReady || loadingFFmpeg || isCompressing;
+          compressBtn.disabled = !selectedFile || loadingFFmpeg || isCompressing;
         };
 
         const resetOutput = () => {
@@ -473,7 +473,17 @@
         };
 
         const compressAudio = async () => {
-          if (!ffmpegReady || !selectedFile || isCompressing) return;
+          if (!selectedFile || isCompressing) return;
+
+          if (!ffmpegReady) {
+            setStatus('Loading FFmpeg engine…');
+            await loadFFmpeg();
+          }
+
+          if (!ffmpegReady || !ffmpeg || !ffmpegFetchFile) {
+            setStatus('Failed to load FFmpeg. Please refresh and try again.');
+            return;
+          }
 
           resetOutput();
           setWorking(true);
@@ -558,8 +568,8 @@
           if (outputUrl) URL.revokeObjectURL(outputUrl);
         });
 
-        setStatus('Loading FFmpeg engine…');
-        loadFFmpeg();
+        setStatus('Upload an audio file to begin.');
+        updateButtonState();
       })();
     </script>
   </body>
