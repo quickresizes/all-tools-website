@@ -1220,3 +1220,121 @@ metadataDownloadButton?.addEventListener("click", () => {
 metadataResetButton?.addEventListener("click", () => {
   resetMetadataTool();
 });
+
+const youtubeUrlInput = document.getElementById("youtube-url-input");
+const youtubeThumbnailButton = document.getElementById("youtube-thumbnail-button");
+const youtubeThumbnailMessage = document.getElementById("youtube-thumbnail-message");
+const youtubeThumbnailResults = document.getElementById("youtube-thumbnail-results");
+
+const setYoutubeThumbnailMessage = (message, isError = false) => {
+  if (!youtubeThumbnailMessage) return;
+
+  youtubeThumbnailMessage.textContent = message;
+  youtubeThumbnailMessage.classList.toggle("yt-thumb-error", isError);
+};
+
+const extractYoutubeVideoId = (value) => {
+  const input = value.trim();
+  if (!input) return null;
+
+  const idPattern = /^[a-zA-Z0-9_-]{11}$/;
+  if (idPattern.test(input)) {
+    return input;
+  }
+
+  try {
+    const url = new URL(input);
+    const hostname = url.hostname.replace("www.", "").toLowerCase();
+
+    if (hostname === "youtube.com" || hostname === "m.youtube.com") {
+      const idFromQuery = url.searchParams.get("v");
+      if (idFromQuery && idPattern.test(idFromQuery)) return idFromQuery;
+
+      const shortPath = url.pathname.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
+      if (shortPath?.[1]) return shortPath[1];
+
+      const embedPath = url.pathname.match(/\/embed\/([a-zA-Z0-9_-]{11})/);
+      if (embedPath?.[1]) return embedPath[1];
+    }
+
+    if (hostname === "youtu.be") {
+      const pathId = url.pathname.split("/").filter(Boolean)[0];
+      if (pathId && idPattern.test(pathId)) return pathId;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+};
+
+const createThumbnailCard = (videoId, label, qualityKey) => {
+  const card = document.createElement("article");
+  card.className = "yt-thumb-card";
+
+  const title = document.createElement("h3");
+  title.textContent = label;
+
+  const image = document.createElement("img");
+  const imageUrl = `https://img.youtube.com/vi/${videoId}/${qualityKey}.jpg`;
+  image.src = imageUrl;
+  image.alt = `${label} thumbnail preview`;
+  image.loading = "lazy";
+
+  const meta = document.createElement("p");
+  meta.className = "yt-thumb-meta";
+  meta.textContent = `${qualityKey}.jpg`;
+
+  const downloadLink = document.createElement("a");
+  downloadLink.href = imageUrl;
+  downloadLink.className = "btn btn-small";
+  downloadLink.textContent = "Download";
+  downloadLink.download = `youtube-thumbnail-${qualityKey}.jpg`;
+  downloadLink.target = "_blank";
+  downloadLink.rel = "noopener noreferrer";
+
+  card.append(title, image, meta, downloadLink);
+  return card;
+};
+
+const renderYoutubeThumbnails = (videoId) => {
+  if (!youtubeThumbnailResults) return;
+
+  youtubeThumbnailResults.innerHTML = "";
+
+  const thumbnailTypes = [
+    { label: "Max Resolution", key: "maxresdefault" },
+    { label: "High Quality", key: "hqdefault" },
+    { label: "Medium Quality", key: "mqdefault" },
+    { label: "Default", key: "default" },
+  ];
+
+  thumbnailTypes.forEach((thumbnail) => {
+    youtubeThumbnailResults.appendChild(createThumbnailCard(videoId, thumbnail.label, thumbnail.key));
+  });
+};
+
+const handleYoutubeThumbnailDownload = () => {
+  if (!youtubeUrlInput) return;
+
+  const videoId = extractYoutubeVideoId(youtubeUrlInput.value);
+
+  if (!videoId) {
+    if (youtubeThumbnailResults) {
+      youtubeThumbnailResults.innerHTML = "";
+    }
+
+    setYoutubeThumbnailMessage("Please enter a valid YouTube video URL.", true);
+    return;
+  }
+
+  setYoutubeThumbnailMessage("Thumbnails loaded. Choose a size and click Download.");
+  renderYoutubeThumbnails(videoId);
+};
+
+youtubeThumbnailButton?.addEventListener("click", handleYoutubeThumbnailDownload);
+youtubeUrlInput?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    handleYoutubeThumbnailDownload();
+  }
+});
