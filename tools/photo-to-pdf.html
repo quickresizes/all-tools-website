@@ -498,11 +498,21 @@
             }
 
             generatedPdfBlob = pdf.output("blob");
+            if (!(generatedPdfBlob instanceof Blob) || generatedPdfBlob.size === 0) {
+              throw new Error("Invalid PDF output");
+            }
+
+            if (generatedPdfBlob.type !== "application/pdf") {
+              generatedPdfBlob = new Blob([generatedPdfBlob], { type: "application/pdf" });
+            }
+
             revokeGeneratedPdfUrl();
             generatedPdfUrl = URL.createObjectURL(generatedPdfBlob);
             refs.pdfPreview.src = generatedPdfUrl;
             refs.downloadPdf.href = generatedPdfUrl;
-            refs.downloadPdf.download = `photo-to-pdf-${Date.now()}.pdf`;
+            refs.downloadPdf.download = "converted.pdf";
+            refs.downloadPdf.setAttribute("aria-disabled", "false");
+            refs.downloadPdf.classList.remove("disabled");
             refs.pdfSize.textContent = formatSize(generatedPdfBlob.size);
             refs.outputCard.classList.add("active");
             refs.pdfPreviewWrap.classList.add("active");
@@ -597,7 +607,9 @@
           return `${value.toFixed(2)} ${units[unitIndex]}`;
         }
 
-        function downloadPdf() {
+        function downloadPdf(event) {
+          event.preventDefault();
+
           if (!generatedPdfBlob || !generatedPdfUrl) {
             refs.message.textContent = "Create a PDF first.";
             refs.downloadPdf.removeAttribute("href");
@@ -606,8 +618,12 @@
             return;
           }
 
-          refs.downloadPdf.setAttribute("aria-disabled", "false");
-          refs.downloadPdf.classList.remove("disabled");
+          const downloadLink = document.createElement("a");
+          downloadLink.href = generatedPdfUrl;
+          downloadLink.download = "converted.pdf";
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          downloadLink.remove();
         }
 
         function revokeGeneratedPdfUrl() {
