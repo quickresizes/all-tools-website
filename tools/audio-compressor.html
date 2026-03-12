@@ -4,65 +4,563 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Audio Compressor – Free Online Audio Compressor Tool | MediaTools Pro</title>
-    <meta name="description" content="Reduce audio file size while maintaining clear sound quality. Use this free online audio compressor at MediaTools Pro." />
-    <meta name="keywords" content="audio compressor, audio compressor online, free audio compressor, media tools pro, audio, compressor, online tool" />
+    <meta
+      name="description"
+      content="Compress MP3, WAV, AAC, M4A, OGG, and FLAC files directly in your browser with FFmpeg WebAssembly. No upload required."
+    />
+    <meta
+      name="keywords"
+      content="audio compressor, compress mp3, compress wav, ffmpeg wasm, browser audio compression, media tools pro"
+    />
     <meta property="og:title" content="Audio Compressor – Free Online Audio Compressor Tool | MediaTools Pro" />
-    <meta property="og:description" content="Reduce audio file size while maintaining clear sound quality. Use this free online audio compressor at MediaTools Pro." />
+    <meta
+      property="og:description"
+      content="Reduce audio file size in-browser with compression presets, bitrate control, preview, and one-click download."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/audio-compressor.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      .audio-compressor-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 1rem;
+      }
+
+      .audio-card {
+        border: 1px solid var(--border-color, rgba(128, 128, 128, 0.28));
+        border-radius: 12px;
+        padding: 1rem;
+        background: var(--surface-color, rgba(127, 127, 127, 0.06));
+      }
+
+      .audio-card h3 {
+        margin: 0 0 0.8rem;
+      }
+
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .field-group label {
+        font-weight: 600;
+      }
+
+      .file-input,
+      .select-input {
+        width: 100%;
+      }
+
+      .preview-audio {
+        width: 100%;
+        margin-top: 0.65rem;
+      }
+
+      .meta-line {
+        margin: 0.7rem 0 0;
+        font-size: 0.95rem;
+      }
+
+      .size-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-top: 0.8rem;
+      }
+
+      .size-item {
+        border: 1px solid var(--border-color, rgba(128, 128, 128, 0.28));
+        border-radius: 10px;
+        padding: 0.6rem;
+      }
+
+      .size-item strong {
+        display: block;
+        font-size: 0.85rem;
+        opacity: 0.85;
+      }
+
+      .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .status-text {
+        margin: 0;
+        font-size: 0.95rem;
+        opacity: 0.9;
+      }
+
+      .progress-wrap {
+        margin-top: 0.85rem;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 10px;
+      }
+
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: currentColor;
+        display: inline-block;
+        animation: spin 0.8s linear infinite;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .download-btn[aria-disabled='true'] {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .audio-compressor-grid,
+        .size-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Audio Compressor</h1>
-        <p class="meta-text">Reduce audio file size while maintaining clear sound quality.</p>
+        <p class="meta-text">
+          Compress MP3, WAV, AAC, M4A, OGG, and FLAC files directly in your browser using FFmpeg WebAssembly.
+        </p>
       </section>
 
       <section class="tool-panel tool-content">
         <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <p class="meta-text">Upload a file, choose compression level and bitrate, then click <strong>Compress Audio</strong>.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="audio-compressor-grid">
+          <article class="audio-card">
+            <h3>Upload &amp; Preview</h3>
+            <div class="field-group">
+              <label for="audio-upload">Upload Audio File</label>
+              <input
+                id="audio-upload"
+                class="file-input"
+                type="file"
+                accept=".mp3,.wav,.aac,.m4a,.ogg,.flac,audio/mpeg,audio/wav,audio/x-wav,audio/aac,audio/mp4,audio/ogg,audio/flac"
+              />
+            </div>
+            <audio id="source-preview" class="preview-audio hidden" controls></audio>
+            <p id="source-info" class="meta-line">No file selected.</p>
+          </article>
 
+          <article class="audio-card">
+            <h3>Compression Controls</h3>
+            <div class="field-group">
+              <label for="compression-level">Compression Level</label>
+              <select id="compression-level" class="select-input">
+                <option value="320">Low Compression (Best Quality)</option>
+                <option value="192" selected>Medium Compression</option>
+                <option value="96">High Compression (Small Size)</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label for="bitrate-select">Audio Bitrate</label>
+              <select id="bitrate-select" class="select-input">
+                <option value="320">320 kbps</option>
+                <option value="256">256 kbps</option>
+                <option value="192" selected>192 kbps</option>
+                <option value="128">128 kbps</option>
+                <option value="96">96 kbps</option>
+                <option value="64">64 kbps</option>
+              </select>
+            </div>
+
+            <div class="action-row">
+              <button id="compress-btn" class="btn" type="button" disabled>Compress Audio</button>
+              <span id="spinner" class="spinner hidden" aria-hidden="true"></span>
+              <p id="status-text" class="status-text" aria-live="polite">Loading FFmpeg engine…</p>
+            </div>
+
+            <div class="progress-wrap">
+              <progress id="progress-bar" class="progress-bar" max="100" value="0"></progress>
+              <p id="progress-text" class="status-text">Processing progress: 0%</p>
+            </div>
+          </article>
+        </div>
+
+        <article class="audio-card" style="margin-top: 1rem">
+          <h3>Compressed Output</h3>
+          <audio id="output-preview" class="preview-audio hidden" controls></audio>
+          <p id="output-info" class="meta-line">No compressed file yet.</p>
+
+          <div class="size-grid" aria-live="polite">
+            <div class="size-item">
+              <strong>Original File Size</strong>
+              <span id="original-size">—</span>
+            </div>
+            <div class="size-item">
+              <strong>Compressed File Size</strong>
+              <span id="compressed-size">—</span>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <a id="download-link" class="btn download-btn" href="#" download aria-disabled="true">Download Compressed Audio</a>
+          </div>
+        </article>
       </section>
 
       <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>Audio Compressor is designed to help you work faster with dependable results. Reduce audio file size while maintaining clear sound quality.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Audio Compressor is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
-      </section>
+        <h2>How to Compress Audio</h2>
+        <ol>
+          <li>Upload your audio file in MP3, WAV, AAC, M4A, OGG, or FLAC format.</li>
+          <li>Choose a compression level, then fine-tune the exact output bitrate.</li>
+          <li>Click <strong>Compress Audio</strong> and wait for progress to reach 100%.</li>
+          <li>Preview the compressed audio and download it instantly.</li>
+        </ol>
 
-      <section class="tool-panel tool-description">
-        <h2>Features</h2>
+        <h2>Features of the Tool</h2>
         <ul>
-          <li>Focused workflow for audio compressor tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
+          <li>Client-side FFmpeg WebAssembly compression (no backend required).</li>
+          <li>Audio preview before and after compression.</li>
+          <li>Quick presets: low, medium, and high compression levels.</li>
+          <li>Advanced bitrate control from 320 kbps down to 64 kbps.</li>
+          <li>Output details including original and compressed file sizes.</li>
         </ul>
+
+        <h2>Why Use This Audio Compressor</h2>
+        <p>
+          This tool keeps your files private by processing everything in your browser, making it ideal for static hosting platforms such as GitHub
+          Pages. It is fast, simple to use, and gives you control over the quality-size balance for sharing, publishing, and storage.
+        </p>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script>
+      (function () {
+        const uploadInput = document.getElementById('audio-upload');
+        const sourcePreview = document.getElementById('source-preview');
+        const sourceInfo = document.getElementById('source-info');
+        const levelSelect = document.getElementById('compression-level');
+        const bitrateSelect = document.getElementById('bitrate-select');
+        const compressBtn = document.getElementById('compress-btn');
+        const spinner = document.getElementById('spinner');
+        const statusText = document.getElementById('status-text');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const outputPreview = document.getElementById('output-preview');
+        const outputInfo = document.getElementById('output-info');
+        const originalSizeEl = document.getElementById('original-size');
+        const compressedSizeEl = document.getElementById('compressed-size');
+        const downloadLink = document.getElementById('download-link');
+
+        const FFMPEG_LIB_SOURCES = [
+          '../assets/ffmpeg/ffmpeg.min.js',
+          'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js',
+          'https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js',
+        ];
+
+        const FFMPEG_CORE_SOURCES = [
+          '../assets/ffmpeg/ffmpeg-core.js',
+          '/assets/ffmpeg/ffmpeg-core.js',
+          'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+          'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+        ];
+
+        const SUPPORTED_EXTENSIONS = new Set(['mp3', 'wav', 'aac', 'm4a', 'ogg', 'flac']);
+
+        const OUTPUT_MIME_BY_EXTENSION = {
+          mp3: 'audio/mpeg',
+          aac: 'audio/aac',
+          m4a: 'audio/mp4',
+          ogg: 'audio/ogg',
+          flac: 'audio/flac',
+        };
+
+        let selectedFile = null;
+        let sourceUrl = '';
+        let outputUrl = '';
+        let ffmpeg = null;
+        let ffmpegFetchFile = null;
+        let ffmpegReady = false;
+        let loadingFFmpeg = false;
+        let isCompressing = false;
+
+        const loadScript = (src) =>
+          new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = () => resolve(src);
+            script.onerror = () => reject(new Error('Script load failed'));
+            document.head.appendChild(script);
+          });
+
+        const getExtension = (name) => {
+          const parts = String(name || '').toLowerCase().split('.');
+          return parts.length > 1 ? parts.pop() : '';
+        };
+
+        const formatBytes = (bytes) => {
+          if (!Number.isFinite(bytes)) return 'Unknown size';
+          const units = ['B', 'KB', 'MB', 'GB'];
+          let value = bytes;
+          let index = 0;
+          while (value >= 1024 && index < units.length - 1) {
+            value /= 1024;
+            index += 1;
+          }
+          return `${value.toFixed(value >= 10 || index === 0 ? 0 : 2)} ${units[index]}`;
+        };
+
+        const setStatus = (text) => {
+          statusText.textContent = text;
+        };
+
+        const setProgress = (value) => {
+          const safeValue = Math.max(0, Math.min(100, Math.round(value)));
+          progressBar.value = safeValue;
+          progressText.textContent = `Processing progress: ${safeValue}%`;
+        };
+
+        const setWorking = (working) => {
+          isCompressing = working;
+          spinner.classList.toggle('hidden', !working);
+          updateButtonState();
+        };
+
+        const updateButtonState = () => {
+          compressBtn.disabled = !selectedFile || !ffmpegReady || loadingFFmpeg || isCompressing;
+        };
+
+        const resetOutput = () => {
+          if (outputUrl) {
+            URL.revokeObjectURL(outputUrl);
+            outputUrl = '';
+          }
+
+          outputPreview.src = '';
+          outputPreview.classList.add('hidden');
+          outputInfo.textContent = 'No compressed file yet.';
+          compressedSizeEl.textContent = '—';
+          downloadLink.href = '#';
+          downloadLink.setAttribute('download', '');
+          downloadLink.setAttribute('aria-disabled', 'true');
+          setProgress(0);
+        };
+
+        const ensureFFmpegLibrary = async () => {
+          if (window.FFmpeg) return;
+          for (const src of FFMPEG_LIB_SOURCES) {
+            try {
+              await loadScript(src);
+              if (window.FFmpeg) return;
+            } catch (error) {
+              // fallback source
+            }
+          }
+          throw new Error('Unable to load FFmpeg library.');
+        };
+
+        const loadFFmpeg = async () => {
+          if (ffmpegReady || loadingFFmpeg) return;
+
+          loadingFFmpeg = true;
+          updateButtonState();
+
+          try {
+            await ensureFFmpegLibrary();
+            const { createFFmpeg, fetchFile } = window.FFmpeg;
+            ffmpegFetchFile = fetchFile;
+
+            for (const corePath of FFMPEG_CORE_SOURCES) {
+              const instance = createFFmpeg({ log: false, corePath });
+              instance.setProgress(({ ratio }) => {
+                const progress = (Number.isFinite(ratio) ? ratio : 0) * 100;
+                setProgress(progress);
+              });
+
+              try {
+                await instance.load();
+                ffmpeg = instance;
+                ffmpegReady = true;
+                setStatus('Ready to compress audio.');
+                updateButtonState();
+                return;
+              } catch (error) {
+                // try next source
+              }
+            }
+
+            throw new Error('Could not load FFmpeg core files.');
+          } catch (error) {
+            setStatus('Failed to load FFmpeg. Please refresh and try again.');
+          } finally {
+            loadingFFmpeg = false;
+            updateButtonState();
+          }
+        };
+
+        const getOutputConfig = (sourceExtension) => {
+          if (sourceExtension === 'm4a') return { ext: 'm4a', codec: 'aac' };
+          if (sourceExtension === 'aac') return { ext: 'aac', codec: 'aac' };
+          if (sourceExtension === 'ogg') return { ext: 'ogg', codec: 'libvorbis' };
+          if (sourceExtension === 'flac') return { ext: 'flac', codec: 'flac' };
+          return { ext: 'mp3', codec: 'libmp3lame' };
+        };
+
+        const handleFileSelection = (file) => {
+          resetOutput();
+
+          if (sourceUrl) {
+            URL.revokeObjectURL(sourceUrl);
+            sourceUrl = '';
+          }
+
+          if (!file) {
+            selectedFile = null;
+            sourcePreview.src = '';
+            sourcePreview.classList.add('hidden');
+            sourceInfo.textContent = 'No file selected.';
+            originalSizeEl.textContent = '—';
+            updateButtonState();
+            return;
+          }
+
+          const extension = getExtension(file.name);
+          if (!SUPPORTED_EXTENSIONS.has(extension)) {
+            selectedFile = null;
+            uploadInput.value = '';
+            sourcePreview.src = '';
+            sourcePreview.classList.add('hidden');
+            sourceInfo.textContent = 'Unsupported file type. Use MP3, WAV, AAC, M4A, OGG, or FLAC.';
+            originalSizeEl.textContent = '—';
+            setStatus('Please upload a supported audio format.');
+            updateButtonState();
+            return;
+          }
+
+          selectedFile = file;
+          sourceUrl = URL.createObjectURL(file);
+          sourcePreview.src = sourceUrl;
+          sourcePreview.classList.remove('hidden');
+          sourceInfo.textContent = `${file.name} • ${formatBytes(file.size)} (${extension.toUpperCase()})`;
+          originalSizeEl.textContent = formatBytes(file.size);
+          setStatus('Ready to compress.');
+          updateButtonState();
+        };
+
+        const compressAudio = async () => {
+          if (!ffmpegReady || !selectedFile || isCompressing) return;
+
+          resetOutput();
+          setWorking(true);
+          setStatus('Compressing audio…');
+          setProgress(2);
+
+          const sourceExtension = getExtension(selectedFile.name);
+          const { ext: outputExt, codec } = getOutputConfig(sourceExtension);
+          const bitrate = Number(bitrateSelect.value);
+
+          const inputName = `input-${Date.now()}.${sourceExtension}`;
+          const outputName = `compressed-${Date.now()}.${outputExt}`;
+
+          try {
+            ffmpeg.FS('writeFile', inputName, await ffmpegFetchFile(selectedFile));
+
+            const args = ['-i', inputName, '-vn', '-b:a', `${bitrate}k`];
+
+            if (codec) {
+              args.push('-c:a', codec);
+            }
+
+            if (outputExt === 'm4a') {
+              args.push('-movflags', '+faststart');
+            }
+
+            args.push(outputName);
+            await ffmpeg.run(...args);
+
+            const outputData = ffmpeg.FS('readFile', outputName);
+            const outputBlob = new Blob([outputData.buffer], {
+              type: OUTPUT_MIME_BY_EXTENSION[outputExt] || 'audio/mpeg',
+            });
+
+            outputUrl = URL.createObjectURL(outputBlob);
+            outputPreview.src = outputUrl;
+            outputPreview.classList.remove('hidden');
+            compressedSizeEl.textContent = formatBytes(outputBlob.size);
+
+            const savings = selectedFile.size > 0 ? ((1 - outputBlob.size / selectedFile.size) * 100).toFixed(1) : '0.0';
+            outputInfo.textContent = `Compressed to ${formatBytes(outputBlob.size)} (${savings}% smaller) at ${bitrate} kbps.`;
+
+            const baseName = selectedFile.name.replace(/\.[^.]+$/, '');
+            downloadLink.href = outputUrl;
+            downloadLink.setAttribute('download', `${baseName}-compressed.${outputExt}`);
+            downloadLink.setAttribute('aria-disabled', 'false');
+
+            setProgress(100);
+            setStatus('Compression complete.');
+          } catch (error) {
+            setStatus('Compression failed. Please try a different bitrate or file.');
+            outputInfo.textContent = 'Compression failed for this file.';
+            setProgress(0);
+          } finally {
+            try {
+              ffmpeg.FS('unlink', inputName);
+            } catch (error) {
+              // no-op
+            }
+            try {
+              ffmpeg.FS('unlink', outputName);
+            } catch (error) {
+              // no-op
+            }
+            setWorking(false);
+          }
+        };
+
+        uploadInput.addEventListener('change', (event) => {
+          const [file] = event.target.files || [];
+          handleFileSelection(file || null);
+        });
+
+        levelSelect.addEventListener('change', () => {
+          bitrateSelect.value = levelSelect.value;
+        });
+
+        compressBtn.addEventListener('click', compressAudio);
+
+        window.addEventListener('beforeunload', () => {
+          if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+          if (outputUrl) URL.revokeObjectURL(outputUrl);
+        });
+
+        setStatus('Loading FFmpeg engine…');
+        loadFFmpeg();
+      })();
+    </script>
   </body>
 </html>
