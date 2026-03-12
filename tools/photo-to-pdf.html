@@ -158,6 +158,23 @@
         margin: 0.35rem 0;
       }
 
+      .pdf-preview-wrap {
+        margin-top: 1rem;
+        display: none;
+      }
+
+      .pdf-preview-wrap.active {
+        display: block;
+      }
+
+      .pdf-preview-frame {
+        width: 100%;
+        height: 500px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--surface);
+      }
+
       @media (max-width: 950px) {
         .photo-pdf-grid {
           grid-template-columns: 1fr;
@@ -199,8 +216,8 @@
 
             <div id="output-card" class="output-card" aria-live="polite">
               <p><strong>PDF file size:</strong> <span id="pdf-size">-</span></p>
-              <p><strong>Preview:</strong> PDF is ready. Download it to view all pages.</p>
-              <button id="download-pdf" class="btn btn-secondary" type="button">Download PDF</button>
+              <p><strong>Preview:</strong> PDF is ready and shown below.</p>
+              <a id="download-pdf" class="btn btn-secondary" href="#" download="photo-to-pdf.pdf">Download PDF</a>
             </div>
 
             <p id="tool-message" class="meta-text">Upload one or more photos to start.</p>
@@ -248,6 +265,11 @@
             </select>
           </div>
         </div>
+
+        <div id="pdf-preview-wrap" class="pdf-preview-wrap">
+          <h3>Generated PDF Preview</h3>
+          <iframe id="pdf-preview" class="pdf-preview-frame" title="Generated PDF preview"></iframe>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
@@ -289,6 +311,7 @@
         let images = [];
         let dragId = null;
         let generatedPdfBlob = null;
+        let generatedPdfUrl = "";
 
         const refs = {
           upload: document.getElementById("image-upload"),
@@ -301,6 +324,8 @@
           progressFill: document.getElementById("progress-fill"),
           progressText: document.getElementById("progress-text"),
           outputCard: document.getElementById("output-card"),
+          pdfPreviewWrap: document.getElementById("pdf-preview-wrap"),
+          pdfPreview: document.getElementById("pdf-preview"),
           pdfSize: document.getElementById("pdf-size"),
           pageSize: document.getElementById("page-size"),
           orientation: document.getElementById("page-orientation"),
@@ -439,6 +464,7 @@
           }
 
           refs.outputCard.classList.remove("active");
+          refs.pdfPreviewWrap.classList.remove("active");
           refs.progressWrap.classList.add("active");
           refs.createPdf.disabled = true;
           refs.progressFill.style.width = "0%";
@@ -472,8 +498,14 @@
             }
 
             generatedPdfBlob = pdf.output("blob");
+            revokeGeneratedPdfUrl();
+            generatedPdfUrl = URL.createObjectURL(generatedPdfBlob);
+            refs.pdfPreview.src = generatedPdfUrl;
+            refs.downloadPdf.href = generatedPdfUrl;
+            refs.downloadPdf.download = `photo-to-pdf-${Date.now()}.pdf`;
             refs.pdfSize.textContent = formatSize(generatedPdfBlob.size);
             refs.outputCard.classList.add("active");
+            refs.pdfPreviewWrap.classList.add("active");
             refs.message.textContent = "PDF created successfully.";
           } catch (error) {
             refs.message.textContent = "Something went wrong while creating the PDF. Please try again.";
@@ -566,19 +598,23 @@
         }
 
         function downloadPdf() {
-          if (!generatedPdfBlob) {
+          if (!generatedPdfBlob || !generatedPdfUrl) {
             refs.message.textContent = "Create a PDF first.";
+            refs.downloadPdf.removeAttribute("href");
+            refs.downloadPdf.setAttribute("aria-disabled", "true");
+            refs.downloadPdf.classList.add("disabled");
             return;
           }
 
-          const url = URL.createObjectURL(generatedPdfBlob);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = `photo-to-pdf-${Date.now()}.pdf`;
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          setTimeout(() => URL.revokeObjectURL(url), 500);
+          refs.downloadPdf.setAttribute("aria-disabled", "false");
+          refs.downloadPdf.classList.remove("disabled");
+        }
+
+        function revokeGeneratedPdfUrl() {
+          if (generatedPdfUrl) {
+            URL.revokeObjectURL(generatedPdfUrl);
+            generatedPdfUrl = "";
+          }
         }
 
         function nextFrame() {
