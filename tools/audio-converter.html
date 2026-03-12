@@ -4,65 +4,501 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Audio Converter – Free Online Audio Converter Tool | MediaTools Pro</title>
-    <meta name="description" content="Convert audio files between MP3, WAV, AAC, and more formats. Use this free online audio converter at MediaTools Pro." />
-    <meta name="keywords" content="audio converter, audio converter online, free audio converter, media tools pro, audio, converter, online tool" />
+    <meta
+      name="description"
+      content="Convert MP3, WAV, M4A, AAC, OGG, MP4, and MOV files to MP3, WAV, AAC, OGG, M4A, or FLAC directly in your browser with FFmpeg WebAssembly."
+    />
+    <meta
+      name="keywords"
+      content="audio converter, ffmpeg wasm, convert mp3 to wav, convert video to audio, online audio converter, media tools pro"
+    />
     <meta property="og:title" content="Audio Converter – Free Online Audio Converter Tool | MediaTools Pro" />
-    <meta property="og:description" content="Convert audio files between MP3, WAV, AAC, and more formats. Use this free online audio converter at MediaTools Pro." />
+    <meta
+      property="og:description"
+      content="Upload audio or video, choose output format, convert in-browser, preview results, and download instantly."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/audio-converter.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      .audio-converter-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        gap: 1rem;
+      }
+
+      .audio-card {
+        border: 1px solid var(--border-color, rgba(128, 128, 128, 0.28));
+        border-radius: 12px;
+        padding: 1rem;
+        background: var(--surface-color, rgba(127, 127, 127, 0.06));
+      }
+
+      .audio-card h3 {
+        margin: 0 0 0.8rem;
+      }
+
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+      }
+
+      .field-group label {
+        font-weight: 600;
+      }
+
+      .file-input,
+      .select-input {
+        width: 100%;
+      }
+
+      .preview-audio {
+        width: 100%;
+        margin-top: 0.85rem;
+      }
+
+      .meta-line {
+        margin: 0.8rem 0 0;
+        font-size: 0.95rem;
+      }
+
+      .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .status-text {
+        margin: 0;
+        font-size: 0.95rem;
+        opacity: 0.9;
+      }
+
+      .progress-wrap {
+        margin-top: 0.9rem;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 10px;
+      }
+
+      .spinner {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        border-top-color: currentColor;
+        display: inline-block;
+        animation: spin 0.8s linear infinite;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .drop-active {
+        border-color: var(--accent-color, #3b82f6);
+      }
+
+      .download-btn[aria-disabled='true'] {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .audio-converter-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Audio Converter</h1>
-        <p class="meta-text">Convert audio files between MP3, WAV, AAC, and more formats.</p>
+        <p class="meta-text">
+          Convert audio or video files to MP3, WAV, AAC, OGG, M4A, and FLAC directly in your browser with private, client-side FFmpeg processing.
+        </p>
       </section>
 
       <section class="tool-panel tool-content">
         <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <p class="meta-text">Upload a file, choose the output format, then click <strong>Convert Audio</strong>.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="audio-converter-grid">
+          <article class="audio-card" id="source-card">
+            <h3>Source File</h3>
+            <div class="field-group">
+              <label for="file-upload">Upload Audio or Video</label>
+              <input
+                id="file-upload"
+                class="file-input"
+                type="file"
+                accept=".mp3,.wav,.m4a,.aac,.ogg,.mp4,.mov,audio/*,video/*"
+              />
+            </div>
+            <audio id="source-preview" class="preview-audio hidden" controls></audio>
+            <p id="source-info" class="meta-line">No file selected.</p>
+          </article>
 
+          <article class="audio-card">
+            <h3>Convert Settings</h3>
+            <div class="field-group">
+              <label for="format-select">Convert To</label>
+              <select id="format-select" class="select-input">
+                <option value="mp3">MP3</option>
+                <option value="wav">WAV</option>
+                <option value="aac">AAC</option>
+                <option value="ogg">OGG</option>
+                <option value="m4a">M4A</option>
+                <option value="flac">FLAC</option>
+              </select>
+            </div>
+
+            <div class="action-row">
+              <button id="convert-btn" class="btn" type="button" disabled>Convert Audio</button>
+              <span id="spinner" class="spinner hidden" aria-hidden="true"></span>
+              <p id="status-text" class="status-text" aria-live="polite">Loading FFmpeg engine…</p>
+            </div>
+
+            <div class="progress-wrap">
+              <progress id="progress-bar" class="progress-bar" max="100" value="0"></progress>
+              <p id="progress-text" class="status-text">Processing progress: 0%</p>
+            </div>
+          </article>
+        </div>
+
+        <article class="audio-card" style="margin-top: 1rem">
+          <h3>Converted Output</h3>
+          <audio id="output-preview" class="preview-audio hidden" controls></audio>
+          <p id="output-info" class="meta-line">No converted file yet.</p>
+          <a id="download-link" class="btn download-btn" href="#" download aria-disabled="true">Download Converted Audio</a>
+        </article>
       </section>
 
       <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>Audio Converter is designed to help you work faster with dependable results. Convert audio files between MP3, WAV, AAC, and more formats.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Audio Converter is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
-      </section>
+        <h2>How to Use</h2>
+        <ol>
+          <li>Upload an audio or video file (MP3, WAV, M4A, AAC, OGG, MP4, or MOV).</li>
+          <li>Select the target format: MP3, WAV, AAC, OGG, M4A, or FLAC.</li>
+          <li>Click <strong>Convert Audio</strong> and wait for processing to finish.</li>
+          <li>Preview the converted result and click download.</li>
+        </ol>
 
-      <section class="tool-panel tool-description">
         <h2>Features</h2>
         <ul>
-          <li>Focused workflow for audio converter tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
+          <li>In-browser conversion powered by FFmpeg WebAssembly.</li>
+          <li>No backend required, ideal for static hosting like GitHub Pages.</li>
+          <li>Upload preview and converted output preview with built-in audio players.</li>
+          <li>Live progress indicator and loading state while processing.</li>
+          <li>Output metadata including file size and direct download action.</li>
         </ul>
+
+        <h2>Why Use This Tool</h2>
+        <p>
+          Audio Converter is private, fast, and simple: files are processed on your device without server uploads. It is useful for creators,
+          students, and teams who need quick format changes for publishing, sharing, or editing workflows.
+        </p>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script>
+      (function () {
+        const input = document.getElementById('file-upload');
+        const sourceCard = document.getElementById('source-card');
+        const sourcePreview = document.getElementById('source-preview');
+        const sourceInfo = document.getElementById('source-info');
+        const formatSelect = document.getElementById('format-select');
+        const convertBtn = document.getElementById('convert-btn');
+        const spinner = document.getElementById('spinner');
+        const statusText = document.getElementById('status-text');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const outputPreview = document.getElementById('output-preview');
+        const outputInfo = document.getElementById('output-info');
+        const downloadLink = document.getElementById('download-link');
+
+        const FFMPEG_LIB_SOURCES = [
+          '../assets/ffmpeg/ffmpeg.min.js',
+          'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js',
+          'https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js',
+        ];
+
+        const FFMPEG_CORE_SOURCES = [
+          '../assets/ffmpeg/ffmpeg-core.js',
+          '/assets/ffmpeg/ffmpeg-core.js',
+          'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+          'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+        ];
+
+        const SUPPORTED_INPUTS = new Set(['mp3', 'wav', 'm4a', 'aac', 'ogg', 'mp4', 'mov']);
+        const MIME_BY_EXTENSION = {
+          mp3: 'audio/mpeg',
+          wav: 'audio/wav',
+          aac: 'audio/aac',
+          ogg: 'audio/ogg',
+          m4a: 'audio/mp4',
+          flac: 'audio/flac',
+        };
+
+        let selectedFile = null;
+        let sourceUrl = '';
+        let outputUrl = '';
+        let ffmpeg = null;
+        let ffmpegFetchFile = null;
+        let ffmpegReady = false;
+        let loadingFFmpeg = false;
+        let converting = false;
+
+        const loadScript = (src) =>
+          new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = () => resolve(src);
+            script.onerror = () => reject(new Error('Script load failed'));
+            document.head.appendChild(script);
+          });
+
+        const getExtension = (name) => {
+          const parts = String(name || '').toLowerCase().split('.');
+          return parts.length > 1 ? parts.pop() : '';
+        };
+
+        const formatBytes = (bytes) => {
+          if (!Number.isFinite(bytes)) return 'Unknown size';
+          const units = ['B', 'KB', 'MB', 'GB'];
+          let value = bytes;
+          let index = 0;
+          while (value >= 1024 && index < units.length - 1) {
+            value /= 1024;
+            index += 1;
+          }
+          return `${value.toFixed(value >= 10 || index === 0 ? 0 : 2)} ${units[index]}`;
+        };
+
+        const setStatus = (text) => {
+          statusText.textContent = text;
+        };
+
+        const setProgress = (value) => {
+          const safe = Math.max(0, Math.min(100, Math.round(value)));
+          progressBar.value = safe;
+          progressText.textContent = `Processing progress: ${safe}%`;
+        };
+
+        const setWorking = (isWorking) => {
+          converting = isWorking;
+          spinner.classList.toggle('hidden', !isWorking);
+          updateButtonState();
+        };
+
+        const updateButtonState = () => {
+          convertBtn.disabled = !selectedFile || !ffmpegReady || loadingFFmpeg || converting;
+        };
+
+        const resetOutput = () => {
+          if (outputUrl) {
+            URL.revokeObjectURL(outputUrl);
+            outputUrl = '';
+          }
+          outputPreview.src = '';
+          outputPreview.classList.add('hidden');
+          outputInfo.textContent = 'No converted file yet.';
+          downloadLink.href = '#';
+          downloadLink.setAttribute('aria-disabled', 'true');
+          downloadLink.setAttribute('download', '');
+          setProgress(0);
+        };
+
+        const ensureFFmpegLibrary = async () => {
+          if (window.FFmpeg) return;
+          for (const src of FFMPEG_LIB_SOURCES) {
+            try {
+              await loadScript(src);
+              if (window.FFmpeg) return;
+            } catch (error) {
+              // Try next source
+            }
+          }
+          throw new Error('Unable to load FFmpeg library.');
+        };
+
+        const loadFFmpeg = async () => {
+          if (ffmpegReady || loadingFFmpeg) return;
+          loadingFFmpeg = true;
+          updateButtonState();
+
+          try {
+            await ensureFFmpegLibrary();
+            const { createFFmpeg, fetchFile } = window.FFmpeg;
+            ffmpegFetchFile = fetchFile;
+
+            for (const corePath of FFMPEG_CORE_SOURCES) {
+              const instance = createFFmpeg({ log: false, corePath });
+              instance.setProgress(({ ratio }) => {
+                const pct = (Number.isFinite(ratio) ? ratio : 0) * 100;
+                setProgress(pct);
+              });
+
+              try {
+                await instance.load();
+                ffmpeg = instance;
+                ffmpegReady = true;
+                break;
+              } catch (error) {
+                // fallback to next core source
+              }
+            }
+
+            if (!ffmpegReady) {
+              throw new Error('Unable to load FFmpeg core from local/CDN sources.');
+            }
+
+            setStatus('Ready. Upload a file to convert.');
+          } catch (error) {
+            setStatus(error.message || 'Failed to initialize FFmpeg.');
+          } finally {
+            loadingFFmpeg = false;
+            updateButtonState();
+          }
+        };
+
+        const selectFile = (file) => {
+          resetOutput();
+
+          if (sourceUrl) {
+            URL.revokeObjectURL(sourceUrl);
+            sourceUrl = '';
+          }
+
+          if (!file) {
+            selectedFile = null;
+            sourcePreview.src = '';
+            sourcePreview.classList.add('hidden');
+            sourceInfo.textContent = 'No file selected.';
+            setStatus(ffmpegReady ? 'Ready. Upload a file to convert.' : 'Loading FFmpeg engine…');
+            updateButtonState();
+            return;
+          }
+
+          const ext = getExtension(file.name);
+          if (!SUPPORTED_INPUTS.has(ext)) {
+            selectedFile = null;
+            sourcePreview.src = '';
+            sourcePreview.classList.add('hidden');
+            sourceInfo.textContent = 'No file selected.';
+            setStatus('Unsupported file type. Please upload MP3, WAV, M4A, AAC, OGG, MP4, or MOV.');
+            updateButtonState();
+            return;
+          }
+
+          selectedFile = file;
+          sourceUrl = URL.createObjectURL(file);
+          sourcePreview.src = sourceUrl;
+          sourcePreview.classList.remove('hidden');
+          sourceInfo.textContent = `Selected: ${file.name} • ${formatBytes(file.size)}`;
+          setStatus(ffmpegReady ? 'Ready to convert.' : 'Loading FFmpeg engine…');
+          updateButtonState();
+        };
+
+        const getConvertArgs = (inputName, outputName, format) => {
+          if (format === 'mp3') return ['-i', inputName, '-vn', '-codec:a', 'libmp3lame', '-q:a', '2', outputName];
+          if (format === 'wav') return ['-i', inputName, '-vn', '-acodec', 'pcm_s16le', outputName];
+          if (format === 'aac') return ['-i', inputName, '-vn', '-c:a', 'aac', '-b:a', '192k', outputName];
+          if (format === 'ogg') return ['-i', inputName, '-vn', '-c:a', 'libvorbis', '-q:a', '4', outputName];
+          if (format === 'm4a') return ['-i', inputName, '-vn', '-c:a', 'aac', '-b:a', '192k', outputName];
+          if (format === 'flac') return ['-i', inputName, '-vn', '-c:a', 'flac', outputName];
+          return ['-i', inputName, '-vn', outputName];
+        };
+
+        const convertAudio = async () => {
+          if (!selectedFile || !ffmpegReady || !ffmpegFetchFile || !ffmpeg) return;
+
+          setWorking(true);
+          setStatus('Converting your file…');
+          setProgress(1);
+
+          const inputExt = getExtension(selectedFile.name) || 'mp3';
+          const outputFormat = formatSelect.value;
+          const inputName = `input.${inputExt}`;
+          const outputName = `converted.${outputFormat}`;
+
+          try {
+            ffmpeg.FS('writeFile', inputName, await ffmpegFetchFile(selectedFile));
+            const args = getConvertArgs(inputName, outputName, outputFormat);
+            await ffmpeg.run(...args);
+
+            const data = ffmpeg.FS('readFile', outputName);
+            const mime = MIME_BY_EXTENSION[outputFormat] || 'audio/mpeg';
+            const blob = new Blob([data.buffer], { type: mime });
+
+            if (outputUrl) URL.revokeObjectURL(outputUrl);
+            outputUrl = URL.createObjectURL(blob);
+
+            outputPreview.src = outputUrl;
+            outputPreview.classList.remove('hidden');
+            outputInfo.textContent = `Output format: ${outputFormat.toUpperCase()} • File size: ${formatBytes(blob.size)}`;
+            downloadLink.href = outputUrl;
+            downloadLink.setAttribute('download', `converted-audio.${outputFormat}`);
+            downloadLink.setAttribute('aria-disabled', 'false');
+
+            setProgress(100);
+            setStatus('Conversion complete. Your file is ready to preview and download.');
+
+            ffmpeg.FS('unlink', inputName);
+            ffmpeg.FS('unlink', outputName);
+          } catch (error) {
+            setStatus(error.message || 'Conversion failed. Please try a different file/format.');
+          } finally {
+            setWorking(false);
+          }
+        };
+
+        input.addEventListener('change', () => selectFile(input.files && input.files[0]));
+
+        ['dragenter', 'dragover'].forEach((eventName) => {
+          sourceCard.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            sourceCard.classList.add('drop-active');
+          });
+        });
+
+        ['dragleave', 'drop'].forEach((eventName) => {
+          sourceCard.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            sourceCard.classList.remove('drop-active');
+          });
+        });
+
+        sourceCard.addEventListener('drop', (event) => {
+          const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+          if (!file) return;
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          input.files = dt.files;
+          selectFile(file);
+        });
+
+        convertBtn.addEventListener('click', convertAudio);
+        loadFFmpeg();
+      })();
+    </script>
   </body>
 </html>
