@@ -207,6 +207,11 @@
           convertButton.disabled = !hasSource || !target;
         }
 
+        const FFMPEG_CORE_SOURCES = [
+          '../assets/ffmpeg/ffmpeg-core.js',
+          'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js'
+        ];
+
         async function loadFFmpeg() {
           if (ffmpegReady) return;
           if (loadPromise) return loadPromise;
@@ -219,13 +224,8 @@
             const { createFFmpeg, fetchFile: ffmpegFetchFile } = window.FFmpeg;
             fetchFile = ffmpegFetchFile;
 
-            const coreSources = [
-              '../assets/ffmpeg/ffmpeg-core.js',
-              'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js'
-            ];
-
             let lastError = null;
-            for (const corePath of coreSources) {
+            for (const corePath of FFMPEG_CORE_SOURCES) {
               const instance = createFFmpeg({
                 log: true,
                 corePath
@@ -251,10 +251,11 @@
               throw lastError || new Error('FFmpeg core failed to load.');
             }
 
-            setMessage('FFmpeg ready. Upload a video to convert.');
+            setMessage(sourceFile ? 'FFmpeg ready. Click Convert Aspect Ratio.' : 'FFmpeg ready. Upload a video to convert.');
             updateActionState();
           })().catch((error) => {
             setMessage(error.message || 'Unable to initialize FFmpeg. Please refresh and try again.');
+            convertButton.disabled = true;
             throw error;
           });
 
@@ -287,19 +288,44 @@
             setMessage('Converting video... Keep this tab open.');
             await ffmpeg.FS('writeFile', inputName, await fetchFile(sourceFile));
 
-            await ffmpeg.run(
+            const filter = `scale=${target.width}:${target.height}:force_original_aspect_ratio=decrease,pad=${target.width}:${target.height}:(ow-iw)/2:(oh-ih)/2`;
+            const primaryArgs = [
               '-i', inputName,
-              '-vf', `scale=${target.width}:${target.height}:force_original_aspect_ratio=decrease,pad=${target.width}:${target.height}:(ow-iw)/2:(oh-ih)/2`,
+              '-vf', filter,
+              '-map', '0:v:0',
+              '-map', '0:a?',
               '-c:v', 'libx264',
               '-preset', 'veryfast',
               '-crf', '23',
               '-c:a', 'aac',
               '-movflags', '+faststart',
+              '-pix_fmt', 'yuv420p',
+              '-y',
               outputName
-            );
+            ];
+
+            try {
+              await ffmpeg.run(...primaryArgs);
+            } catch (primaryError) {
+              const fallbackArgs = [
+                '-i', inputName,
+                '-vf', filter,
+                '-map', '0:v:0',
+                '-map', '0:a?',
+                '-c:v', 'mpeg4',
+                '-q:v', '4',
+                '-c:a', 'aac',
+                '-b:a', '128k',
+                '-movflags', '+faststart',
+                '-pix_fmt', 'yuv420p',
+                '-y',
+                outputName
+              ];
+              await ffmpeg.run(...fallbackArgs);
+            }
 
             const outputData = ffmpeg.FS('readFile', outputName);
-            const blob = new Blob([outputData.buffer], { type: 'video/mp4' });
+            const blob = new Blob([outputData], { type: 'video/mp4' });
             resultUrl = URL.createObjectURL(blob);
 
             convertedPreview.src = resultUrl;
@@ -351,7 +377,7 @@
 
           clearResult();
           setProgress(0);
-          setMessage(`Ready: ${file.name}`);
+          setMessage(ffmpegReady ? `Ready: ${file.name}` : `Selected: ${file.name}. Loading FFmpeg...`);
           updateActionState();
         });
 
@@ -365,6 +391,10 @@
 
         updateCustomVisibility();
         updateActionState();
+
+        loadFFmpeg().catch(() => {
+          // error message is already set in loadFFmpeg
+        });
       })();
     </script>
   </body>
