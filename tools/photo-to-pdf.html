@@ -268,7 +268,7 @@
 
         <div id="pdf-preview-wrap" class="pdf-preview-wrap">
           <h3>Generated PDF Preview</h3>
-          <iframe id="pdf-preview" class="pdf-preview-frame" title="Generated PDF preview"></iframe>
+          <object id="pdf-preview" class="pdf-preview-frame" type="application/pdf" aria-label="Generated PDF preview"></object>
         </div>
       </section>
 
@@ -497,18 +497,14 @@
               await nextFrame();
             }
 
-            generatedPdfBlob = pdf.output("blob");
+            generatedPdfBlob = buildPdfBlob(pdf);
             if (!(generatedPdfBlob instanceof Blob) || generatedPdfBlob.size === 0) {
               throw new Error("Invalid PDF output");
             }
 
-            if (generatedPdfBlob.type !== "application/pdf") {
-              generatedPdfBlob = new Blob([generatedPdfBlob], { type: "application/pdf" });
-            }
-
             revokeGeneratedPdfUrl();
             generatedPdfUrl = URL.createObjectURL(generatedPdfBlob);
-            refs.pdfPreview.src = generatedPdfUrl;
+            refs.pdfPreview.data = generatedPdfUrl;
             refs.downloadPdf.href = generatedPdfUrl;
             refs.downloadPdf.download = "converted.pdf";
             refs.downloadPdf.setAttribute("aria-disabled", "false");
@@ -607,6 +603,20 @@
           return `${value.toFixed(2)} ${units[unitIndex]}`;
         }
 
+        function buildPdfBlob(pdf) {
+          const buffer = pdf.output("arraybuffer");
+          if (!(buffer instanceof ArrayBuffer) || buffer.byteLength === 0) {
+            throw new Error("Invalid PDF buffer");
+          }
+
+          const header = new TextDecoder().decode(buffer.slice(0, 5));
+          if (header !== "%PDF-") {
+            throw new Error("Generated file is not a PDF");
+          }
+
+          return new Blob([buffer], { type: "application/pdf" });
+        }
+
         function downloadPdf(event) {
           event.preventDefault();
 
@@ -631,6 +641,7 @@
             URL.revokeObjectURL(generatedPdfUrl);
             generatedPdfUrl = "";
           }
+          refs.pdfPreview.removeAttribute("data");
         }
 
         function nextFrame() {
