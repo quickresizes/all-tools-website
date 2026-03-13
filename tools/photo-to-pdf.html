@@ -13,172 +13,52 @@
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
     <style>
-      .photo-pdf-grid {
+      .photo-pdf-tool {
         display: grid;
-        grid-template-columns: 1.2fr 1fr;
         gap: 1rem;
       }
 
-      .upload-box.dragover {
-        border-color: var(--primary);
-        background: color-mix(in srgb, var(--primary-soft) 45%, var(--surface-2));
-      }
-
-      .preview-list {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+      .preview-grid {
         display: grid;
-        gap: 0.8rem;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.75rem;
       }
 
       .preview-item {
         border: 1px solid var(--border);
-        border-radius: 14px;
+        border-radius: 12px;
         background: var(--surface);
-        padding: 0.65rem;
-        display: grid;
-        grid-template-columns: 78px 1fr auto;
-        gap: 0.7rem;
-        align-items: center;
-        cursor: grab;
+        overflow: hidden;
       }
 
-      .preview-item.dragging {
-        opacity: 0.45;
-      }
-
-      .preview-thumb {
-        width: 78px;
-        height: 78px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
+      .preview-item img {
+        width: 100%;
+        height: 100px;
         object-fit: cover;
-        background: var(--surface-2);
+        display: block;
       }
 
-      .preview-name {
+      .preview-item p {
         margin: 0;
-        font-weight: 700;
+        padding: 0.45rem 0.5rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+        text-align: center;
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .preview-meta {
-        margin: 0.2rem 0 0;
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
-
-      .remove-btn {
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        background: var(--surface-2);
-        color: var(--text);
-        padding: 0.45rem 0.7rem;
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      .remove-btn:hover {
-        border-color: #ef4444;
-        color: #ef4444;
-      }
-
-      .settings-grid {
-        display: grid;
-        gap: 0.9rem;
-      }
-
-      .settings-grid label {
-        display: inline-block;
-        margin-bottom: 0.4rem;
-        font-weight: 600;
-      }
-
-      .progress-wrap {
-        margin-top: 1rem;
-        display: none;
-      }
-
-      .progress-wrap.active {
-        display: block;
-      }
-
-      .spinner {
-        width: 20px;
-        height: 20px;
-        border: 3px solid color-mix(in srgb, var(--border) 75%, transparent);
-        border-top-color: var(--primary);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        display: inline-block;
-        vertical-align: middle;
-        margin-right: 0.45rem;
-      }
-
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      .progress-bar {
-        width: 100%;
-        height: 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--surface-2);
-        overflow: hidden;
-        margin-top: 0.45rem;
-      }
-
-      .progress-fill {
-        height: 100%;
-        width: 0;
-        background: linear-gradient(90deg, var(--primary), var(--accent));
-        transition: width 0.25s ease;
-      }
-
-      .output-card {
-        margin-top: 1rem;
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 0.9rem;
-        background: var(--surface-2);
-        display: none;
-      }
-
-      .output-card.active {
-        display: block;
-      }
-
-      .output-card p {
-        margin: 0.35rem 0;
-      }
-
-      .pdf-preview-wrap {
-        margin-top: 1rem;
-        display: none;
-      }
-
-      .pdf-preview-wrap.active {
-        display: block;
       }
 
       .pdf-preview-frame {
         width: 100%;
-        height: 500px;
+        height: 520px;
         border: 1px solid var(--border);
-        border-radius: 14px;
+        border-radius: 12px;
         background: var(--surface);
       }
 
-      @media (max-width: 950px) {
-        .photo-pdf-grid {
-          grid-template-columns: 1fr;
-        }
+      .hidden {
+        display: none;
       }
     </style>
   </head>
@@ -188,117 +68,60 @@
     <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Photo to PDF</h1>
-        <p class="meta-text">Upload multiple photos, set your PDF preferences, and create a downloadable PDF directly in your browser.</p>
+        <p class="meta-text">Upload one or more photos and convert them into a real PDF directly in your browser.</p>
       </section>
 
       <section class="tool-panel tool-content">
         <h2>Photo to PDF Converter</h2>
-        <p class="meta-text">This tool runs fully client-side and works on GitHub Pages with no backend required.</p>
+        <p class="meta-text">Supports JPG, JPEG, PNG, and WEBP. Works 100% client-side on GitHub Pages with no backend.</p>
 
-        <div class="photo-pdf-grid">
+        <div class="photo-pdf-tool">
+          <div class="upload-box">
+            <label for="image-upload">Upload Photos (JPG, JPEG, PNG, WEBP)</label>
+            <input id="image-upload" class="file-input" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple />
+          </div>
+
+          <div class="tool-actions button-row">
+            <button id="create-pdf" class="btn" type="button" disabled>Create PDF</button>
+            <button id="download-pdf" class="btn btn-secondary" type="button" disabled>Download PDF</button>
+          </div>
+
+          <p id="status-message" class="meta-text">Upload images to begin.</p>
+
           <div>
-            <div id="drop-zone" class="upload-box" aria-label="Upload images by dragging and dropping">
-              <label for="image-upload">Upload images (JPG, JPEG, PNG, WEBP)</label>
-              <input id="image-upload" class="file-input" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple />
-              <p class="meta-text">Drag &amp; drop images here or choose files from your device.</p>
-            </div>
-
-            <div class="tool-actions button-row">
-              <button id="create-pdf" class="btn" type="button" disabled>Create PDF</button>
-            </div>
-
-            <div id="progress-wrap" class="progress-wrap" aria-live="polite">
-              <p class="meta-text"><span class="spinner" aria-hidden="true"></span><span id="progress-text">Preparing conversion...</span></p>
-              <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                <div id="progress-fill" class="progress-fill"></div>
-              </div>
-            </div>
-
-            <div id="output-card" class="output-card" aria-live="polite">
-              <p><strong>PDF file size:</strong> <span id="pdf-size">-</span></p>
-              <p><strong>Preview:</strong> PDF is ready and shown below.</p>
-              <a id="download-pdf" class="btn btn-secondary" href="#" download="photo-to-pdf.pdf">Download PDF</a>
-            </div>
-
-            <p id="tool-message" class="meta-text">Upload one or more photos to start.</p>
+            <h3>Image Thumbnails</h3>
+            <div id="preview-grid" class="preview-grid"></div>
           </div>
 
-          <div class="preview-card">
-            <h3>Image Preview &amp; Order</h3>
-            <p class="meta-text">Drag items to reorder pages. Remove anything you don't want in the final PDF.</p>
-            <ul id="preview-list" class="preview-list"></ul>
+          <div id="pdf-result" class="hidden">
+            <p><strong>PDF file size:</strong> <span id="pdf-size">-</span></p>
+            <h3>PDF Preview</h3>
+            <iframe id="pdf-preview" class="pdf-preview-frame" title="Generated PDF Preview"></iframe>
           </div>
-        </div>
-
-        <div class="settings-grid tool-actions">
-          <div>
-            <label for="page-size">Page Size</label>
-            <select id="page-size" class="select-input">
-              <option value="a4">A4</option>
-              <option value="a5">A5</option>
-              <option value="letter">Letter</option>
-              <option value="auto">Auto</option>
-            </select>
-          </div>
-          <div>
-            <label for="page-orientation">Page Orientation</label>
-            <select id="page-orientation" class="select-input">
-              <option value="portrait">Portrait</option>
-              <option value="landscape">Landscape</option>
-            </select>
-          </div>
-          <div>
-            <label for="page-margin">Margins</label>
-            <select id="page-margin" class="select-input">
-              <option value="0">No Margin</option>
-              <option value="14">Small</option>
-              <option value="28" selected>Medium</option>
-              <option value="42">Large</option>
-            </select>
-          </div>
-          <div>
-            <label for="image-fit">Image Fit</label>
-            <select id="image-fit" class="select-input">
-              <option value="fit">Fit to Page</option>
-              <option value="original">Original Size</option>
-              <option value="stretch">Stretch to Page</option>
-            </select>
-          </div>
-        </div>
-
-        <div id="pdf-preview-wrap" class="pdf-preview-wrap">
-          <h3>Generated PDF Preview</h3>
-          <object id="pdf-preview" class="pdf-preview-frame" type="application/pdf" aria-label="Generated PDF preview"></object>
         </div>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>How to Convert Photos to PDF</h2>
         <ul>
-          <li>Upload one or multiple images using file picker or drag-and-drop.</li>
-          <li>Reorder images and remove any page you no longer need.</li>
-          <li>Select page size, orientation, margins, and image fitting behavior.</li>
-          <li>Click <strong>Create PDF</strong> and download your generated document.</li>
+          <li>Upload one or more photos from your device.</li>
+          <li>Check the thumbnail previews before converting.</li>
+          <li>Click <strong>Create PDF</strong> to generate a multi-page PDF.</li>
+          <li>Preview the PDF and click <strong>Download PDF</strong>.</li>
         </ul>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>Features of the Photo to PDF Tool</h2>
         <ul>
-          <li>Multi-image upload with JPG, JPEG, PNG, and WEBP support.</li>
-          <li>Instant thumbnail previews with drag-and-drop page ordering.</li>
-          <li>PDF customization for size, orientation, margin, and fit mode.</li>
-          <li>Browser-side PDF conversion powered by jsPDF for privacy and speed.</li>
-          <li>Progress feedback and downloadable output file information.</li>
+          <li>Multi-image upload support for JPG, JPEG, PNG, and WEBP.</li>
+          <li>Thumbnail image previews before conversion.</li>
+          <li>Real PDF creation using jsPDF and <code>pdf.output(&quot;blob&quot;)</code>.</li>
+          <li>In-page PDF preview using an iframe and easy download.</li>
         </ul>
       </section>
-
-      <section class="tool-panel tool-description">
-        <h2>Why Use This Tool</h2>
-        <p>Photo to PDF is fast, private, and easy to use. Since everything happens in your browser, your files are not uploaded to a server.</p>
-        <p>It works great for assignments, office paperwork, receipts, portfolios, and any situation where multiple images need to become one clean PDF.</p>
-      </section>
     </main>
+
     <footer id="site-footer"></footer>
 
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -307,269 +130,154 @@
     <script>
       (() => {
         const allowedTypes = new Set(["image/jpeg", "image/jpg", "image/png", "image/webp"]);
-        const pxToPt = 0.75;
-        let images = [];
-        let dragId = null;
-        let generatedPdfBlob = null;
-        let generatedPdfUrl = "";
+        const images = [];
+        let pdfBlob = null;
+        let pdfUrl = "";
 
         const refs = {
           upload: document.getElementById("image-upload"),
-          dropZone: document.getElementById("drop-zone"),
-          previewList: document.getElementById("preview-list"),
           createPdf: document.getElementById("create-pdf"),
           downloadPdf: document.getElementById("download-pdf"),
-          message: document.getElementById("tool-message"),
-          progressWrap: document.getElementById("progress-wrap"),
-          progressFill: document.getElementById("progress-fill"),
-          progressText: document.getElementById("progress-text"),
-          outputCard: document.getElementById("output-card"),
-          pdfPreviewWrap: document.getElementById("pdf-preview-wrap"),
-          pdfPreview: document.getElementById("pdf-preview"),
+          previewGrid: document.getElementById("preview-grid"),
+          status: document.getElementById("status-message"),
+          pdfResult: document.getElementById("pdf-result"),
           pdfSize: document.getElementById("pdf-size"),
-          pageSize: document.getElementById("page-size"),
-          orientation: document.getElementById("page-orientation"),
-          margin: document.getElementById("page-margin"),
-          fit: document.getElementById("image-fit")
+          pdfPreview: document.getElementById("pdf-preview")
         };
 
-        refs.upload.addEventListener("change", (event) => handleFiles(event.target.files));
-
-        ["dragenter", "dragover"].forEach((eventName) => {
-          refs.dropZone.addEventListener(eventName, (event) => {
-            event.preventDefault();
-            refs.dropZone.classList.add("dragover");
-          });
-        });
-
-        ["dragleave", "drop"].forEach((eventName) => {
-          refs.dropZone.addEventListener(eventName, (event) => {
-            event.preventDefault();
-            refs.dropZone.classList.remove("dragover");
-          });
-        });
-
-        refs.dropZone.addEventListener("drop", (event) => {
-          handleFiles(event.dataTransfer.files);
-        });
-
+        refs.upload.addEventListener("change", onImagesSelected);
         refs.createPdf.addEventListener("click", createPdf);
         refs.downloadPdf.addEventListener("click", downloadPdf);
 
-        function handleFiles(fileList) {
-          const fileArray = Array.from(fileList || []);
-          if (!fileArray.length) {
+        function onImagesSelected(event) {
+          clearPdfResult();
+          images.length = 0;
+          refs.previewGrid.innerHTML = "";
+
+          const files = Array.from(event.target.files || []);
+          if (!files.length) {
+            refs.status.textContent = "Upload images to begin.";
+            refs.createPdf.disabled = true;
             return;
           }
 
-          const validFiles = fileArray.filter((file) => allowedTypes.has(file.type));
-          const skippedCount = fileArray.length - validFiles.length;
+          const validFiles = files.filter((file) => allowedTypes.has(file.type));
+          const skipped = files.length - validFiles.length;
 
-          const newItems = validFiles.map((file, index) => ({
-            id: `${Date.now()}-${Math.random()}-${index}`,
-            file,
-            url: URL.createObjectURL(file)
-          }));
-
-          images = [...images, ...newItems];
-          refs.upload.value = "";
-          if (skippedCount > 0) {
-            refs.message.textContent = `${skippedCount} file(s) were skipped. Supported formats: JPG, JPEG, PNG, WEBP.`;
-          } else {
-            refs.message.textContent = `${validFiles.length} image(s) added.`;
+          for (const file of validFiles) {
+            const imageUrl = URL.createObjectURL(file);
+            images.push({ file, imageUrl });
+            addThumbnail(file, imageUrl);
           }
-          renderList();
-        }
-
-        function renderList() {
-          refs.previewList.innerHTML = "";
-
-          images.forEach((item) => {
-            const li = document.createElement("li");
-            li.className = "preview-item";
-            li.draggable = true;
-            li.dataset.id = item.id;
-
-            li.addEventListener("dragstart", () => {
-              dragId = item.id;
-              li.classList.add("dragging");
-            });
-
-            li.addEventListener("dragend", () => {
-              dragId = null;
-              li.classList.remove("dragging");
-            });
-
-            li.addEventListener("dragover", (event) => {
-              event.preventDefault();
-            });
-
-            li.addEventListener("drop", (event) => {
-              event.preventDefault();
-              if (!dragId || dragId === item.id) {
-                return;
-              }
-              const fromIndex = images.findIndex((image) => image.id === dragId);
-              const toIndex = images.findIndex((image) => image.id === item.id);
-              const [moved] = images.splice(fromIndex, 1);
-              images.splice(toIndex, 0, moved);
-              renderList();
-            });
-
-            const thumb = document.createElement("img");
-            thumb.className = "preview-thumb";
-            thumb.src = item.url;
-            thumb.alt = item.file.name;
-
-            const infoWrap = document.createElement("div");
-            const name = document.createElement("p");
-            name.className = "preview-name";
-            name.textContent = item.file.name;
-
-            const meta = document.createElement("p");
-            meta.className = "preview-meta";
-            meta.textContent = `${formatSize(item.file.size)}`;
-
-            infoWrap.append(name, meta);
-
-            const removeButton = document.createElement("button");
-            removeButton.type = "button";
-            removeButton.className = "remove-btn";
-            removeButton.textContent = "Remove";
-            removeButton.addEventListener("click", () => {
-              URL.revokeObjectURL(item.url);
-              images = images.filter((image) => image.id !== item.id);
-              renderList();
-            });
-
-            li.append(thumb, infoWrap, removeButton);
-            refs.previewList.appendChild(li);
-          });
 
           refs.createPdf.disabled = images.length === 0;
-          if (!images.length) {
-            refs.message.textContent = "Upload one or more photos to start.";
-          }
+          refs.status.textContent = images.length
+            ? `${images.length} image(s) ready.${skipped ? ` ${skipped} unsupported file(s) skipped.` : ""}`
+            : "No supported images selected. Use JPG, JPEG, PNG, or WEBP.";
+        }
+
+        function addThumbnail(file, imageUrl) {
+          const item = document.createElement("div");
+          item.className = "preview-item";
+
+          const img = document.createElement("img");
+          img.src = imageUrl;
+          img.alt = file.name;
+
+          const caption = document.createElement("p");
+          caption.textContent = file.name;
+
+          item.append(img, caption);
+          refs.previewGrid.appendChild(item);
         }
 
         async function createPdf() {
           if (!images.length) {
-            refs.message.textContent = "Please add at least one image.";
+            refs.status.textContent = "Please upload at least one supported image.";
             return;
           }
 
           if (!window.jspdf || !window.jspdf.jsPDF) {
-            refs.message.textContent = "PDF library failed to load. Check your internet connection and try again.";
+            refs.status.textContent = "jsPDF failed to load. Please check your connection and try again.";
             return;
           }
 
-          refs.outputCard.classList.remove("active");
-          refs.pdfPreviewWrap.classList.remove("active");
-          refs.progressWrap.classList.add("active");
           refs.createPdf.disabled = true;
-          refs.progressFill.style.width = "0%";
-          refs.progressText.textContent = "Preparing conversion...";
+          refs.status.textContent = "Creating PDF...";
 
           try {
             const { jsPDF } = window.jspdf;
-            const orientation = refs.orientation.value === "landscape" ? "l" : "p";
-            const pageSize = refs.pageSize.value;
-            const margin = Number(refs.margin.value);
-            const fitMode = refs.fit.value;
-
-            let pdf = null;
+            const pdf = new jsPDF({ orientation: "p", unit: "pt", format: "a4" });
 
             for (let index = 0; index < images.length; index += 1) {
-              const image = await loadImage(images[index].url);
-              const imageData = imageToJpegData(image);
+              const loadedImage = await loadImage(images[index].imageUrl);
+              const imageDataUrl = toJpegDataUrl(loadedImage);
+              const pageWidth = pdf.internal.pageSize.getWidth();
+              const pageHeight = pdf.internal.pageSize.getHeight();
+              const maxWidth = pageWidth - 40;
+              const maxHeight = pageHeight - 40;
+              const scale = Math.min(maxWidth / loadedImage.width, maxHeight / loadedImage.height);
+              const drawWidth = loadedImage.width * scale;
+              const drawHeight = loadedImage.height * scale;
+              const x = (pageWidth - drawWidth) / 2;
+              const y = (pageHeight - drawHeight) / 2;
 
-              if (!pdf) {
-                pdf = createPdfDocument(jsPDF, pageSize, orientation, image, margin);
-              } else {
-                addPage(pdf, pageSize, orientation, image, margin);
+              if (index > 0) {
+                pdf.addPage();
               }
 
-              placeImage(pdf, imageData, image.width, image.height, margin, fitMode);
-
-              const progress = Math.round(((index + 1) / images.length) * 100);
-              refs.progressFill.style.width = `${progress}%`;
-              refs.progressText.textContent = `Processing ${index + 1} of ${images.length} images...`;
-              await nextFrame();
+              pdf.addImage(imageDataUrl, "JPEG", x, y, drawWidth, drawHeight);
             }
 
-            generatedPdfBlob = buildPdfBlob(pdf);
-            if (!(generatedPdfBlob instanceof Blob) || generatedPdfBlob.size === 0) {
-              throw new Error("Invalid PDF output");
+            const outputBlob = pdf.output("blob");
+            if (!(outputBlob instanceof Blob) || outputBlob.size === 0) {
+              throw new Error("Invalid PDF output.");
             }
 
-            revokeGeneratedPdfUrl();
-            generatedPdfUrl = URL.createObjectURL(generatedPdfBlob);
-            refs.pdfPreview.data = generatedPdfUrl;
-            refs.downloadPdf.href = generatedPdfUrl;
-            refs.downloadPdf.download = "converted.pdf";
-            refs.downloadPdf.setAttribute("aria-disabled", "false");
-            refs.downloadPdf.classList.remove("disabled");
-            refs.pdfSize.textContent = formatSize(generatedPdfBlob.size);
-            refs.outputCard.classList.add("active");
-            refs.pdfPreviewWrap.classList.add("active");
-            refs.message.textContent = "PDF created successfully.";
+            pdfBlob = outputBlob;
+            if (pdfUrl) {
+              URL.revokeObjectURL(pdfUrl);
+            }
+            pdfUrl = URL.createObjectURL(pdfBlob);
+
+            refs.pdfPreview.src = pdfUrl;
+            refs.pdfSize.textContent = formatFileSize(pdfBlob.size);
+            refs.pdfResult.classList.remove("hidden");
+            refs.downloadPdf.disabled = false;
+            refs.status.textContent = "PDF created successfully.";
           } catch (error) {
-            refs.message.textContent = "Something went wrong while creating the PDF. Please try again.";
+            refs.status.textContent = "Unable to create PDF. Please try different images.";
           } finally {
             refs.createPdf.disabled = false;
-            refs.progressWrap.classList.remove("active");
           }
         }
 
-        function createPdfDocument(jsPDF, pageSize, orientation, image, margin) {
-          if (pageSize === "auto") {
-            const baseWidth = image.width * pxToPt + margin * 2;
-            const baseHeight = image.height * pxToPt + margin * 2;
-            const format = orientation === "l" ? [Math.max(baseHeight, 120), Math.max(baseWidth, 120)] : [Math.max(baseWidth, 120), Math.max(baseHeight, 120)];
-            return new jsPDF({ orientation, unit: "pt", format, compress: true });
-          }
-          return new jsPDF({ orientation, unit: "pt", format: pageSize, compress: true });
-        }
-
-        function addPage(pdf, pageSize, orientation, image, margin) {
-          if (pageSize === "auto") {
-            const width = image.width * pxToPt + margin * 2;
-            const height = image.height * pxToPt + margin * 2;
-            const format = orientation === "l" ? [Math.max(height, 120), Math.max(width, 120)] : [Math.max(width, 120), Math.max(height, 120)];
-            pdf.addPage(format, orientation);
+        function downloadPdf() {
+          if (!pdfBlob || !pdfUrl) {
+            refs.status.textContent = "Create a PDF before downloading.";
             return;
           }
-          pdf.addPage(pageSize, orientation);
+
+          const link = document.createElement("a");
+          link.href = pdfUrl;
+          link.download = "photo-to-pdf.pdf";
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
         }
 
-        function placeImage(pdf, imageData, imageWidthPx, imageHeightPx, margin, fitMode) {
-          const pageWidth = pdf.internal.pageSize.getWidth();
-          const pageHeight = pdf.internal.pageSize.getHeight();
-          const printableWidth = Math.max(pageWidth - margin * 2, 1);
-          const printableHeight = Math.max(pageHeight - margin * 2, 1);
-          const imageWidthPt = imageWidthPx * pxToPt;
-          const imageHeightPt = imageHeightPx * pxToPt;
-
-          let drawWidth = printableWidth;
-          let drawHeight = printableHeight;
-
-          if (fitMode === "fit") {
-            const ratio = Math.min(printableWidth / imageWidthPt, printableHeight / imageHeightPt);
-            drawWidth = imageWidthPt * ratio;
-            drawHeight = imageHeightPt * ratio;
-          } else if (fitMode === "original") {
-            const ratio = Math.min(1, printableWidth / imageWidthPt, printableHeight / imageHeightPt);
-            drawWidth = imageWidthPt * ratio;
-            drawHeight = imageHeightPt * ratio;
+        function clearPdfResult() {
+          if (pdfUrl) {
+            URL.revokeObjectURL(pdfUrl);
           }
-
-          const x = margin + (printableWidth - drawWidth) / 2;
-          const y = margin + (printableHeight - drawHeight) / 2;
-
-          pdf.addImage(imageData, "JPEG", x, y, drawWidth, drawHeight, undefined, "FAST");
+          pdfBlob = null;
+          pdfUrl = "";
+          refs.pdfPreview.src = "";
+          refs.pdfResult.classList.add("hidden");
+          refs.downloadPdf.disabled = true;
         }
 
-        function imageToJpegData(image) {
+        function toJpegDataUrl(image) {
           const canvas = document.createElement("canvas");
           canvas.width = image.width;
           canvas.height = image.height;
@@ -580,72 +288,27 @@
           return canvas.toDataURL("image/jpeg", 0.92);
         }
 
-        function loadImage(url) {
+        function loadImage(src) {
           return new Promise((resolve, reject) => {
             const image = new Image();
             image.onload = () => resolve(image);
             image.onerror = reject;
-            image.src = url;
+            image.src = src;
           });
         }
 
-        function formatSize(bytes) {
-          if (!Number.isFinite(bytes) || bytes < 1024) {
-            return `${bytes || 0} B`;
+        function formatFileSize(bytes) {
+          if (!Number.isFinite(bytes) || bytes <= 0) {
+            return "0 B";
           }
-          const units = ["KB", "MB", "GB"];
-          let value = bytes / 1024;
+          const units = ["B", "KB", "MB", "GB"];
+          let value = bytes;
           let unitIndex = 0;
           while (value >= 1024 && unitIndex < units.length - 1) {
             value /= 1024;
             unitIndex += 1;
           }
-          return `${value.toFixed(2)} ${units[unitIndex]}`;
-        }
-
-        function buildPdfBlob(pdf) {
-          const buffer = pdf.output("arraybuffer");
-          if (!(buffer instanceof ArrayBuffer) || buffer.byteLength === 0) {
-            throw new Error("Invalid PDF buffer");
-          }
-
-          const header = new TextDecoder().decode(buffer.slice(0, 5));
-          if (header !== "%PDF-") {
-            throw new Error("Generated file is not a PDF");
-          }
-
-          return new Blob([buffer], { type: "application/pdf" });
-        }
-
-        function downloadPdf(event) {
-          event.preventDefault();
-
-          if (!generatedPdfBlob || !generatedPdfUrl) {
-            refs.message.textContent = "Create a PDF first.";
-            refs.downloadPdf.removeAttribute("href");
-            refs.downloadPdf.setAttribute("aria-disabled", "true");
-            refs.downloadPdf.classList.add("disabled");
-            return;
-          }
-
-          const downloadLink = document.createElement("a");
-          downloadLink.href = generatedPdfUrl;
-          downloadLink.download = "converted.pdf";
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          downloadLink.remove();
-        }
-
-        function revokeGeneratedPdfUrl() {
-          if (generatedPdfUrl) {
-            URL.revokeObjectURL(generatedPdfUrl);
-            generatedPdfUrl = "";
-          }
-          refs.pdfPreview.removeAttribute("data");
-        }
-
-        function nextFrame() {
-          return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+          return `${value.toFixed(value >= 100 || unitIndex === 0 ? 0 : 2)} ${units[unitIndex]}`;
         }
       })();
     </script>
