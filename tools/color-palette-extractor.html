@@ -12,57 +12,773 @@
     <meta property="og:url" content="https://mediatoolspro.com/tools/color-palette-extractor.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      .palette-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+
+      .palette-upload {
+        border: 2px dashed #8ea1ff;
+        border-radius: 16px;
+        padding: 1.25rem;
+        text-align: center;
+        background: #f7f9ff;
+        transition: border-color 0.2s ease, background 0.2s ease;
+      }
+
+      .palette-upload.dragover {
+        border-color: #495eff;
+        background: #eef2ff;
+      }
+
+      .palette-upload p {
+        margin: 0.4rem 0;
+      }
+
+      .hidden-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+      }
+
+      .control-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .control-item label {
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .control-item select,
+      .control-item input {
+        width: 100%;
+        margin-top: 0.3rem;
+      }
+
+      .preview-wrap {
+        border: 1px solid #dfe3f0;
+        border-radius: 14px;
+        overflow: auto;
+        min-height: 220px;
+        max-height: 420px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #image-preview {
+        max-width: 100%;
+        transform-origin: center center;
+        transition: transform 0.2s ease;
+      }
+
+      .palette-strip {
+        display: flex;
+        min-height: 54px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #dfe3f0;
+      }
+
+      .palette-strip > div {
+        flex: 1;
+      }
+
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 0.75rem;
+      }
+
+      .swatch {
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid #dfe3f0;
+        background: #fff;
+      }
+
+      .swatch-color {
+        height: 92px;
+      }
+
+      .swatch-body {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+      }
+
+      .swatch-body code {
+        display: block;
+        margin-top: 0.1rem;
+      }
+
+      .swatch-actions {
+        margin-top: 0.5rem;
+        display: flex;
+        gap: 0.45rem;
+      }
+
+      .small-btn {
+        border: 1px solid #c9d1f5;
+        background: #f5f7ff;
+        color: #202845;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        padding: 0.35rem 0.6rem;
+        cursor: pointer;
+      }
+
+      .export-box,
+      .contrast-table {
+        width: 100%;
+        border: 1px solid #dfe3f0;
+        border-radius: 10px;
+        padding: 0.65rem;
+        background: #fff;
+      }
+
+      .export-box {
+        min-height: 120px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.82rem;
+      }
+
+      .history-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .history-item {
+        border: 1px solid #dfe3f0;
+        border-radius: 10px;
+        background: #fff;
+        padding: 0.45rem;
+        cursor: pointer;
+      }
+
+      .history-item span {
+        font-size: 0.76rem;
+        color: #5f6785;
+        display: block;
+      }
+
+      .history-chip {
+        width: 120px;
+        height: 16px;
+        border-radius: 8px;
+        margin-top: 0.3rem;
+      }
+
+      .gradient-preview {
+        height: 100px;
+        border-radius: 12px;
+        border: 1px solid #dfe3f0;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(18, 21, 36, 0.78);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        max-width: 94vw;
+        max-height: 90vh;
+        overflow: auto;
+        background: #fff;
+        border-radius: 12px;
+        padding: 0.8rem;
+      }
+
+      #modal-image {
+        max-width: 100%;
+        height: auto;
+      }
+
+      @media (max-width: 700px) {
+        .swatch-actions {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
   </head>
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Color Palette Extractor</h1>
-        <p class="meta-text">Extract beautiful color palettes from uploaded images for design projects.</p>
+        <p class="meta-text">Upload an image and generate professional palettes, gradients, exports, and accessibility checks in your browser.</p>
       </section>
 
       <section class="tool-panel tool-content">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
-
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
+        <div class="palette-grid">
           <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
+            <h2>1) Upload & Preview</h2>
+            <div id="drop-zone" class="palette-upload" role="button" tabindex="0" aria-label="Upload image by clicking or dropping file">
+              <p><strong>Drop image here</strong> or click to browse</p>
+              <p class="meta-text">Supports JPG, JPEG, PNG, WEBP, GIF</p>
+              <input id="image-input" class="hidden-input" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" />
+              <button id="browse-btn" type="button" class="btn btn-small">Choose Image</button>
+            </div>
+            <p id="file-status" class="meta-text">No image selected.</p>
+
+            <div class="control-grid">
+              <div class="control-item">
+                <label for="zoom-range">Preview Zoom</label>
+                <input id="zoom-range" type="range" min="1" max="3" step="0.1" value="1" />
+              </div>
+              <div class="control-item">
+                <label for="palette-size">Palette Size</label>
+                <select id="palette-size" class="select-input">
+                  <option value="5">5 colors</option>
+                  <option value="8" selected>8 colors</option>
+                  <option value="10">10 colors</option>
+                </select>
+              </div>
+              <div class="control-item">
+                <label for="palette-type">Palette Type</label>
+                <select id="palette-type" class="select-input">
+                  <option value="dominant">Dominant colors</option>
+                  <option value="vibrant">Vibrant colors</option>
+                  <option value="muted">Muted colors</option>
+                  <option value="pastel">Pastel palette</option>
+                </select>
+              </div>
+              <div class="control-item">
+                <label for="sort-type">Sort Colors By</label>
+                <select id="sort-type" class="select-input">
+                  <option value="frequency">Frequency</option>
+                  <option value="brightness">Brightness</option>
+                  <option value="hue">Hue</option>
+                  <option value="saturation">Saturation</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-top: 0.8rem; display: flex; gap: 0.6rem; flex-wrap: wrap">
+              <button id="extract-btn" class="btn" type="button" disabled>Extract Palette</button>
+              <button id="full-view-btn" class="btn btn-small" type="button" disabled>Full View</button>
+            </div>
           </div>
-          <button class="btn" type="button">Process Now</button>
 
+          <div>
+            <h2>Image Preview</h2>
+            <div class="preview-wrap">
+              <img id="image-preview" alt="Uploaded preview" hidden />
+              <p id="preview-placeholder" class="meta-text">Preview appears here after upload.</p>
+            </div>
+
+            <h3 style="margin-top: 1rem">Palette Strip Preview</h3>
+            <div id="palette-strip" class="palette-strip"></div>
+          </div>
+        </div>
       </section>
 
-      <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>Color Palette Extractor is designed to help you work faster with dependable results. Extract beautiful color palettes from uploaded images for design projects.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Color Palette Extractor is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
+      <section class="tool-panel tool-content">
+        <h2>2) Extracted Colors</h2>
+        <div id="swatches" class="swatches"></div>
       </section>
 
-      <section class="tool-panel tool-description">
-        <h2>Features</h2>
-        <ul>
-          <li>Focused workflow for color palette extractor tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
-        </ul>
+      <section class="tool-panel tool-content">
+        <h2>3) Gradient Generator</h2>
+        <div class="control-grid">
+          <div class="control-item">
+            <label for="gradient-angle">Gradient Angle</label>
+            <input id="gradient-angle" type="range" min="0" max="360" value="90" />
+          </div>
+        </div>
+        <div id="gradient-preview" class="gradient-preview" style="margin: 0.7rem 0"></div>
+        <textarea id="gradient-code" class="export-box" readonly></textarea>
+        <div style="margin-top: 0.5rem"><button id="copy-gradient" class="btn btn-small" type="button">Copy Gradient CSS</button></div>
+      </section>
+
+      <section class="tool-panel tool-content">
+        <h2>4) Downloads & Exports</h2>
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.8rem">
+          <button id="download-png" class="btn btn-small" type="button">Download PNG Palette</button>
+          <button id="download-json" class="btn btn-small" type="button">Download JSON</button>
+          <button id="download-css-vars" class="btn btn-small" type="button">Download CSS Variables</button>
+        </div>
+
+        <h3>CSS</h3>
+        <textarea id="css-export" class="export-box" readonly></textarea>
+        <h3 style="margin-top: 0.8rem">Tailwind Colors</h3>
+        <textarea id="tailwind-export" class="export-box" readonly></textarea>
+        <h3 style="margin-top: 0.8rem">SCSS Variables</h3>
+        <textarea id="scss-export" class="export-box" readonly></textarea>
+      </section>
+
+      <section class="tool-panel tool-content">
+        <h2>5) Accessibility & History</h2>
+        <h3>Contrast Ratios</h3>
+        <div id="contrast-table" class="contrast-table meta-text">Extract a palette to calculate contrast ratios.</div>
+
+        <h3 style="margin-top: 1rem">Recent Palettes (Last 5)</h3>
+        <div id="history-list" class="history-list"></div>
       </section>
     </main>
+
+    <div id="image-modal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <button id="close-modal" class="btn btn-small" type="button">Close</button>
+        <div style="margin-top: 0.5rem"><img id="modal-image" alt="Full size uploaded preview" /></div>
+      </div>
+    </div>
+
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script>
+      (() => {
+        const MAX_HISTORY = 5;
+        const HISTORY_KEY = 'mtp_color_palette_history_v1';
+        const allowed = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+
+        const els = {
+          dropZone: document.getElementById('drop-zone'),
+          imageInput: document.getElementById('image-input'),
+          browseBtn: document.getElementById('browse-btn'),
+          fileStatus: document.getElementById('file-status'),
+          imagePreview: document.getElementById('image-preview'),
+          previewPlaceholder: document.getElementById('preview-placeholder'),
+          zoomRange: document.getElementById('zoom-range'),
+          paletteSize: document.getElementById('palette-size'),
+          paletteType: document.getElementById('palette-type'),
+          sortType: document.getElementById('sort-type'),
+          extractBtn: document.getElementById('extract-btn'),
+          fullViewBtn: document.getElementById('full-view-btn'),
+          swatches: document.getElementById('swatches'),
+          paletteStrip: document.getElementById('palette-strip'),
+          gradientAngle: document.getElementById('gradient-angle'),
+          gradientPreview: document.getElementById('gradient-preview'),
+          gradientCode: document.getElementById('gradient-code'),
+          copyGradient: document.getElementById('copy-gradient'),
+          downloadPng: document.getElementById('download-png'),
+          downloadJson: document.getElementById('download-json'),
+          downloadCssVars: document.getElementById('download-css-vars'),
+          cssExport: document.getElementById('css-export'),
+          tailwindExport: document.getElementById('tailwind-export'),
+          scssExport: document.getElementById('scss-export'),
+          contrastTable: document.getElementById('contrast-table'),
+          historyList: document.getElementById('history-list'),
+          imageModal: document.getElementById('image-modal'),
+          modalImage: document.getElementById('modal-image'),
+          closeModal: document.getElementById('close-modal')
+        };
+
+        const state = {
+          image: null,
+          imageName: 'palette',
+          sourceData: null,
+          palette: []
+        };
+
+        function showStatus(message) {
+          els.fileStatus.textContent = message;
+        }
+
+        function isSupported(file) {
+          const extOk = /\.(jpe?g|png|webp|gif)$/i.test(file.name || '');
+          return allowed.has(file.type) || extOk;
+        }
+
+        function handleFile(file) {
+          if (!file || !isSupported(file)) {
+            showStatus('Invalid file type. Please use JPG, JPEG, PNG, WEBP, or GIF.');
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => {
+            const img = new Image();
+            img.onload = () => {
+              state.image = img;
+              state.imageName = file.name.replace(/\.[^.]+$/, '') || 'palette';
+              els.imagePreview.src = img.src;
+              els.modalImage.src = img.src;
+              els.imagePreview.hidden = false;
+              els.previewPlaceholder.hidden = true;
+              els.extractBtn.disabled = false;
+              els.fullViewBtn.disabled = false;
+              showStatus(`Loaded: ${file.name} (${img.naturalWidth} × ${img.naturalHeight})`);
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        }
+
+        function rgbToHsl(r, g, b) {
+          r /= 255; g /= 255; b /= 255;
+          const max = Math.max(r, g, b), min = Math.min(r, g, b);
+          let h, s;
+          const l = (max + min) / 2;
+          if (max === min) {
+            h = 0; s = 0;
+          } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+              case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+              case g: h = (b - r) / d + 2; break;
+              default: h = (r - g) / d + 4;
+            }
+            h *= 60;
+          }
+          return { h: Math.round(h), s: Math.round(s * 100), l: Math.round(l * 100) };
+        }
+
+        function toHex(v) {
+          return v.toString(16).padStart(2, '0');
+        }
+
+        function rgbToHex(r, g, b) {
+          return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
+        }
+
+        function scoreColor(color, mode) {
+          const sat = color.s / 100;
+          const light = color.l / 100;
+          if (mode === 'vibrant') return color.count * (0.6 + sat) * (1 - Math.abs(light - 0.52));
+          if (mode === 'muted') return color.count * (1.2 - sat) * (1 - Math.abs(light - 0.5));
+          if (mode === 'pastel') return color.count * (0.3 + (1 - Math.abs(light - 0.82))) * (0.35 + (1 - Math.abs(sat - 0.35)));
+          return color.count;
+        }
+
+        function extractPalette() {
+          if (!state.image) return;
+
+          const maxDimension = 240;
+          const scale = Math.min(1, maxDimension / Math.max(state.image.naturalWidth, state.image.naturalHeight));
+          const w = Math.max(1, Math.floor(state.image.naturalWidth * scale));
+          const h = Math.max(1, Math.floor(state.image.naturalHeight * scale));
+
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          ctx.drawImage(state.image, 0, 0, w, h);
+          const { data } = ctx.getImageData(0, 0, w, h);
+
+          const buckets = new Map();
+          const step = 4;
+          for (let i = 0; i < data.length; i += 4 * step) {
+            const a = data[i + 3];
+            if (a < 120) continue;
+            const r = data[i], g = data[i + 1], b = data[i + 2];
+            const qR = Math.round(r / 24) * 24;
+            const qG = Math.round(g / 24) * 24;
+            const qB = Math.round(b / 24) * 24;
+            const key = `${qR},${qG},${qB}`;
+            const item = buckets.get(key) || { r: qR, g: qG, b: qB, count: 0 };
+            item.count += 1;
+            buckets.set(key, item);
+          }
+
+          const mode = els.paletteType.value;
+          const target = Number(els.paletteSize.value);
+
+          const candidates = [...buckets.values()].map((c) => {
+            const hsl = rgbToHsl(c.r, c.g, c.b);
+            return { ...c, ...hsl, hex: rgbToHex(c.r, c.g, c.b) };
+          }).filter((c) => c.count > 1);
+
+          candidates.forEach((c) => c.score = scoreColor(c, mode));
+          candidates.sort((a, b) => b.score - a.score);
+
+          const selected = [];
+          for (const candidate of candidates) {
+            if (selected.length >= target) break;
+            if (selected.length === 0) {
+              selected.push(candidate);
+              continue;
+            }
+            const minDist = Math.min(...selected.map((s) => {
+              const dr = s.r - candidate.r;
+              const dg = s.g - candidate.g;
+              const db = s.b - candidate.b;
+              return Math.sqrt(dr * dr + dg * dg + db * db);
+            }));
+            if (minDist >= 22 || selected.length < Math.min(3, target)) selected.push(candidate);
+          }
+
+          while (selected.length < target && candidates[selected.length]) selected.push(candidates[selected.length]);
+
+          state.sourceData = { w, h };
+          state.palette = sortPalette(selected.slice(0, target));
+          renderPalette();
+          storeHistory();
+        }
+
+        function sortPalette(palette) {
+          const type = els.sortType.value;
+          const copy = [...palette];
+          if (type === 'brightness') copy.sort((a, b) => b.l - a.l);
+          else if (type === 'hue') copy.sort((a, b) => a.h - b.h);
+          else if (type === 'saturation') copy.sort((a, b) => b.s - a.s);
+          else copy.sort((a, b) => b.count - a.count);
+          return copy;
+        }
+
+        function renderPalette() {
+          const colors = state.palette;
+          els.swatches.innerHTML = '';
+          els.paletteStrip.innerHTML = '';
+
+          if (!colors.length) return;
+
+          colors.forEach((c) => {
+            const swatch = document.createElement('article');
+            swatch.className = 'swatch';
+            swatch.innerHTML = `
+              <div class="swatch-color" style="background:${c.hex}"></div>
+              <div class="swatch-body">
+                <strong>${c.hex}</strong>
+                <code>RGB(${c.r}, ${c.g}, ${c.b})</code>
+                <code>HSL(${c.h}, ${c.s}%, ${c.l}%)</code>
+                <div class="swatch-actions">
+                  <button class="small-btn" data-copy="${c.hex}">Copy HEX</button>
+                  <button class="small-btn" data-copy="rgb(${c.r}, ${c.g}, ${c.b})">Copy RGB</button>
+                  <button class="small-btn" data-copy="hsl(${c.h}, ${c.s}%, ${c.l}%)">Copy HSL</button>
+                </div>
+              </div>`;
+            els.swatches.appendChild(swatch);
+
+            const strip = document.createElement('div');
+            strip.style.background = c.hex;
+            strip.title = c.hex;
+            els.paletteStrip.appendChild(strip);
+          });
+
+          const gradient = getGradientCode();
+          els.gradientPreview.style.background = gradient;
+          els.gradientCode.value = `background: ${gradient};`;
+
+          const cssVars = buildCssVars();
+          els.cssExport.value = `${cssVars}\n\n.palette-demo {\n  ${state.palette.map((c, i) => `color-${i + 1}: var(--palette-${i + 1});`).join('\n  ')}\n}`;
+          els.tailwindExport.value = `colors: {\n${state.palette.map((c, i) => `  palette${i + 1}: '${c.hex}',`).join('\n')}\n}`;
+          els.scssExport.value = state.palette.map((c, i) => `$palette-${i + 1}: ${c.hex};`).join('\n');
+          renderContrastTable();
+        }
+
+        function getGradientCode() {
+          const angle = Number(els.gradientAngle.value);
+          if (!state.palette.length) return 'linear-gradient(90deg, #d9dceb, #f3f5ff)';
+          const stops = state.palette.map((c, i) => `${c.hex} ${Math.round((i / Math.max(1, state.palette.length - 1)) * 100)}%`).join(', ');
+          return `linear-gradient(${angle}deg, ${stops})`;
+        }
+
+        function buildCssVars() {
+          return `:root {\n${state.palette.map((c, i) => `  --palette-${i + 1}: ${c.hex};`).join('\n')}\n}`;
+        }
+
+        function renderContrastTable() {
+          const colors = state.palette;
+          if (colors.length < 2) {
+            els.contrastTable.textContent = 'At least two colors are needed for contrast checks.';
+            return;
+          }
+
+          const rows = [];
+          for (let i = 0; i < colors.length; i++) {
+            for (let j = i + 1; j < colors.length; j++) {
+              const ratio = contrast(colors[i], colors[j]);
+              const level = ratio >= 7 ? 'AAA' : ratio >= 4.5 ? 'AA' : 'Fail';
+              rows.push(`<tr><td>${colors[i].hex}</td><td>${colors[j].hex}</td><td>${ratio.toFixed(2)}:1</td><td>${level}</td></tr>`);
+            }
+          }
+          els.contrastTable.innerHTML = `<table style="width:100%; border-collapse: collapse; font-size:0.9rem"><thead><tr><th align="left">Color A</th><th align="left">Color B</th><th align="left">Ratio</th><th align="left">WCAG</th></tr></thead><tbody>${rows.join('')}</tbody></table>`;
+        }
+
+        function luminance(c) {
+          const vals = [c.r, c.g, c.b].map((v) => {
+            const s = v / 255;
+            return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+          });
+          return 0.2126 * vals[0] + 0.7152 * vals[1] + 0.0722 * vals[2];
+        }
+
+        function contrast(a, b) {
+          const la = luminance(a);
+          const lb = luminance(b);
+          const [bright, dark] = la > lb ? [la, lb] : [lb, la];
+          return (bright + 0.05) / (dark + 0.05);
+        }
+
+        function download(name, content, type) {
+          const blob = new Blob([content], { type });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = name;
+          a.click();
+          URL.revokeObjectURL(a.href);
+        }
+
+        function downloadPngPalette() {
+          if (!state.palette.length) return;
+          const width = Math.max(680, state.palette.length * 130);
+          const height = 150;
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          const segment = width / state.palette.length;
+          state.palette.forEach((c, i) => {
+            ctx.fillStyle = c.hex;
+            ctx.fillRect(i * segment, 0, segment, height);
+            ctx.fillStyle = c.l > 65 ? '#111' : '#fff';
+            ctx.font = '16px sans-serif';
+            ctx.fillText(c.hex, i * segment + 10, height - 16);
+          });
+          canvas.toBlob((blob) => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${state.imageName}-palette.png`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+          });
+        }
+
+        function storeHistory() {
+          if (!state.palette.length) return;
+          const history = getHistory();
+          history.unshift({
+            id: Date.now(),
+            name: state.imageName,
+            createdAt: new Date().toISOString(),
+            palette: state.palette.map(({ hex, r, g, b, h, s, l, count }) => ({ hex, r, g, b, h, s, l, count }))
+          });
+          const trimmed = history.slice(0, MAX_HISTORY);
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
+          renderHistory();
+        }
+
+        function getHistory() {
+          try {
+            return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+          } catch {
+            return [];
+          }
+        }
+
+        function renderHistory() {
+          const items = getHistory();
+          els.historyList.innerHTML = '';
+          if (!items.length) {
+            els.historyList.innerHTML = '<p class="meta-text">No palette history yet.</p>';
+            return;
+          }
+          items.forEach((item) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'history-item';
+            const gradient = `linear-gradient(90deg, ${item.palette.map((c) => c.hex).join(',')})`;
+            btn.innerHTML = `<strong>${item.name}</strong><span>${new Date(item.createdAt).toLocaleString()}</span><div class="history-chip" style="background:${gradient}"></div>`;
+            btn.addEventListener('click', () => {
+              state.palette = sortPalette(item.palette);
+              renderPalette();
+            });
+            els.historyList.appendChild(btn);
+          });
+        }
+
+        async function copyText(value) {
+          try {
+            await navigator.clipboard.writeText(value);
+            showStatus(`Copied: ${value}`);
+          } catch {
+            showStatus('Clipboard unavailable in this browser context.');
+          }
+        }
+
+        els.browseBtn.addEventListener('click', () => els.imageInput.click());
+        els.imageInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+        els.dropZone.addEventListener('click', () => els.imageInput.click());
+        els.dropZone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          els.dropZone.classList.add('dragover');
+        });
+        els.dropZone.addEventListener('dragleave', () => els.dropZone.classList.remove('dragover'));
+        els.dropZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          els.dropZone.classList.remove('dragover');
+          handleFile(e.dataTransfer.files[0]);
+        });
+        els.dropZone.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            els.imageInput.click();
+          }
+        });
+
+        els.zoomRange.addEventListener('input', () => {
+          els.imagePreview.style.transform = `scale(${Number(els.zoomRange.value)})`;
+        });
+
+        els.extractBtn.addEventListener('click', extractPalette);
+        els.sortType.addEventListener('change', () => {
+          state.palette = sortPalette(state.palette);
+          renderPalette();
+        });
+        els.paletteSize.addEventListener('change', extractPalette);
+        els.paletteType.addEventListener('change', extractPalette);
+
+        els.swatches.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-copy]');
+          if (!btn) return;
+          copyText(btn.dataset.copy);
+        });
+
+        els.gradientAngle.addEventListener('input', () => {
+          const gradient = getGradientCode();
+          els.gradientPreview.style.background = gradient;
+          els.gradientCode.value = `background: ${gradient};`;
+        });
+
+        els.copyGradient.addEventListener('click', () => copyText(els.gradientCode.value));
+
+        els.downloadPng.addEventListener('click', downloadPngPalette);
+        els.downloadJson.addEventListener('click', () => {
+          if (!state.palette.length) return;
+          download(`${state.imageName}-palette.json`, JSON.stringify(state.palette, null, 2), 'application/json');
+        });
+        els.downloadCssVars.addEventListener('click', () => {
+          if (!state.palette.length) return;
+          download(`${state.imageName}-palette.css`, buildCssVars(), 'text/css');
+        });
+
+        els.fullViewBtn.addEventListener('click', () => {
+          if (!state.image) return;
+          els.imageModal.classList.add('active');
+          els.imageModal.setAttribute('aria-hidden', 'false');
+        });
+        els.closeModal.addEventListener('click', () => {
+          els.imageModal.classList.remove('active');
+          els.imageModal.setAttribute('aria-hidden', 'true');
+        });
+        els.imageModal.addEventListener('click', (e) => {
+          if (e.target === els.imageModal) els.closeModal.click();
+        });
+
+        renderHistory();
+      })();
+    </script>
   </body>
 </html>
