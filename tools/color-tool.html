@@ -3,66 +3,729 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Color Tool – Free Online Color Tool Tool | MediaTools Pro</title>
-    <meta name="description" content="Pick, preview, and copy color values like HEX and RGB with ease. Use this free online color tool at MediaTools Pro." />
-    <meta name="keywords" content="color tool, color tool online, free color tool, media tools pro, color, tool, online tool" />
-    <meta property="og:title" content="Color Tool – Free Online Color Tool Tool | MediaTools Pro" />
-    <meta property="og:description" content="Pick, preview, and copy color values like HEX and RGB with ease. Use this free online color tool at MediaTools Pro." />
+    <title>Color Picker Tool – Advanced Online Color Toolkit | MediaTools Pro</title>
+    <meta
+      name="description"
+      content="Professional browser-based color picker with HEX, RGB, RGBA, HSL, HSV conversions, palettes, gradients, contrast checks, and export utilities."
+    />
+    <meta
+      name="keywords"
+      content="color picker, eyedropper, hex to rgb, hsl converter, gradient generator, contrast checker, color palette"
+    />
+    <meta
+      property="og:title"
+      content="Color Picker Tool – Advanced Online Color Toolkit | MediaTools Pro"
+    />
+    <meta
+      property="og:description"
+      content="Choose colors visually, pick from screen, generate palettes and gradients, and export CSS-ready values instantly."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/color-tool.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      .color-tool-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+
+      .color-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 1rem;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      }
+
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 0.85rem;
+      }
+
+      .control-group label {
+        font-weight: 600;
+        color: #1e293b;
+      }
+
+      .field-row {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .field-row input,
+      .field-row textarea,
+      .slider-group input,
+      .gradient-controls select {
+        width: 100%;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 0.6rem 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      .field-row button,
+      .btn-secondary {
+        border: 0;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        color: #fff;
+        border-radius: 10px;
+        padding: 0.6rem 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+      }
+
+      .field-row button:hover,
+      .btn-secondary:hover {
+        opacity: 0.9;
+      }
+
+      .preview-box {
+        min-height: 180px;
+        border-radius: 14px;
+        border: 2px solid #e2e8f0;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 0.8rem;
+        color: #fff;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+      }
+
+      .formats-list {
+        display: grid;
+        gap: 0.65rem;
+      }
+
+      .format-item {
+        display: grid;
+        grid-template-columns: 76px 1fr auto;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .format-item code {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.45rem 0.6rem;
+        font-size: 0.86rem;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .history-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .history-swatch {
+        width: 36px;
+        height: 36px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px #cbd5e1;
+        cursor: pointer;
+      }
+
+      .palette-group {
+        margin-bottom: 0.8rem;
+      }
+
+      .palette-title {
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+      }
+
+      .swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+
+      .swatch {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        cursor: pointer;
+      }
+
+      .slider-group {
+        display: grid;
+        gap: 0.6rem;
+      }
+
+      .slider-line {
+        display: grid;
+        grid-template-columns: 58px 1fr 40px;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .gradient-preview {
+        border: 1px solid #cbd5e1;
+        border-radius: 14px;
+        min-height: 120px;
+      }
+
+      .accessibility-result {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.6rem;
+      }
+
+      .badge {
+        border-radius: 999px;
+        padding: 0.3rem 0.7rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .badge.pass {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .badge.fail {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .status-text {
+        color: #475569;
+        font-size: 0.85rem;
+      }
+
+      @media (max-width: 540px) {
+        .format-item {
+          grid-template-columns: 1fr;
+        }
+
+        .slider-line {
+          grid-template-columns: 44px 1fr;
+        }
+      }
+    </style>
   </head>
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
-        <h1>Color Tool</h1>
-        <p class="meta-text">Pick, preview, and copy color values like HEX and RGB with ease.</p>
+        <h1>Color Picker Tool</h1>
+        <p class="meta-text">
+          Choose, convert, analyze, and export colors instantly with a full browser-based color toolkit.
+        </p>
       </section>
 
       <section class="tool-panel tool-content">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <div class="color-tool-grid">
+          <article class="color-card">
+            <h2>Picker & Preview</h2>
+            <div class="control-group">
+              <label for="baseColorPicker">Visual Color Picker</label>
+              <input id="baseColorPicker" type="color" value="#3b82f6" />
+            </div>
+            <div class="control-group">
+              <label for="hexInput">HEX Input</label>
+              <div class="field-row">
+                <input id="hexInput" type="text" value="#3B82F6" maxlength="7" />
+                <button type="button" id="applyHexBtn">Apply</button>
+              </div>
+              <span class="status-text" id="hexStatus">Enter HEX like #1A2B3C</span>
+            </div>
+            <button class="btn-secondary" type="button" id="eyedropperBtn">Pick Color From Screen</button>
+            <p class="status-text" id="eyedropperStatus">EyeDropper API ready check pending.</p>
+            <div class="preview-box" id="colorPreview">
+              <span id="previewHex">#3B82F6</span>
+              <span id="previewRgb">rgb(59, 130, 246)</span>
+            </div>
+          </article>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+          <article class="color-card">
+            <h2>Color Formats</h2>
+            <div class="formats-list" id="formatsList"></div>
+          </article>
 
-      </section>
+          <article class="color-card">
+            <h2>RGB Sliders</h2>
+            <div class="slider-group">
+              <div class="slider-line">
+                <label for="redRange">Red</label>
+                <input id="redRange" type="range" min="0" max="255" />
+                <span id="redValue">0</span>
+              </div>
+              <div class="slider-line">
+                <label for="greenRange">Green</label>
+                <input id="greenRange" type="range" min="0" max="255" />
+                <span id="greenValue">0</span>
+              </div>
+              <div class="slider-line">
+                <label for="blueRange">Blue</label>
+                <input id="blueRange" type="range" min="0" max="255" />
+                <span id="blueValue">0</span>
+              </div>
+            </div>
+          </article>
 
-      <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>Color Tool is designed to help you work faster with dependable results. Pick, preview, and copy color values like HEX and RGB with ease.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Color Tool is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
-      </section>
+          <article class="color-card">
+            <h2>Recent Colors</h2>
+            <p class="status-text">Last 10 selected colors. Click any swatch to reuse.</p>
+            <div class="history-list" id="historyList"></div>
+          </article>
 
-      <section class="tool-panel tool-description">
-        <h2>Features</h2>
-        <ul>
-          <li>Focused workflow for color tool tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
-        </ul>
+          <article class="color-card">
+            <h2>Palette Generator</h2>
+            <div id="paletteOutput"></div>
+          </article>
+
+          <article class="color-card">
+            <h2>Gradient Generator</h2>
+            <div class="gradient-controls control-group">
+              <label for="gradientColorA">Color A</label>
+              <input id="gradientColorA" type="color" value="#3b82f6" />
+            </div>
+            <div class="gradient-controls control-group">
+              <label for="gradientColorB">Color B</label>
+              <input id="gradientColorB" type="color" value="#9333ea" />
+            </div>
+            <div class="gradient-controls control-group">
+              <label for="gradientDirection">Direction</label>
+              <select id="gradientDirection">
+                <option value="to right">to right</option>
+                <option value="to left">to left</option>
+                <option value="to bottom">to bottom</option>
+                <option value="to top right">to top right</option>
+              </select>
+            </div>
+            <div class="gradient-preview" id="gradientPreview"></div>
+            <div class="control-group" style="margin-top: 0.75rem">
+              <label for="gradientCode">CSS Gradient Code</label>
+              <div class="field-row">
+                <textarea id="gradientCode" rows="2" readonly></textarea>
+                <button type="button" data-copy="gradientCode">Copy</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="color-card">
+            <h2>Accessibility Checker</h2>
+            <div class="control-group">
+              <label for="contrastBgColor">Background Color</label>
+              <input id="contrastBgColor" type="color" value="#ffffff" />
+            </div>
+            <div class="control-group">
+              <label for="contrastTextColor">Text Color</label>
+              <input id="contrastTextColor" type="color" value="#3b82f6" />
+            </div>
+            <div class="preview-box" id="contrastPreview" style="min-height: 90px">
+              <span>Accessible text preview</span>
+            </div>
+            <div class="accessibility-result" id="accessibilityResult"></div>
+          </article>
+
+          <article class="color-card">
+            <h2>Export Options</h2>
+            <div class="control-group">
+              <label for="cssExport">CSS</label>
+              <div class="field-row">
+                <input id="cssExport" readonly />
+                <button type="button" data-copy="cssExport">Copy</button>
+              </div>
+            </div>
+            <div class="control-group">
+              <label for="tailwindExport">Tailwind Class</label>
+              <div class="field-row">
+                <input id="tailwindExport" readonly />
+                <button type="button" data-copy="tailwindExport">Copy</button>
+              </div>
+            </div>
+            <div class="control-group">
+              <label for="scssExport">SCSS Variable</label>
+              <div class="field-row">
+                <input id="scssExport" readonly />
+                <button type="button" data-copy="scssExport">Copy</button>
+              </div>
+            </div>
+          </article>
+        </div>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script>
+      (() => {
+        const state = {
+          hex: "#3B82F6",
+          history: [],
+        };
+
+        const el = {
+          picker: document.getElementById("baseColorPicker"),
+          hexInput: document.getElementById("hexInput"),
+          hexStatus: document.getElementById("hexStatus"),
+          applyHexBtn: document.getElementById("applyHexBtn"),
+          eyedropperBtn: document.getElementById("eyedropperBtn"),
+          eyedropperStatus: document.getElementById("eyedropperStatus"),
+          preview: document.getElementById("colorPreview"),
+          previewHex: document.getElementById("previewHex"),
+          previewRgb: document.getElementById("previewRgb"),
+          formatsList: document.getElementById("formatsList"),
+          redRange: document.getElementById("redRange"),
+          greenRange: document.getElementById("greenRange"),
+          blueRange: document.getElementById("blueRange"),
+          redValue: document.getElementById("redValue"),
+          greenValue: document.getElementById("greenValue"),
+          blueValue: document.getElementById("blueValue"),
+          historyList: document.getElementById("historyList"),
+          paletteOutput: document.getElementById("paletteOutput"),
+          gradientColorA: document.getElementById("gradientColorA"),
+          gradientColorB: document.getElementById("gradientColorB"),
+          gradientDirection: document.getElementById("gradientDirection"),
+          gradientPreview: document.getElementById("gradientPreview"),
+          gradientCode: document.getElementById("gradientCode"),
+          contrastBgColor: document.getElementById("contrastBgColor"),
+          contrastTextColor: document.getElementById("contrastTextColor"),
+          contrastPreview: document.getElementById("contrastPreview"),
+          accessibilityResult: document.getElementById("accessibilityResult"),
+          cssExport: document.getElementById("cssExport"),
+          tailwindExport: document.getElementById("tailwindExport"),
+          scssExport: document.getElementById("scssExport"),
+        };
+
+        const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+        const normalizeHex = (hex) => {
+          let value = hex.trim().replace(/^#/, "").toUpperCase();
+          if (/^[0-9A-F]{3}$/.test(value)) {
+            value = value
+              .split("")
+              .map((char) => char + char)
+              .join("");
+          }
+          return /^[0-9A-F]{6}$/.test(value) ? `#${value}` : null;
+        };
+
+        const hexToRgb = (hex) => {
+          const clean = hex.replace("#", "");
+          return {
+            r: parseInt(clean.substring(0, 2), 16),
+            g: parseInt(clean.substring(2, 4), 16),
+            b: parseInt(clean.substring(4, 6), 16),
+          };
+        };
+
+        const rgbToHex = ({ r, g, b }) =>
+          `#${[r, g, b]
+            .map((x) => clamp(Math.round(x), 0, 255).toString(16).padStart(2, "0"))
+            .join("")
+            .toUpperCase()}`;
+
+        const rgbToHsl = ({ r, g, b }) => {
+          const rn = r / 255;
+          const gn = g / 255;
+          const bn = b / 255;
+          const max = Math.max(rn, gn, bn);
+          const min = Math.min(rn, gn, bn);
+          const delta = max - min;
+          let h = 0;
+          const l = (max + min) / 2;
+          const s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+          if (delta !== 0) {
+            if (max === rn) h = ((gn - bn) / delta) % 6;
+            else if (max === gn) h = (bn - rn) / delta + 2;
+            else h = (rn - gn) / delta + 4;
+            h = Math.round(h * 60);
+            if (h < 0) h += 360;
+          }
+          return { h, s: Math.round(s * 100), l: Math.round(l * 100) };
+        };
+
+        const rgbToHsv = ({ r, g, b }) => {
+          const rn = r / 255;
+          const gn = g / 255;
+          const bn = b / 255;
+          const max = Math.max(rn, gn, bn);
+          const min = Math.min(rn, gn, bn);
+          const delta = max - min;
+          let h = 0;
+          if (delta !== 0) {
+            if (max === rn) h = ((gn - bn) / delta) % 6;
+            else if (max === gn) h = (bn - rn) / delta + 2;
+            else h = (rn - gn) / delta + 4;
+          }
+          h = Math.round(h * 60);
+          if (h < 0) h += 360;
+          const s = max === 0 ? 0 : (delta / max) * 100;
+          const v = max * 100;
+          return { h, s: Math.round(s), v: Math.round(v) };
+        };
+
+        const hslToRgb = (h, s, l) => {
+          const sat = s / 100;
+          const light = l / 100;
+          const c = (1 - Math.abs(2 * light - 1)) * sat;
+          const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+          const m = light - c / 2;
+          let r = 0;
+          let g = 0;
+          let b = 0;
+          if (h < 60) [r, g, b] = [c, x, 0];
+          else if (h < 120) [r, g, b] = [x, c, 0];
+          else if (h < 180) [r, g, b] = [0, c, x];
+          else if (h < 240) [r, g, b] = [0, x, c];
+          else if (h < 300) [r, g, b] = [x, 0, c];
+          else [r, g, b] = [c, 0, x];
+          return {
+            r: Math.round((r + m) * 255),
+            g: Math.round((g + m) * 255),
+            b: Math.round((b + m) * 255),
+          };
+        };
+
+        const rgbaString = ({ r, g, b }) => `rgba(${r}, ${g}, ${b}, 1)`;
+        const rgbString = ({ r, g, b }) => `rgb(${r}, ${g}, ${b})`;
+
+        const updateFormats = (hex, rgb, hsl, hsv) => {
+          const rows = [
+            ["HEX", hex],
+            ["RGB", rgbString(rgb)],
+            ["RGBA", rgbaString(rgb)],
+            ["HSL", `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`],
+            ["HSV", `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`],
+          ];
+
+          el.formatsList.innerHTML = rows
+            .map(
+              ([label, value], i) => `
+                <div class="format-item">
+                  <strong>${label}</strong>
+                  <code id="format-${i}">${value}</code>
+                  <button type="button" data-copy="format-${i}">Copy</button>
+                </div>`
+            )
+            .join("");
+        };
+
+        const renderHistory = () => {
+          el.historyList.innerHTML = state.history
+            .map(
+              (hex) =>
+                `<button class="history-swatch" type="button" title="${hex}" style="background:${hex}" data-color="${hex}"></button>`
+            )
+            .join("");
+        };
+
+        const makePaletteSwatches = (title, colors) => {
+          const swatches = colors
+            .map(
+              (color) =>
+                `<button class="swatch" type="button" style="background:${color}" title="${color}" data-color="${color}"></button>`
+            )
+            .join("");
+          return `<div class="palette-group"><div class="palette-title">${title}</div><div class="swatches">${swatches}</div></div>`;
+        };
+
+        const updatePalette = (rgb) => {
+          const { h, s, l } = rgbToHsl(rgb);
+          const normalizeHue = (deg) => ((deg % 360) + 360) % 360;
+          const complementary = [rgbToHex(hslToRgb(normalizeHue(h + 180), s, l))];
+          const analogous = [
+            rgbToHex(hslToRgb(normalizeHue(h - 30), s, l)),
+            rgbToHex(hslToRgb(h, s, l)),
+            rgbToHex(hslToRgb(normalizeHue(h + 30), s, l)),
+          ];
+          const triadic = [
+            rgbToHex(hslToRgb(h, s, l)),
+            rgbToHex(hslToRgb(normalizeHue(h + 120), s, l)),
+            rgbToHex(hslToRgb(normalizeHue(h + 240), s, l)),
+          ];
+          const monochromatic = [20, 35, 50, 65, 80].map((lightness) => rgbToHex(hslToRgb(h, s, lightness)));
+
+          el.paletteOutput.innerHTML = [
+            makePaletteSwatches("Complementary", complementary),
+            makePaletteSwatches("Analogous", analogous),
+            makePaletteSwatches("Triadic", triadic),
+            makePaletteSwatches("Monochromatic", monochromatic),
+          ].join("");
+        };
+
+        const luminance = ({ r, g, b }) => {
+          const linear = [r, g, b].map((channel) => {
+            const v = channel / 255;
+            return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+          });
+          return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+        };
+
+        const updateAccessibility = () => {
+          const bg = hexToRgb(el.contrastBgColor.value);
+          const text = hexToRgb(el.contrastTextColor.value);
+          const ratio =
+            (Math.max(luminance(bg), luminance(text)) + 0.05) /
+            (Math.min(luminance(bg), luminance(text)) + 0.05);
+          const rounded = ratio.toFixed(2);
+          const aaNormal = ratio >= 4.5;
+          const aaLarge = ratio >= 3;
+          const aaaNormal = ratio >= 7;
+          el.contrastPreview.style.background = el.contrastBgColor.value;
+          el.contrastPreview.style.color = el.contrastTextColor.value;
+          el.accessibilityResult.innerHTML = `
+            <span class="badge ${aaNormal ? "pass" : "fail"}">AA Normal: ${aaNormal ? "Pass" : "Fail"}</span>
+            <span class="badge ${aaLarge ? "pass" : "fail"}">AA Large: ${aaLarge ? "Pass" : "Fail"}</span>
+            <span class="badge ${aaaNormal ? "pass" : "fail"}">AAA Normal: ${aaaNormal ? "Pass" : "Fail"}</span>
+            <span class="status-text">Contrast Ratio: ${rounded}:1</span>
+          `;
+        };
+
+        const updateGradient = () => {
+          const css = `linear-gradient(${el.gradientDirection.value}, ${el.gradientColorA.value}, ${el.gradientColorB.value})`;
+          el.gradientPreview.style.background = css;
+          el.gradientCode.value = `background: ${css};`;
+        };
+
+        const updateExports = (hex, rgb) => {
+          el.cssExport.value = `color: ${hex}; /* ${rgbString(rgb)} */`;
+          el.tailwindExport.value = `text-[${hex}] bg-[${hex}] border-[${hex}]`;
+          el.scssExport.value = `$brand-color: ${hex};`;
+        };
+
+        const addToHistory = (hex) => {
+          state.history = [hex, ...state.history.filter((item) => item !== hex)].slice(0, 10);
+          renderHistory();
+        };
+
+        const applyHexColor = (inputHex, trackHistory = true) => {
+          const hex = normalizeHex(inputHex);
+          if (!hex) {
+            el.hexStatus.textContent = "Invalid HEX value. Use #RRGGBB or #RGB.";
+            el.hexStatus.style.color = "#b91c1c";
+            return;
+          }
+          state.hex = hex;
+          const rgb = hexToRgb(hex);
+          const hsl = rgbToHsl(rgb);
+          const hsv = rgbToHsv(rgb);
+
+          el.hexStatus.textContent = "HEX applied.";
+          el.hexStatus.style.color = "#166534";
+          el.picker.value = hex;
+          el.hexInput.value = hex;
+          el.preview.style.background = hex;
+          el.previewHex.textContent = hex;
+          el.previewRgb.textContent = rgbString(rgb);
+
+          el.redRange.value = rgb.r;
+          el.greenRange.value = rgb.g;
+          el.blueRange.value = rgb.b;
+          el.redValue.textContent = rgb.r;
+          el.greenValue.textContent = rgb.g;
+          el.blueValue.textContent = rgb.b;
+
+          updateFormats(hex, rgb, hsl, hsv);
+          updatePalette(rgb);
+          updateExports(hex, rgb);
+          el.contrastTextColor.value = hex;
+          updateAccessibility();
+          if (trackHistory) addToHistory(hex);
+        };
+
+        const updateFromSliders = () => {
+          const rgb = {
+            r: Number(el.redRange.value),
+            g: Number(el.greenRange.value),
+            b: Number(el.blueRange.value),
+          };
+          applyHexColor(rgbToHex(rgb));
+        };
+
+        const copyFromId = async (id) => {
+          const target = document.getElementById(id);
+          if (!target) return;
+          const value = "value" in target ? target.value : target.textContent;
+          try {
+            await navigator.clipboard.writeText(value);
+          } catch (_error) {
+            const fallback = document.createElement("textarea");
+            fallback.value = value;
+            document.body.appendChild(fallback);
+            fallback.select();
+            document.execCommand("copy");
+            fallback.remove();
+          }
+        };
+
+        const setupEyedropper = () => {
+          if (!window.EyeDropper) {
+            el.eyedropperStatus.textContent = "EyeDropper API not supported in this browser.";
+            el.eyedropperStatus.style.color = "#b45309";
+            el.eyedropperBtn.disabled = true;
+            el.eyedropperBtn.style.opacity = "0.65";
+            return;
+          }
+          el.eyedropperStatus.textContent = "EyeDropper API supported.";
+          el.eyedropperStatus.style.color = "#166534";
+          el.eyedropperBtn.addEventListener("click", async () => {
+            try {
+              const eyeDropper = new EyeDropper();
+              const result = await eyeDropper.open();
+              applyHexColor(result.sRGBHex);
+            } catch (_error) {
+              el.eyedropperStatus.textContent = "Screen pick cancelled or blocked by browser permissions.";
+              el.eyedropperStatus.style.color = "#b45309";
+            }
+          });
+        };
+
+        el.applyHexBtn.addEventListener("click", () => applyHexColor(el.hexInput.value));
+        el.hexInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") applyHexColor(el.hexInput.value);
+        });
+
+        el.picker.addEventListener("input", (event) => applyHexColor(event.target.value));
+        [el.redRange, el.greenRange, el.blueRange].forEach((slider) => {
+          slider.addEventListener("input", updateFromSliders);
+        });
+
+        el.historyList.addEventListener("click", (event) => {
+          const button = event.target.closest("button[data-color]");
+          if (button) applyHexColor(button.dataset.color, false);
+        });
+
+        el.paletteOutput.addEventListener("click", (event) => {
+          const button = event.target.closest("button[data-color]");
+          if (button) applyHexColor(button.dataset.color);
+        });
+
+        document.body.addEventListener("click", (event) => {
+          const button = event.target.closest("button[data-copy]");
+          if (!button) return;
+          copyFromId(button.dataset.copy);
+        });
+
+        [el.gradientColorA, el.gradientColorB, el.gradientDirection].forEach((input) => {
+          input.addEventListener("input", updateGradient);
+          input.addEventListener("change", updateGradient);
+        });
+
+        [el.contrastBgColor, el.contrastTextColor].forEach((input) => {
+          input.addEventListener("input", updateAccessibility);
+        });
+
+        setupEyedropper();
+        applyHexColor(state.hex);
+        updateGradient();
+      })();
+    </script>
   </body>
 </html>
