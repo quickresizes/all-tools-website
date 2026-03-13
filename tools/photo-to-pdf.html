@@ -1,316 +1,127 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Photo to PDF – Free Online Photo to PDF Tool | MediaTools Pro</title>
-    <meta name="description" content="Combine one or more photos into a clean PDF document. Use this free online photo to pdf at MediaTools Pro." />
-    <meta name="keywords" content="photo to pdf, photo to pdf online, free photo to pdf, media tools pro, photo, to, pdf, online tool" />
-    <meta property="og:title" content="Photo to PDF – Free Online Photo to PDF Tool | MediaTools Pro" />
-    <meta property="og:description" content="Combine one or more photos into a clean PDF document. Use this free online photo to pdf at MediaTools Pro." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://mediatoolspro.com/tools/photo-to-pdf.html" />
-    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
-    <link rel="stylesheet" href="../css/style.css" />
-    <style>
-      .photo-pdf-tool {
-        display: grid;
-        gap: 1rem;
-      }
+<head>
+<meta charset="UTF-8">
+<title>Photo to PDF Tool</title>
 
-      .preview-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 0.75rem;
-      }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-      .preview-item {
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        background: var(--surface);
-        overflow: hidden;
-      }
+<style>
+body{
+font-family: Arial;
+text-align:center;
+padding:20px;
+}
 
-      .preview-item img {
-        width: 100%;
-        height: 100px;
-        object-fit: cover;
-        display: block;
-      }
+.preview img{
+width:120px;
+margin:10px;
+border-radius:8px;
+}
 
-      .preview-item p {
-        margin: 0;
-        padding: 0.45rem 0.5rem;
-        font-size: 0.85rem;
-        color: var(--muted);
-        text-align: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+button{
+padding:10px 20px;
+margin-top:20px;
+font-size:16px;
+cursor:pointer;
+}
 
-      .pdf-preview-frame {
-        width: 100%;
-        height: 520px;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        background: var(--surface);
-      }
+iframe{
+width:100%;
+height:500px;
+margin-top:20px;
+border:1px solid #ccc;
+}
+</style>
+</head>
 
-      .hidden {
-        display: none;
-      }
-    </style>
-  </head>
-  <body data-base-path="../">
-    <header id="site-header"></header>
+<body>
 
-    <main class="page-main tool-container container">
-      <section class="tool-panel tool-header">
-        <h1>Photo to PDF</h1>
-        <p class="meta-text">Upload one or more photos and convert them into a real PDF directly in your browser.</p>
-      </section>
+<h2>Photo to PDF Converter</h2>
 
-      <section class="tool-panel tool-content">
-        <h2>Photo to PDF Converter</h2>
-        <p class="meta-text">Supports JPG, JPEG, PNG, and WEBP. Works 100% client-side on GitHub Pages with no backend.</p>
+<input type="file" id="imageUpload" multiple accept="image/*">
 
-        <div class="photo-pdf-tool">
-          <div class="upload-box">
-            <label for="image-upload">Upload Photos (JPG, JPEG, PNG, WEBP)</label>
-            <input id="image-upload" class="file-input" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple />
-          </div>
+<div class="preview" id="preview"></div>
 
-          <div class="tool-actions button-row">
-            <button id="create-pdf" class="btn" type="button" disabled>Create PDF</button>
-            <button id="download-pdf" class="btn btn-secondary" type="button" disabled>Download PDF</button>
-          </div>
+<button id="createPDF">Create PDF</button>
 
-          <p id="status-message" class="meta-text">Upload images to begin.</p>
+<br>
 
-          <div>
-            <h3>Image Thumbnails</h3>
-            <div id="preview-grid" class="preview-grid"></div>
-          </div>
+<a id="downloadPDF" style="display:none;">Download PDF</a>
 
-          <div id="pdf-result" class="hidden">
-            <p><strong>PDF file size:</strong> <span id="pdf-size">-</span></p>
-            <h3>PDF Preview</h3>
-            <iframe id="pdf-preview" class="pdf-preview-frame" title="Generated PDF Preview"></iframe>
-          </div>
-        </div>
-      </section>
+<iframe id="pdfPreview"></iframe>
 
-      <section class="tool-panel tool-description">
-        <h2>How to Convert Photos to PDF</h2>
-        <ul>
-          <li>Upload one or more photos from your device.</li>
-          <li>Check the thumbnail previews before converting.</li>
-          <li>Click <strong>Create PDF</strong> to generate a multi-page PDF.</li>
-          <li>Preview the PDF and click <strong>Download PDF</strong>.</li>
-        </ul>
-      </section>
+<script>
 
-      <section class="tool-panel tool-description">
-        <h2>Features of the Photo to PDF Tool</h2>
-        <ul>
-          <li>Multi-image upload support for JPG, JPEG, PNG, and WEBP.</li>
-          <li>Thumbnail image previews before conversion.</li>
-          <li>Real PDF creation using jsPDF and <code>pdf.output(&quot;blob&quot;)</code>.</li>
-          <li>In-page PDF preview using an iframe and easy download.</li>
-        </ul>
-      </section>
-    </main>
+const input = document.getElementById("imageUpload")
+const preview = document.getElementById("preview")
+const createBtn = document.getElementById("createPDF")
+const downloadBtn = document.getElementById("downloadPDF")
+const pdfPreview = document.getElementById("pdfPreview")
 
-    <footer id="site-footer"></footer>
+let images = []
 
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-    <script src="../js/layout.js"></script>
-    <script src="../js/main.js"></script>
-    <script>
-      (() => {
-        const allowedTypes = new Set(["image/jpeg", "image/jpg", "image/png", "image/webp"]);
-        const images = [];
-        let pdfBlob = null;
-        let pdfUrl = "";
+input.addEventListener("change", function(){
 
-        const refs = {
-          upload: document.getElementById("image-upload"),
-          createPdf: document.getElementById("create-pdf"),
-          downloadPdf: document.getElementById("download-pdf"),
-          previewGrid: document.getElementById("preview-grid"),
-          status: document.getElementById("status-message"),
-          pdfResult: document.getElementById("pdf-result"),
-          pdfSize: document.getElementById("pdf-size"),
-          pdfPreview: document.getElementById("pdf-preview")
-        };
+preview.innerHTML=""
+images=[]
 
-        refs.upload.addEventListener("change", onImagesSelected);
-        refs.createPdf.addEventListener("click", createPdf);
-        refs.downloadPdf.addEventListener("click", downloadPdf);
+const files = input.files
 
-        function onImagesSelected(event) {
-          clearPdfResult();
-          images.length = 0;
-          refs.previewGrid.innerHTML = "";
+for(let i=0;i<files.length;i++){
 
-          const files = Array.from(event.target.files || []);
-          if (!files.length) {
-            refs.status.textContent = "Upload images to begin.";
-            refs.createPdf.disabled = true;
-            return;
-          }
+const reader = new FileReader()
 
-          const validFiles = files.filter((file) => allowedTypes.has(file.type));
-          const skipped = files.length - validFiles.length;
+reader.onload=function(e){
 
-          for (const file of validFiles) {
-            const imageUrl = URL.createObjectURL(file);
-            images.push({ file, imageUrl });
-            addThumbnail(file, imageUrl);
-          }
+images.push(e.target.result)
 
-          refs.createPdf.disabled = images.length === 0;
-          refs.status.textContent = images.length
-            ? `${images.length} image(s) ready.${skipped ? ` ${skipped} unsupported file(s) skipped.` : ""}`
-            : "No supported images selected. Use JPG, JPEG, PNG, or WEBP.";
-        }
+const img=document.createElement("img")
+img.src=e.target.result
 
-        function addThumbnail(file, imageUrl) {
-          const item = document.createElement("div");
-          item.className = "preview-item";
+preview.appendChild(img)
 
-          const img = document.createElement("img");
-          img.src = imageUrl;
-          img.alt = file.name;
+}
 
-          const caption = document.createElement("p");
-          caption.textContent = file.name;
+reader.readAsDataURL(files[i])
 
-          item.append(img, caption);
-          refs.previewGrid.appendChild(item);
-        }
+}
 
-        async function createPdf() {
-          if (!images.length) {
-            refs.status.textContent = "Please upload at least one supported image.";
-            return;
-          }
+})
 
-          if (!window.jspdf || !window.jspdf.jsPDF) {
-            refs.status.textContent = "jsPDF failed to load. Please check your connection and try again.";
-            return;
-          }
+createBtn.addEventListener("click", function(){
 
-          refs.createPdf.disabled = true;
-          refs.status.textContent = "Creating PDF...";
+if(images.length===0){
+alert("Upload images first")
+return
+}
 
-          try {
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({ orientation: "p", unit: "pt", format: "a4" });
+const { jsPDF } = window.jspdf
 
-            for (let index = 0; index < images.length; index += 1) {
-              const loadedImage = await loadImage(images[index].imageUrl);
-              const imageDataUrl = toJpegDataUrl(loadedImage);
-              const pageWidth = pdf.internal.pageSize.getWidth();
-              const pageHeight = pdf.internal.pageSize.getHeight();
-              const maxWidth = pageWidth - 40;
-              const maxHeight = pageHeight - 40;
-              const scale = Math.min(maxWidth / loadedImage.width, maxHeight / loadedImage.height);
-              const drawWidth = loadedImage.width * scale;
-              const drawHeight = loadedImage.height * scale;
-              const x = (pageWidth - drawWidth) / 2;
-              const y = (pageHeight - drawHeight) / 2;
+const pdf = new jsPDF()
 
-              if (index > 0) {
-                pdf.addPage();
-              }
+images.forEach((img,index)=>{
 
-              pdf.addImage(imageDataUrl, "JPEG", x, y, drawWidth, drawHeight);
-            }
+if(index>0) pdf.addPage()
 
-            const outputBlob = pdf.output("blob");
-            if (!(outputBlob instanceof Blob) || outputBlob.size === 0) {
-              throw new Error("Invalid PDF output.");
-            }
+pdf.addImage(img,"JPEG",10,10,190,0)
 
-            pdfBlob = outputBlob;
-            if (pdfUrl) {
-              URL.revokeObjectURL(pdfUrl);
-            }
-            pdfUrl = URL.createObjectURL(pdfBlob);
+})
 
-            refs.pdfPreview.src = pdfUrl;
-            refs.pdfSize.textContent = formatFileSize(pdfBlob.size);
-            refs.pdfResult.classList.remove("hidden");
-            refs.downloadPdf.disabled = false;
-            refs.status.textContent = "PDF created successfully.";
-          } catch (error) {
-            refs.status.textContent = "Unable to create PDF. Please try different images.";
-          } finally {
-            refs.createPdf.disabled = false;
-          }
-        }
+const blob = pdf.output("blob")
 
-        function downloadPdf() {
-          if (!pdfBlob || !pdfUrl) {
-            refs.status.textContent = "Create a PDF before downloading.";
-            return;
-          }
+const url = URL.createObjectURL(blob)
 
-          const link = document.createElement("a");
-          link.href = pdfUrl;
-          link.download = "photo-to-pdf.pdf";
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-        }
+pdfPreview.src=url
 
-        function clearPdfResult() {
-          if (pdfUrl) {
-            URL.revokeObjectURL(pdfUrl);
-          }
-          pdfBlob = null;
-          pdfUrl = "";
-          refs.pdfPreview.src = "";
-          refs.pdfResult.classList.add("hidden");
-          refs.downloadPdf.disabled = true;
-        }
+downloadBtn.href=url
+downloadBtn.download="photo-to-pdf.pdf"
+downloadBtn.style.display="inline-block"
+downloadBtn.innerText="Download PDF"
 
-        function toJpegDataUrl(image) {
-          const canvas = document.createElement("canvas");
-          canvas.width = image.width;
-          canvas.height = image.height;
-          const ctx = canvas.getContext("2d");
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(image, 0, 0);
-          return canvas.toDataURL("image/jpeg", 0.92);
-        }
+})
 
-        function loadImage(src) {
-          return new Promise((resolve, reject) => {
-            const image = new Image();
-            image.onload = () => resolve(image);
-            image.onerror = reject;
-            image.src = src;
-          });
-        }
+</script>
 
-        function formatFileSize(bytes) {
-          if (!Number.isFinite(bytes) || bytes <= 0) {
-            return "0 B";
-          }
-          const units = ["B", "KB", "MB", "GB"];
-          let value = bytes;
-          let unitIndex = 0;
-          while (value >= 1024 && unitIndex < units.length - 1) {
-            value /= 1024;
-            unitIndex += 1;
-          }
-          return `${value.toFixed(value >= 100 || unitIndex === 0 ? 0 : 2)} ${units[unitIndex]}`;
-        }
-      })();
-    </script>
-  </body>
+</body>
 </html>
