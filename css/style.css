@@ -888,3 +888,156 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* Meme generator tool */
+.meme-tool {
+  display: grid;
+  gap: 1rem;
+}
+
+.meme-toolbar,
+.meme-layout,
+.meme-sidebar,
+.meme-canvas-area {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.toolbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.toolbar-group.compact .btn {
+  padding: 0.5rem 0.7rem;
+}
+
+.meme-dropzone {
+  border: 2px dashed #7d8be6;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  background: rgba(125, 139, 230, 0.08);
+}
+
+.meme-dropzone.active {
+  border-color: #4f46e5;
+  background: rgba(79, 70, 229, 0.14);
+}
+
+.meme-layout {
+  grid-template-columns: minmax(250px, 320px) 1fr minmax(220px, 290px);
+  align-items: start;
+}
+
+.meme-sidebar {
+  padding: 0.9rem;
+  background: var(--panel-bg, #f8f8ff);
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #e8e8f5);
+}
+
+.meme-canvas-area {
+  justify-items: center;
+  align-content: start;
+}
+
+#meme-canvas {
+  width: min(100%, 760px);
+  max-height: 75vh;
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #e8e8f5);
+  background: #0f172a;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  touch-action: none;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.layer-list,
+.caption-suggestions,
+.history-grid,
+.sticker-panel {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.layer-item,
+.suggestion-chip,
+.history-item,
+.sticker-btn {
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #d9d9ef);
+  background: var(--surface-bg, #fff);
+}
+
+.layer-item {
+  padding: 0.45rem 0.6rem;
+  cursor: pointer;
+}
+
+.layer-item.active {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+}
+
+.suggestion-chip,
+.sticker-btn {
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+
+.sticker-panel {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.sticker-btn {
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.history-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.history-item img {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+}
+
+.btn-danger {
+  background: #dc2626;
+}
+
+@media (max-width: 1100px) {
+  .meme-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .meme-sidebar {
+    order: 2;
+  }
+
+  .meme-canvas-area {
+    order: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .sticker-panel {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}
