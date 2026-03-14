@@ -4,65 +4,671 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Photo Filters – Free Online Photo Filters Tool | MediaTools Pro</title>
-    <meta name="description" content="Apply quick visual filters to improve mood, tone, and style. Use this free online photo filters at MediaTools Pro." />
-    <meta name="keywords" content="photo filters, photo filters online, free photo filters, media tools pro, photo, filters, online tool" />
+    <meta name="description" content="Upload a photo, apply pro-style filters, fine-tune settings, compare before/after, and export in PNG, JPG, or WEBP. Fully browser-based and private." />
+    <meta name="keywords" content="photo filters, online photo editor, browser photo filters, instagram filter, cinematic filter, image effects" />
     <meta property="og:title" content="Photo Filters – Free Online Photo Filters Tool | MediaTools Pro" />
-    <meta property="og:description" content="Apply quick visual filters to improve mood, tone, and style. Use this free online photo filters at MediaTools Pro." />
+    <meta property="og:description" content="Apply modern photo filters with real-time preview and export in PNG, JPG, or WEBP. Runs fully in your browser." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/photo-filters.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      .photo-filters-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .upload-dropzone {
+        border: 2px dashed var(--border-color, #95a5a6);
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.03);
+        transition: border-color 0.2s ease, background 0.2s ease;
+      }
+
+      .upload-dropzone.drag-active {
+        border-color: var(--primary-color, #2ecc71);
+        background: rgba(46, 204, 113, 0.1);
+      }
+
+      .upload-dropzone input {
+        margin-top: 0.75rem;
+      }
+
+      .preview-toolbar,
+      .output-row,
+      .comparison-row,
+      .preset-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .preview-stage {
+        position: relative;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        overflow: hidden;
+        background: #111;
+        min-height: 280px;
+      }
+
+      .preview-inner {
+        position: relative;
+        overflow: auto;
+        max-height: 72vh;
+      }
+
+      .preview-canvas-layer {
+        position: relative;
+        width: fit-content;
+        margin: 0 auto;
+        transform-origin: center center;
+      }
+
+      .preview-canvas-layer canvas {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+
+      .preview-canvas-original,
+      .preview-canvas-filtered {
+        position: absolute;
+        inset: 0;
+      }
+
+      .preview-canvas-filtered {
+        clip-path: inset(0 0 0 50%);
+      }
+
+      .empty-state {
+        padding: 2rem 1rem;
+        text-align: center;
+      }
+
+      .controls-grid {
+        display: grid;
+        gap: 0.8rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .control-item {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.6rem;
+      }
+
+      .control-item label {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      .control-item input[type='range'] {
+        width: 100%;
+      }
+
+      .filter-library {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      }
+
+      .filter-card {
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        padding: 0.4rem;
+        cursor: pointer;
+        color: inherit;
+      }
+
+      .filter-card.active {
+        border-color: var(--primary-color, #2ecc71);
+        box-shadow: 0 0 0 1px var(--primary-color, #2ecc71);
+      }
+
+      .filter-thumb {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 8px;
+        object-fit: cover;
+        background: #202020;
+      }
+
+      .filter-name {
+        margin: 0.4rem 0 0.1rem;
+        font-size: 0.82rem;
+        text-align: center;
+      }
+
+      .tool-note {
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .preview-stage {
+          min-height: 220px;
+        }
+      }
+    </style>
   </head>
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
-        <h1>Photo Filters</h1>
-        <p class="meta-text">Apply quick visual filters to improve mood, tone, and style.</p>
+        <h1>Photo Filters Tool</h1>
+        <p class="meta-text">Upload, enhance, compare, and export professional-looking photos in your browser.</p>
       </section>
 
       <section class="tool-panel tool-content">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
-
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
+        <h2>Edit Your Photo</h2>
+        <div class="photo-filters-grid">
+          <div class="upload-dropzone" id="dropzone" aria-label="Drag and drop image upload area">
+            <strong>Drag &amp; drop an image here</strong>
+            <p class="meta-text">or select a file (JPG, JPEG, PNG, WEBP)</p>
+            <input id="image-upload" class="file-input" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
           </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
 
+          <div class="preview-toolbar">
+            <label for="zoom-range">Zoom</label>
+            <input id="zoom-range" type="range" min="25" max="300" value="100" />
+            <span id="zoom-value">100%</span>
+            <button id="fullscreen-preview" class="btn btn-secondary" type="button">Full Preview</button>
+            <button id="reset-settings" class="btn" type="button">Reset</button>
+          </div>
+
+          <div class="preview-stage">
+            <div id="empty-state" class="empty-state">
+              <p>Upload an image to start editing.</p>
+              <p class="meta-text">All processing happens locally in your browser.</p>
+            </div>
+            <div id="preview-inner" class="preview-inner" hidden>
+              <div id="preview-layer" class="preview-canvas-layer">
+                <canvas id="canvas-original" class="preview-canvas-original" aria-label="Original image preview"></canvas>
+                <canvas id="canvas-filtered" class="preview-canvas-filtered" aria-label="Filtered image preview"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="comparison-row">
+            <label for="comparison-slider">Before / After</label>
+            <input id="comparison-slider" type="range" min="0" max="100" value="50" />
+            <span class="meta-text">Move the slider to compare original vs filtered.</span>
+          </div>
+
+          <h3>Social Presets</h3>
+          <div class="preset-row" id="social-presets"></div>
+
+          <h3>Filter Library</h3>
+          <div id="filter-library" class="filter-library" aria-label="Filter thumbnails"></div>
+
+          <h3>Adjustments</h3>
+          <div id="controls-grid" class="controls-grid"></div>
+
+          <div class="output-row">
+            <label for="export-format">Export format</label>
+            <select id="export-format" class="select-input">
+              <option value="image/png">PNG</option>
+              <option value="image/jpeg">JPG</option>
+              <option value="image/webp">WEBP</option>
+            </select>
+
+            <label for="quality-level">Quality</label>
+            <select id="quality-level" class="select-input">
+              <option value="0.55">Low</option>
+              <option value="0.8" selected>Medium</option>
+              <option value="0.95">High</option>
+            </select>
+
+            <button id="download-image" class="btn" type="button" disabled>Download Image</button>
+          </div>
+
+          <p id="status-message" class="meta-text tool-note">Upload an image to begin editing.</p>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>About this tool</h2>
-        <p>Photo Filters is designed to help you work faster with dependable results. Apply quick visual filters to improve mood, tone, and style.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Photo Filters is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
-      </section>
-
-      <section class="tool-panel tool-description">
-        <h2>Features</h2>
-        <ul>
-          <li>Focused workflow for photo filters tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
-        </ul>
+        <p>This photo editor is fully client-side. Images never leave your device, making it private, secure, and fast on desktop and mobile browsers.</p>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script>
+      (() => {
+        const filterDefs = [
+          { id: 'original', name: 'Original', css: {} },
+          { id: 'grayscale', name: 'Grayscale', css: { grayscale: 1 } },
+          { id: 'sepia', name: 'Sepia', css: { sepia: 0.9, contrast: 1.06 } },
+          { id: 'vintage', name: 'Vintage', css: { sepia: 0.45, contrast: 0.9, saturate: 0.85, brightness: 1.03 }, overlay: ['#c89b6d', 0.13] },
+          { id: 'warm', name: 'Warm', css: { saturate: 1.12, brightness: 1.05 }, overlay: ['#ff9966', 0.09] },
+          { id: 'cool', name: 'Cool', css: { saturate: 0.95, brightness: 1.02 }, overlay: ['#66a6ff', 0.08] },
+          { id: 'bright', name: 'Bright', css: { brightness: 1.18, contrast: 1.06 } },
+          { id: 'dark', name: 'Dark', css: { brightness: 0.82, contrast: 1.1 } },
+          { id: 'blur', name: 'Blur', css: { blur: 2 } },
+          { id: 'sharpen', name: 'Sharpen', css: { contrast: 1.03 }, sharpen: 0.9 },
+          { id: 'contrast-boost', name: 'Contrast Boost', css: { contrast: 1.35, saturate: 1.08 } },
+          { id: 'soft-glow', name: 'Soft Glow', css: { brightness: 1.08, saturate: 1.05 }, overlay: ['#fff5dd', 0.18] },
+          { id: 'film', name: 'Film', css: { contrast: 1.12, saturate: 0.9, brightness: 0.96 }, overlay: ['#302114', 0.08] },
+          { id: 'retro', name: 'Retro', css: { sepia: 0.35, saturate: 0.82, contrast: 0.88 }, overlay: ['#f4cf9e', 0.13] },
+          { id: 'black-white', name: 'Black & White', css: { grayscale: 1, contrast: 1.2 } },
+          { id: 'hdr-style', name: 'HDR Style', css: { contrast: 1.25, saturate: 1.3, brightness: 1.04 }, sharpen: 0.8 },
+          { id: 'matte', name: 'Matte', css: { contrast: 0.88, brightness: 1.06, saturate: 0.92 } },
+          { id: 'fade', name: 'Fade', css: { contrast: 0.84, brightness: 1.12, saturate: 0.86 }, overlay: ['#f6f2ea', 0.14] },
+          { id: 'vibrant', name: 'Vibrant', css: { saturate: 1.45, contrast: 1.1, brightness: 1.03 } },
+          { id: 'pastel', name: 'Pastel', css: { saturate: 0.72, contrast: 0.86, brightness: 1.13 }, overlay: ['#ffd9ef', 0.1] }
+        ];
+
+        const socialPresets = [
+          {
+            name: 'Instagram Style',
+            filter: 'vibrant',
+            values: { brightness: 8, contrast: 12, saturation: 18, exposure: 5, temperature: 6, tint: 2, sharpness: 18, blur: 0 }
+          },
+          {
+            name: 'Cinematic Look',
+            filter: 'film',
+            values: { brightness: -4, contrast: 22, saturation: -8, exposure: -2, temperature: -4, tint: -3, sharpness: 15, blur: 0 }
+          },
+          {
+            name: 'Vintage Film Look',
+            filter: 'vintage',
+            values: { brightness: 4, contrast: -6, saturation: -10, exposure: 3, temperature: 14, tint: 4, sharpness: -2, blur: 1 }
+          },
+          {
+            name: 'Soft Portrait Look',
+            filter: 'soft-glow',
+            values: { brightness: 10, contrast: -8, saturation: -4, exposure: 6, temperature: 2, tint: 6, sharpness: -10, blur: 1 }
+          }
+        ];
+
+        const adjustmentDefs = [
+          { id: 'brightness', label: 'Brightness', min: -100, max: 100, value: 0 },
+          { id: 'contrast', label: 'Contrast', min: -100, max: 100, value: 0 },
+          { id: 'saturation', label: 'Saturation', min: -100, max: 100, value: 0 },
+          { id: 'exposure', label: 'Exposure', min: -100, max: 100, value: 0 },
+          { id: 'temperature', label: 'Temperature', min: -100, max: 100, value: 0 },
+          { id: 'tint', label: 'Tint', min: -100, max: 100, value: 0 },
+          { id: 'sharpness', label: 'Sharpness', min: -100, max: 100, value: 0 },
+          { id: 'blur', label: 'Blur', min: 0, max: 30, value: 0 }
+        ];
+
+        const state = {
+          imageBitmap: null,
+          fileName: 'filtered-image',
+          selectedFilter: 'original',
+          adjustments: Object.fromEntries(adjustmentDefs.map((a) => [a.id, a.value])),
+          renderQueued: false,
+          zoom: 1
+        };
+
+        const dropzone = document.getElementById('dropzone');
+        const uploadInput = document.getElementById('image-upload');
+        const emptyState = document.getElementById('empty-state');
+        const previewInner = document.getElementById('preview-inner');
+        const previewLayer = document.getElementById('preview-layer');
+        const originalCanvas = document.getElementById('canvas-original');
+        const filteredCanvas = document.getElementById('canvas-filtered');
+        const zoomRange = document.getElementById('zoom-range');
+        const zoomValue = document.getElementById('zoom-value');
+        const comparisonSlider = document.getElementById('comparison-slider');
+        const filterLibrary = document.getElementById('filter-library');
+        const controlsGrid = document.getElementById('controls-grid');
+        const statusMessage = document.getElementById('status-message');
+        const downloadButton = document.getElementById('download-image');
+        const exportFormat = document.getElementById('export-format');
+        const qualityLevel = document.getElementById('quality-level');
+        const socialPresetsContainer = document.getElementById('social-presets');
+
+        function setStatus(msg) {
+          statusMessage.textContent = msg;
+        }
+
+        function clamp(v, min, max) {
+          return Math.min(max, Math.max(min, v));
+        }
+
+        function buildFilterString(css, adjust) {
+          const brightnessFactor = (css.brightness || 1) * (1 + adjust.brightness / 100) * Math.pow(2, adjust.exposure / 100);
+          const contrastFactor = (css.contrast || 1) * (1 + adjust.contrast / 100);
+          const saturateFactor = (css.saturate || 1) * (1 + adjust.saturation / 100);
+          const grayscale = clamp(css.grayscale || 0, 0, 1);
+          const sepia = clamp(css.sepia || 0, 0, 1);
+          const hue = css.hueRotate || 0;
+          const blurPx = (css.blur || 0) + adjust.blur;
+
+          return [
+            `brightness(${Math.max(0.05, brightnessFactor).toFixed(3)})`,
+            `contrast(${Math.max(0.05, contrastFactor).toFixed(3)})`,
+            `saturate(${Math.max(0, saturateFactor).toFixed(3)})`,
+            `grayscale(${grayscale.toFixed(3)})`,
+            `sepia(${sepia.toFixed(3)})`,
+            `hue-rotate(${hue}deg)`,
+            `blur(${Math.max(0, blurPx).toFixed(2)}px)`
+          ].join(' ');
+        }
+
+        function drawBaseImage(ctx, width, height, filterDef) {
+          ctx.clearRect(0, 0, width, height);
+          ctx.filter = buildFilterString(filterDef.css || {}, state.adjustments);
+          ctx.drawImage(state.imageBitmap, 0, 0, width, height);
+          ctx.filter = 'none';
+
+          if (filterDef.overlay) {
+            const [color, alpha] = filterDef.overlay;
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+          }
+
+          if (state.adjustments.temperature !== 0) {
+            const temp = state.adjustments.temperature;
+            ctx.save();
+            ctx.globalAlpha = Math.abs(temp) / 200;
+            ctx.fillStyle = temp > 0 ? '#ff9c58' : '#5ea8ff';
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+          }
+
+          if (state.adjustments.tint !== 0) {
+            const tint = state.adjustments.tint;
+            ctx.save();
+            ctx.globalAlpha = Math.abs(tint) / 220;
+            ctx.fillStyle = tint > 0 ? '#ff62b6' : '#62ff92';
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+          }
+        }
+
+        function sharpenCanvas(canvas, amount) {
+          if (amount <= 0) return;
+          const ctx = canvas.getContext('2d');
+          const width = canvas.width;
+          const height = canvas.height;
+          const source = ctx.getImageData(0, 0, width, height);
+          const output = ctx.createImageData(width, height);
+          const src = source.data;
+          const dst = output.data;
+
+          const a = clamp(amount, 0, 2);
+          const weights = [0, -a, 0, -a, 1 + 4 * a, -a, 0, -a, 0];
+
+          for (let y = 1; y < height - 1; y++) {
+            for (let x = 1; x < width - 1; x++) {
+              let r = 0;
+              let g = 0;
+              let b = 0;
+              let w = 0;
+              for (let ky = -1; ky <= 1; ky++) {
+                for (let kx = -1; kx <= 1; kx++) {
+                  const wt = weights[(ky + 1) * 3 + (kx + 1)];
+                  const i = ((y + ky) * width + (x + kx)) * 4;
+                  r += src[i] * wt;
+                  g += src[i + 1] * wt;
+                  b += src[i + 2] * wt;
+                  w += wt;
+                }
+              }
+              const idx = (y * width + x) * 4;
+              dst[idx] = clamp(r / (w || 1), 0, 255);
+              dst[idx + 1] = clamp(g / (w || 1), 0, 255);
+              dst[idx + 2] = clamp(b / (w || 1), 0, 255);
+              dst[idx + 3] = src[idx + 3];
+            }
+          }
+
+          ctx.putImageData(output, 0, 0);
+        }
+
+        function renderCanvases() {
+          if (!state.imageBitmap) return;
+          state.renderQueued = false;
+
+          const width = state.imageBitmap.width;
+          const height = state.imageBitmap.height;
+          originalCanvas.width = width;
+          originalCanvas.height = height;
+          filteredCanvas.width = width;
+          filteredCanvas.height = height;
+          previewLayer.style.width = `${width}px`;
+          previewLayer.style.height = `${height}px`;
+
+          const originalCtx = originalCanvas.getContext('2d');
+          originalCtx.clearRect(0, 0, width, height);
+          originalCtx.drawImage(state.imageBitmap, 0, 0, width, height);
+
+          const filterDef = filterDefs.find((f) => f.id === state.selectedFilter) || filterDefs[0];
+          const filteredCtx = filteredCanvas.getContext('2d');
+          drawBaseImage(filteredCtx, width, height, filterDef);
+
+          const sharpAmount = Math.max(0, (filterDef.sharpen || 0) + state.adjustments.sharpness / 100);
+          if (sharpAmount > 0) sharpenCanvas(filteredCanvas, sharpAmount);
+
+          applyComparisonMask();
+          updateZoom();
+          downloadButton.disabled = false;
+          setStatus(`Applied ${filterDef.name}. Ready to download.`);
+        }
+
+        function queueRender() {
+          if (!state.imageBitmap || state.renderQueued) return;
+          state.renderQueued = true;
+          requestAnimationFrame(renderCanvases);
+        }
+
+        function applyComparisonMask() {
+          const split = Number(comparisonSlider.value);
+          filteredCanvas.style.clipPath = `inset(0 0 0 ${split}%)`;
+        }
+
+        function updateZoom() {
+          state.zoom = Number(zoomRange.value) / 100;
+          previewLayer.style.transform = `scale(${state.zoom})`;
+          zoomValue.textContent = `${Math.round(state.zoom * 100)}%`;
+        }
+
+        function createControls() {
+          const frag = document.createDocumentFragment();
+          adjustmentDefs.forEach((def) => {
+            const wrap = document.createElement('div');
+            wrap.className = 'control-item';
+            wrap.innerHTML = `
+              <label for="adj-${def.id}"><span>${def.label}</span><strong id="adj-val-${def.id}">${def.value}</strong></label>
+              <input id="adj-${def.id}" type="range" min="${def.min}" max="${def.max}" step="1" value="${def.value}" />
+            `;
+            const input = wrap.querySelector('input');
+            const valueEl = wrap.querySelector('strong');
+            input.addEventListener('input', () => {
+              state.adjustments[def.id] = Number(input.value);
+              valueEl.textContent = input.value;
+              queueRender();
+            });
+            frag.appendChild(wrap);
+          });
+          controlsGrid.appendChild(frag);
+        }
+
+        function createFilterLibrary() {
+          filterLibrary.innerHTML = '';
+          const frag = document.createDocumentFragment();
+          filterDefs.forEach((filter) => {
+            const button = document.createElement('button');
+            button.className = `filter-card${filter.id === state.selectedFilter ? ' active' : ''}`;
+            button.type = 'button';
+            button.dataset.filterId = filter.id;
+            button.innerHTML = `
+              <img class="filter-thumb" id="thumb-${filter.id}" alt="${filter.name} thumbnail" />
+              <p class="filter-name">${filter.name}</p>
+            `;
+            button.addEventListener('click', () => {
+              state.selectedFilter = filter.id;
+              [...filterLibrary.children].forEach((c) => c.classList.toggle('active', c.dataset.filterId === filter.id));
+              queueRender();
+            });
+            frag.appendChild(button);
+          });
+          filterLibrary.appendChild(frag);
+        }
+
+        function createSocialPresets() {
+          socialPresets.forEach((preset) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-secondary';
+            btn.type = 'button';
+            btn.textContent = preset.name;
+            btn.addEventListener('click', () => {
+              state.selectedFilter = preset.filter;
+              Object.assign(state.adjustments, preset.values);
+              adjustmentDefs.forEach((def) => {
+                const input = document.getElementById(`adj-${def.id}`);
+                const val = document.getElementById(`adj-val-${def.id}`);
+                input.value = state.adjustments[def.id];
+                val.textContent = state.adjustments[def.id];
+              });
+              [...filterLibrary.children].forEach((c) => c.classList.toggle('active', c.dataset.filterId === preset.filter));
+              queueRender();
+            });
+            socialPresetsContainer.appendChild(btn);
+          });
+        }
+
+        function renderThumbnails() {
+          if (!state.imageBitmap) return;
+          const size = 120;
+          filterDefs.forEach((filterDef) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            const ratio = Math.max(size / state.imageBitmap.width, size / state.imageBitmap.height);
+            const drawW = state.imageBitmap.width * ratio;
+            const drawH = state.imageBitmap.height * ratio;
+            const x = (size - drawW) / 2;
+            const y = (size - drawH) / 2;
+
+            ctx.filter = buildFilterString(filterDef.css || {}, { ...state.adjustments, sharpness: 0, blur: state.adjustments.blur });
+            ctx.drawImage(state.imageBitmap, x, y, drawW, drawH);
+            ctx.filter = 'none';
+            if (filterDef.overlay) {
+              const [color, alpha] = filterDef.overlay;
+              ctx.save();
+              ctx.globalAlpha = alpha;
+              ctx.fillStyle = color;
+              ctx.fillRect(0, 0, size, size);
+              ctx.restore();
+            }
+
+            const img = document.getElementById(`thumb-${filterDef.id}`);
+            img.src = canvas.toDataURL('image/png');
+          });
+        }
+
+        function resetAll() {
+          state.selectedFilter = 'original';
+          adjustmentDefs.forEach((def) => {
+            state.adjustments[def.id] = def.value;
+            const input = document.getElementById(`adj-${def.id}`);
+            const val = document.getElementById(`adj-val-${def.id}`);
+            input.value = def.value;
+            val.textContent = def.value;
+          });
+          [...filterLibrary.children].forEach((c) => c.classList.toggle('active', c.dataset.filterId === 'original'));
+          queueRender();
+        }
+
+        async function loadFile(file) {
+          if (!file) return;
+          const isImage = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
+          if (!isImage) {
+            setStatus('Unsupported format. Please upload JPG, JPEG, PNG, or WEBP.');
+            return;
+          }
+
+          try {
+            const bitmap = await createImageBitmap(file);
+            state.imageBitmap = bitmap;
+            state.fileName = file.name.replace(/\.[^.]+$/, '') || 'filtered-image';
+            emptyState.hidden = true;
+            previewInner.hidden = false;
+            renderThumbnails();
+            queueRender();
+          } catch (err) {
+            setStatus('Could not read the selected image. Try another file.');
+          }
+        }
+
+        async function downloadOutput() {
+          if (!state.imageBitmap) return;
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = filteredCanvas.width;
+          tempCanvas.height = filteredCanvas.height;
+          const tempCtx = tempCanvas.getContext('2d');
+          tempCtx.drawImage(filteredCanvas, 0, 0);
+
+          const type = exportFormat.value;
+          const quality = Number(qualityLevel.value);
+          const ext = type === 'image/png' ? 'png' : type === 'image/webp' ? 'webp' : 'jpg';
+
+          tempCanvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                setStatus('Download failed. Please try again.');
+                return;
+              }
+              const a = document.createElement('a');
+              const url = URL.createObjectURL(blob);
+              a.href = url;
+              a.download = `${state.fileName}-${state.selectedFilter}.${ext}`;
+              a.click();
+              URL.revokeObjectURL(url);
+            },
+            type,
+            quality
+          );
+        }
+
+        uploadInput.addEventListener('change', (e) => loadFile(e.target.files[0]));
+
+        dropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropzone.classList.add('drag-active');
+        });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-active'));
+        dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('drag-active');
+          loadFile(e.dataTransfer.files[0]);
+        });
+
+        comparisonSlider.addEventListener('input', applyComparisonMask);
+        zoomRange.addEventListener('input', updateZoom);
+
+        document.getElementById('reset-settings').addEventListener('click', resetAll);
+        document.getElementById('download-image').addEventListener('click', downloadOutput);
+        document.getElementById('fullscreen-preview').addEventListener('click', async () => {
+          if (!document.fullscreenElement) {
+            await previewInner.requestFullscreen?.();
+          } else {
+            await document.exitFullscreen?.();
+          }
+        });
+
+        createControls();
+        createFilterLibrary();
+        createSocialPresets();
+        applyComparisonMask();
+      })();
+    </script>
   </body>
 </html>
