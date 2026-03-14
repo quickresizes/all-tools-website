@@ -16,53 +16,130 @@
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Meme Generator</h1>
-        <p class="meta-text">Create funny memes by adding text over your images instantly.</p>
+        <p class="meta-text">Create pro-quality memes fully in your browser. No uploads to any server.</p>
       </section>
 
-      <section class="tool-panel tool-content">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
-
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
+      <section class="tool-panel tool-content meme-tool" id="meme-tool-app">
+        <div class="meme-toolbar">
+          <div class="toolbar-group">
+            <label for="meme-upload" class="btn">Upload Image</label>
+            <input id="meme-upload" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" hidden />
+            <button type="button" id="random-meme-btn" class="btn">🎲 Random Meme</button>
+            <button type="button" id="ai-caption-btn" class="btn">🤖 AI Caption</button>
           </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
+          <div class="toolbar-group">
+            <label for="template-search">Find template</label>
+            <input id="template-search" class="text-input" type="search" placeholder="Search templates" />
+            <select id="template-select" class="select-input"></select>
           </div>
-          <button class="btn" type="button">Process Now</button>
+          <p class="meta-text">Privacy-first: all edits and rendering happen locally on your device.</p>
+        </div>
 
-      </section>
+        <div id="meme-dropzone" class="meme-dropzone" tabindex="0" role="button" aria-label="Drop image here or click Upload Image">
+          Drag & drop a JPG, JPEG, PNG, WEBP, or GIF here.
+        </div>
 
-      <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>Meme Generator is designed to help you work faster with dependable results. Create funny memes by adding text over your images instantly.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Meme Generator is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
-      </section>
+        <div class="meme-layout">
+          <aside class="meme-sidebar">
+            <h2>Layers</h2>
+            <button id="add-text-layer" class="btn" type="button">Add Text Layer</button>
+            <div id="layer-list" class="layer-list"></div>
 
-      <section class="tool-panel tool-description">
-        <h2>Features</h2>
-        <ul>
-          <li>Focused workflow for meme generator tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
-        </ul>
+            <h3>Text & Layer Style</h3>
+            <label>Layer text
+              <textarea id="layer-text" class="text-input" rows="2" placeholder="Type your caption"></textarea>
+            </label>
+            <div class="grid-2">
+              <label>Font size <input id="font-size" type="range" min="16" max="140" value="56" /></label>
+              <label>Font family
+                <select id="font-family" class="select-input">
+                  <option value="Impact">Impact (Classic)</option>
+                  <option value="Anton">Anton</option>
+                  <option value="Arial Black">Arial Black</option>
+                  <option value="Poppins">Poppins</option>
+                  <option value="Montserrat">Montserrat</option>
+                  <option value="Georgia">Georgia</option>
+                </select>
+              </label>
+              <label>Text color <input id="text-color" type="color" value="#ffffff" /></label>
+              <label>Outline color <input id="outline-color" type="color" value="#000000" /></label>
+              <label>Outline thickness <input id="outline-width" type="range" min="0" max="16" value="6" /></label>
+              <label>Shadow <input id="shadow-strength" type="range" min="0" max="30" value="8" /></label>
+              <label>Alignment
+                <select id="text-align" class="select-input">
+                  <option value="center">Center</option>
+                  <option value="left">Left</option>
+                  <option value="right">Right</option>
+                </select>
+              </label>
+              <label>Rotation <input id="layer-rotation" type="range" min="-180" max="180" value="0" /></label>
+              <label>Scale <input id="layer-scale" type="range" min="30" max="250" value="100" /></label>
+            </div>
+            <label><input id="uppercase-toggle" type="checkbox" checked /> Uppercase text</label>
+            <button id="delete-layer" type="button" class="btn btn-danger">Delete Selected Layer</button>
+
+            <h3>Stickers</h3>
+            <div id="sticker-panel" class="sticker-panel"></div>
+
+            <h3>Image Editing</h3>
+            <div class="grid-2">
+              <label>Crop X % <input id="crop-x" type="range" min="0" max="90" value="0" /></label>
+              <label>Crop Y % <input id="crop-y" type="range" min="0" max="90" value="0" /></label>
+              <label>Crop W % <input id="crop-w" type="range" min="10" max="100" value="100" /></label>
+              <label>Crop H % <input id="crop-h" type="range" min="10" max="100" value="100" /></label>
+              <label>Brightness <input id="brightness" type="range" min="0" max="200" value="100" /></label>
+              <label>Contrast <input id="contrast" type="range" min="0" max="200" value="100" /></label>
+              <label>Saturation <input id="saturation" type="range" min="0" max="200" value="100" /></label>
+              <label>Blur <input id="blur" type="range" min="0" max="12" value="0" /></label>
+            </div>
+            <div class="toolbar-group compact">
+              <button id="rotate-left" class="btn" type="button">↺ Rotate</button>
+              <button id="rotate-right" class="btn" type="button">↻ Rotate</button>
+              <button id="flip-x" class="btn" type="button">⇋ Flip X</button>
+              <button id="flip-y" class="btn" type="button">⇅ Flip Y</button>
+              <button id="reset-image-edits" class="btn" type="button">Reset Image</button>
+            </div>
+          </aside>
+
+          <div class="meme-canvas-area">
+            <canvas id="meme-canvas" width="1080" height="1080" aria-label="Meme preview canvas"></canvas>
+            <p id="meme-status" class="meta-text">Upload an image or choose a template to start.</p>
+            <div id="caption-suggestions" class="caption-suggestions"></div>
+          </div>
+
+          <aside class="meme-sidebar">
+            <h2>Export</h2>
+            <label>Output format
+              <select id="download-format" class="select-input">
+                <option value="png">PNG</option>
+                <option value="jpg">JPG</option>
+                <option value="webp">WEBP</option>
+              </select>
+            </label>
+            <label>Preset size
+              <select id="size-preset" class="select-input">
+                <option value="1080x1080">Instagram Post (1080×1080)</option>
+                <option value="1080x1920">Instagram Story (1080×1920)</option>
+                <option value="1600x900">Twitter Post (1600×900)</option>
+                <option value="1280x720">YouTube Thumbnail (1280×720)</option>
+                <option value="custom">Current Canvas Size</option>
+              </select>
+            </label>
+            <button id="download-meme" type="button" class="btn">Download Meme</button>
+
+            <h3>Recent Memes (Last 5)</h3>
+            <div id="meme-history" class="history-grid"></div>
+          </aside>
+        </div>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script src="../js/meme-generator.js"></script>
   </body>
 </html>
