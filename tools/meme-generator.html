@@ -19,21 +19,29 @@
     <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Meme Generator</h1>
-        <p class="meta-text">Create pro-quality memes fully in your browser. No uploads to any server.</p>
+        <p class="meta-text">Create pro-quality image and GIF memes fully in your browser. No uploads to any server.</p>
       </section>
 
       <section class="tool-panel tool-content meme-tool" id="meme-tool-app">
         <div class="meme-toolbar">
           <div class="toolbar-group">
-            <label for="meme-upload" class="btn">Upload Image</label>
+            <label for="meme-upload" class="btn">Upload Image/GIF</label>
             <input id="meme-upload" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" hidden />
+            <label for="gif-sticker-upload" class="btn">Upload GIF Sticker</label>
+            <input id="gif-sticker-upload" type="file" accept=".gif,image/gif" hidden />
             <button type="button" id="random-meme-btn" class="btn">🎲 Random Meme</button>
-            <button type="button" id="ai-caption-btn" class="btn">🤖 AI Caption</button>
+            <button type="button" id="ai-caption-btn" class="btn">🤖 Caption Generator</button>
           </div>
           <div class="toolbar-group">
             <label for="template-search">Find template</label>
-            <input id="template-search" class="text-input" type="search" placeholder="Search templates" />
+            <input id="template-search" class="text-input" type="search" placeholder="Search 1000+ templates" />
+            <label for="category-filter">Category</label>
+            <select id="category-filter" class="select-input"></select>
             <select id="template-select" class="select-input"></select>
+          </div>
+          <div class="toolbar-group">
+            <strong>Trending Memes:</strong>
+            <div id="trending-list" class="trending-list"></div>
           </div>
           <p class="meta-text">Privacy-first: all edits and rendering happen locally on your device.</p>
         </div>
@@ -46,6 +54,7 @@
           <aside class="meme-sidebar">
             <h2>Layers</h2>
             <button id="add-text-layer" class="btn" type="button">Add Text Layer</button>
+            <button id="add-moving-text-layer" class="btn" type="button">Add Moving GIF Text</button>
             <div id="layer-list" class="layer-list"></div>
 
             <h3>Text & Layer Style</h3>
@@ -77,12 +86,15 @@
               </label>
               <label>Rotation <input id="layer-rotation" type="range" min="-180" max="180" value="0" /></label>
               <label>Scale <input id="layer-scale" type="range" min="30" max="250" value="100" /></label>
+              <label>Move speed (GIF) <input id="layer-speed" type="range" min="-120" max="120" value="0" /></label>
             </div>
             <label><input id="uppercase-toggle" type="checkbox" checked /> Uppercase text</label>
             <button id="delete-layer" type="button" class="btn btn-danger">Delete Selected Layer</button>
 
-            <h3>Stickers</h3>
+            <h3>Stickers & Emojis</h3>
             <div id="sticker-panel" class="sticker-panel"></div>
+            <h3>GIF Stickers</h3>
+            <div id="gif-sticker-panel" class="sticker-panel"></div>
 
             <h3>Image Editing</h3>
             <div class="grid-2">
@@ -94,6 +106,7 @@
               <label>Contrast <input id="contrast" type="range" min="0" max="200" value="100" /></label>
               <label>Saturation <input id="saturation" type="range" min="0" max="200" value="100" /></label>
               <label>Blur <input id="blur" type="range" min="0" max="12" value="0" /></label>
+              <label>GIF speed <input id="gif-speed" type="range" min="25" max="200" value="100" /></label>
             </div>
             <div class="toolbar-group compact">
               <button id="rotate-left" class="btn" type="button">↺ Rotate</button>
@@ -117,20 +130,22 @@
                 <option value="png">PNG</option>
                 <option value="jpg">JPG</option>
                 <option value="webp">WEBP</option>
+                <option value="gif">GIF</option>
               </select>
             </label>
             <label>Preset size
               <select id="size-preset" class="select-input">
                 <option value="1080x1080">Instagram Post (1080×1080)</option>
                 <option value="1080x1920">Instagram Story (1080×1920)</option>
-                <option value="1600x900">Twitter Post (1600×900)</option>
+                <option value="1200x675">Twitter Post (1200×675)</option>
                 <option value="1280x720">YouTube Thumbnail (1280×720)</option>
+                <option value="1200x630">Facebook Post (1200×630)</option>
                 <option value="custom">Current Canvas Size</option>
               </select>
             </label>
             <button id="download-meme" type="button" class="btn">Download Meme</button>
 
-            <h3>Recent Memes (Last 5)</h3>
+            <h3>Recent Memes (Last 10)</h3>
             <div id="meme-history" class="history-grid"></div>
           </aside>
         </div>
