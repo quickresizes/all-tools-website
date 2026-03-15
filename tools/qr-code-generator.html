@@ -4,65 +4,678 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QR Code Generator – Free Online QR Code Generator Tool | MediaTools Pro</title>
-    <meta name="description" content="Generate QR codes for links, text, contact info, and more. Use this free online qr code generator at MediaTools Pro." />
-    <meta name="keywords" content="qr code generator, qr code generator online, free qr code generator, media tools pro, qr, code, generator, online tool" />
-    <meta property="og:title" content="QR Code Generator – Free Online QR Code Generator Tool | MediaTools Pro" />
-    <meta property="og:description" content="Generate QR codes for links, text, contact info, and more. Use this free online qr code generator at MediaTools Pro." />
+    <meta
+      name="description"
+      content="Create customizable QR codes for URLs, text, email, phone, WiFi, vCards, and more. Download PNG, SVG, or JPG instantly in your browser."
+    />
+    <meta
+      name="keywords"
+      content="qr code generator, qr maker, qr code with logo, wifi qr code, vcard qr code, browser qr code tool"
+    />
+    <meta
+      property="og:title"
+      content="QR Code Generator – Free Online QR Code Generator Tool | MediaTools Pro"
+    />
+    <meta
+      property="og:description"
+      content="Generate professional QR codes in your browser with style, colors, logo support, and instant downloads."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/qr-code-generator.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      .qr-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+        gap: 1rem;
+      }
+
+      .qr-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 1rem;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      }
+
+      .qr-controls {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        margin-bottom: 0.85rem;
+      }
+
+      .control-group label {
+        font-weight: 600;
+        color: #1e293b;
+      }
+
+      .control-group input,
+      .control-group select,
+      .control-group textarea {
+        width: 100%;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 0.62rem 0.75rem;
+        font-size: 0.95rem;
+        color: #0f172a;
+      }
+
+      .control-group textarea {
+        resize: vertical;
+        min-height: 88px;
+      }
+
+      .checkbox-line {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-size: 0.92rem;
+        color: #334155;
+      }
+
+      .checkbox-line input {
+        width: auto;
+      }
+
+      .btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+      }
+
+      .btn-secondary {
+        border: 0;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        color: #fff;
+        border-radius: 10px;
+        padding: 0.65rem 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .btn-light {
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: #0f172a;
+        border-radius: 10px;
+        padding: 0.62rem 0.84rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .qr-preview {
+        min-height: 320px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 16px;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+
+      .qr-preview > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .status-text {
+        color: #475569;
+        font-size: 0.88rem;
+        margin: 0.5rem 0 0;
+      }
+
+      .share-row,
+      .download-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin-top: 0.6rem;
+      }
+
+      .history-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 0.7rem;
+        margin-top: 0.6rem;
+      }
+
+      .history-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0.55rem;
+        background: #fff;
+      }
+
+      .history-card img {
+        width: 100%;
+        border-radius: 8px;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        background: #f8fafc;
+      }
+
+      .history-card button {
+        width: 100%;
+        margin-top: 0.45rem;
+      }
+
+      .meta-mini {
+        display: block;
+        color: #64748b;
+        font-size: 0.78rem;
+        margin-top: 0.35rem;
+      }
+
+      @media (max-width: 980px) {
+        .qr-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .qr-controls {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>QR Code Generator</h1>
-        <p class="meta-text">Generate QR codes for links, text, contact info, and more.</p>
+        <p class="meta-text">
+          Generate advanced QR codes for URLs, text, WiFi, vCards, and more with style controls, logo upload,
+          sharing, and downloads.
+        </p>
       </section>
 
       <section class="tool-panel tool-content">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <div class="qr-grid">
+          <article class="qr-card">
+            <h2>QR Data & Settings</h2>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+            <div class="control-group">
+              <label for="qrType">QR Input Type</label>
+              <select id="qrType">
+                <option value="url">Website URL</option>
+                <option value="text">Plain Text</option>
+                <option value="email">Email</option>
+                <option value="phone">Phone Number</option>
+                <option value="sms">SMS Message</option>
+                <option value="vcard">Contact Card (vCard)</option>
+                <option value="wifi">WiFi Network</option>
+                <option value="location">Location (Google Maps link)</option>
+              </select>
+            </div>
 
+            <div id="dynamicFields"></div>
+
+            <h3>Appearance</h3>
+            <div class="qr-controls">
+              <div class="control-group">
+                <label for="dotColor">QR Color</label>
+                <input id="dotColor" type="color" value="#111827" />
+              </div>
+              <div class="control-group">
+                <label for="bgColor">Background Color</label>
+                <input id="bgColor" type="color" value="#ffffff" />
+              </div>
+              <div class="control-group">
+                <label for="qrStyle">QR Style</label>
+                <select id="qrStyle">
+                  <option value="square">Square style</option>
+                  <option value="rounded">Rounded dots</option>
+                  <option value="dots">Circular dots</option>
+                  <option value="classy-rounded">Modern style</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="qrSize">QR Size</label>
+                <select id="qrSize">
+                  <option value="256">256px</option>
+                  <option value="512" selected>512px</option>
+                  <option value="1024">1024px</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="errorCorrection">Error Correction Level</label>
+                <select id="errorCorrection">
+                  <option value="L">Low</option>
+                  <option value="M" selected>Medium</option>
+                  <option value="Q">Quartile</option>
+                  <option value="H">High</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="logoUpload">Logo (center image)</label>
+                <input id="logoUpload" type="file" accept="image/*" />
+              </div>
+            </div>
+
+            <label class="checkbox-line" for="transparentBg">
+              <input id="transparentBg" type="checkbox" />
+              Transparent background
+            </label>
+
+            <div class="btn-row" style="margin-top: 0.9rem">
+              <button class="btn-secondary" type="button" id="generateBtn">Generate QR Code</button>
+              <button class="btn-light" type="button" id="copyBtn">Copy QR Image</button>
+            </div>
+            <p class="status-text" id="toolStatus">All generation happens locally in your browser.</p>
+          </article>
+
+          <article class="qr-card">
+            <h2>Live Preview</h2>
+            <div id="qrPreview" class="qr-preview">
+              <p class="status-text">Your generated QR code appears here.</p>
+            </div>
+
+            <h3 style="margin-top: 1rem">Download</h3>
+            <div class="download-row">
+              <button type="button" class="btn-light" data-download="png">Download PNG</button>
+              <button type="button" class="btn-light" data-download="svg">Download SVG</button>
+              <button type="button" class="btn-light" data-download="jpeg">Download JPG</button>
+            </div>
+
+            <h3 style="margin-top: 1rem">Share</h3>
+            <div class="share-row">
+              <button type="button" class="btn-light" data-share="whatsapp">WhatsApp</button>
+              <button type="button" class="btn-light" data-share="twitter">Twitter</button>
+              <button type="button" class="btn-light" data-share="facebook">Facebook</button>
+            </div>
+          </article>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>QR Code Generator is designed to help you work faster with dependable results. Generate QR codes for links, text, contact info, and more.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>QR Code Generator is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
-      </section>
-
-      <section class="tool-panel tool-description">
-        <h2>Features</h2>
-        <ul>
-          <li>Focused workflow for qr code generator tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
-        </ul>
+        <h2>Recent QR History</h2>
+        <p class="meta-text">Last 5 generated QR codes are saved only in your browser.</p>
+        <div id="historyGrid" class="history-grid"></div>
       </section>
     </main>
+
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="https://unpkg.com/qr-code-styling@1.8.0/lib/qr-code-styling.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script>
+      const historyKey = "mtpQrGeneratorHistoryV1";
+      const dynamicFields = document.getElementById("dynamicFields");
+      const qrType = document.getElementById("qrType");
+      const generateBtn = document.getElementById("generateBtn");
+      const copyBtn = document.getElementById("copyBtn");
+      const qrPreview = document.getElementById("qrPreview");
+      const statusEl = document.getElementById("toolStatus");
+      const historyGrid = document.getElementById("historyGrid");
+      const transparentBg = document.getElementById("transparentBg");
+      const bgColor = document.getElementById("bgColor");
+
+      let qrCode;
+      let currentPayload = "";
+      let uploadedLogo = "";
+
+      const fieldTemplates = {
+        url: `
+          <div class="control-group">
+            <label for="fieldUrl">Website URL</label>
+            <input id="fieldUrl" type="url" placeholder="https://example.com" />
+          </div>`,
+        text: `
+          <div class="control-group">
+            <label for="fieldText">Plain Text</label>
+            <textarea id="fieldText" placeholder="Enter any text..."></textarea>
+          </div>`,
+        email: `
+          <div class="control-group">
+            <label for="fieldEmail">Email Address</label>
+            <input id="fieldEmail" type="email" placeholder="you@example.com" />
+          </div>
+          <div class="control-group">
+            <label for="fieldEmailSubject">Subject (optional)</label>
+            <input id="fieldEmailSubject" type="text" placeholder="Hello" />
+          </div>
+          <div class="control-group">
+            <label for="fieldEmailBody">Message (optional)</label>
+            <textarea id="fieldEmailBody" placeholder="Write your email message..."></textarea>
+          </div>`,
+        phone: `
+          <div class="control-group">
+            <label for="fieldPhone">Phone Number</label>
+            <input id="fieldPhone" type="tel" placeholder="+12025550123" />
+          </div>`,
+        sms: `
+          <div class="control-group">
+            <label for="fieldSmsNumber">Phone Number</label>
+            <input id="fieldSmsNumber" type="tel" placeholder="+12025550123" />
+          </div>
+          <div class="control-group">
+            <label for="fieldSmsMessage">SMS Message</label>
+            <textarea id="fieldSmsMessage" placeholder="Type your SMS message..."></textarea>
+          </div>`,
+        vcard: `
+          <div class="control-group"><label for="vcName">Name</label><input id="vcName" type="text" placeholder="John Doe" /></div>
+          <div class="control-group"><label for="vcPhone">Phone</label><input id="vcPhone" type="tel" placeholder="+12025550123" /></div>
+          <div class="control-group"><label for="vcEmail">Email</label><input id="vcEmail" type="email" placeholder="john@example.com" /></div>
+          <div class="control-group"><label for="vcWebsite">Website</label><input id="vcWebsite" type="url" placeholder="https://example.com" /></div>
+          <div class="control-group"><label for="vcAddress">Address</label><textarea id="vcAddress" placeholder="Street, City, ZIP"></textarea></div>`,
+        wifi: `
+          <div class="control-group"><label for="wifiSsid">Network Name (SSID)</label><input id="wifiSsid" type="text" /></div>
+          <div class="control-group"><label for="wifiPassword">Password</label><input id="wifiPassword" type="text" /></div>
+          <div class="control-group">
+            <label for="wifiEncryption">Encryption</label>
+            <select id="wifiEncryption">
+              <option value="WPA" selected>WPA/WPA2</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">Open</option>
+            </select>
+          </div>`,
+        location: `
+          <div class="control-group">
+            <label for="locationQuery">Location</label>
+            <input id="locationQuery" type="text" placeholder="e.g. Eiffel Tower, Paris or 48.8584,2.2945" />
+          </div>`,
+      };
+
+      function renderFields() {
+        dynamicFields.innerHTML = fieldTemplates[qrType.value] || fieldTemplates.text;
+      }
+
+      function normalizeUrl(urlValue) {
+        const value = urlValue.trim();
+        if (!value) {
+          return "";
+        }
+        return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+      }
+
+      function buildPayload() {
+        const type = qrType.value;
+        if (type === "url") {
+          return normalizeUrl(document.getElementById("fieldUrl").value);
+        }
+        if (type === "text") {
+          return document.getElementById("fieldText").value.trim();
+        }
+        if (type === "email") {
+          const email = document.getElementById("fieldEmail").value.trim();
+          const subject = encodeURIComponent(document.getElementById("fieldEmailSubject").value.trim());
+          const body = encodeURIComponent(document.getElementById("fieldEmailBody").value.trim());
+          if (!email) {
+            return "";
+          }
+          const params = [];
+          if (subject) {
+            params.push(`subject=${subject}`);
+          }
+          if (body) {
+            params.push(`body=${body}`);
+          }
+          return `mailto:${email}${params.length ? `?${params.join("&")}` : ""}`;
+        }
+        if (type === "phone") {
+          const phone = document.getElementById("fieldPhone").value.trim();
+          return phone ? `tel:${phone}` : "";
+        }
+        if (type === "sms") {
+          const number = document.getElementById("fieldSmsNumber").value.trim();
+          const message = document.getElementById("fieldSmsMessage").value.trim();
+          if (!number && !message) {
+            return "";
+          }
+          return `SMSTO:${number}:${message}`;
+        }
+        if (type === "vcard") {
+          const name = document.getElementById("vcName").value.trim();
+          const phone = document.getElementById("vcPhone").value.trim();
+          const email = document.getElementById("vcEmail").value.trim();
+          const website = normalizeUrl(document.getElementById("vcWebsite").value);
+          const address = document.getElementById("vcAddress").value.trim();
+          if (!name && !phone && !email && !website && !address) {
+            return "";
+          }
+          return [
+            "BEGIN:VCARD",
+            "VERSION:3.0",
+            `FN:${name}`,
+            phone ? `TEL;TYPE=CELL:${phone}` : "",
+            email ? `EMAIL:${email}` : "",
+            website ? `URL:${website}` : "",
+            address ? `ADR:;;${address.replace(/\n/g, " ")};;;;` : "",
+            "END:VCARD",
+          ]
+            .filter(Boolean)
+            .join("\n");
+        }
+        if (type === "wifi") {
+          const ssid = document.getElementById("wifiSsid").value.trim();
+          const pass = document.getElementById("wifiPassword").value.trim();
+          const encryption = document.getElementById("wifiEncryption").value;
+          if (!ssid) {
+            return "";
+          }
+          const safeSsid = ssid.replace(/([;,:\\"])/g, "\\$1");
+          const safePass = pass.replace(/([;,:\\"])/g, "\\$1");
+          return `WIFI:T:${encryption};S:${safeSsid};P:${safePass};;`;
+        }
+        if (type === "location") {
+          const location = document.getElementById("locationQuery").value.trim();
+          return location ? `https://maps.google.com/?q=${encodeURIComponent(location)}` : "";
+        }
+        return "";
+      }
+
+      function getOptions(payload) {
+        const size = Number(document.getElementById("qrSize").value);
+        const backgroundColor = transparentBg.checked ? "transparent" : bgColor.value;
+        return {
+          width: size,
+          height: size,
+          data: payload,
+          margin: 8,
+          image: uploadedLogo || undefined,
+          qrOptions: {
+            typeNumber: 0,
+            mode: "Byte",
+            errorCorrectionLevel: document.getElementById("errorCorrection").value,
+          },
+          dotsOptions: {
+            color: document.getElementById("dotColor").value,
+            type: document.getElementById("qrStyle").value,
+          },
+          backgroundOptions: {
+            color: backgroundColor,
+          },
+          imageOptions: {
+            hideBackgroundDots: true,
+            imageSize: 0.24,
+            margin: 2,
+            crossOrigin: "anonymous",
+          },
+        };
+      }
+
+      async function blobToDataUrl(blob) {
+        return await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      function getHistory() {
+        try {
+          return JSON.parse(localStorage.getItem(historyKey) || "[]");
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function renderHistory() {
+        const items = getHistory();
+        if (!items.length) {
+          historyGrid.innerHTML = '<p class="status-text">No generated QR codes yet.</p>';
+          return;
+        }
+        historyGrid.innerHTML = items
+          .map(
+            (item, index) => `
+              <article class="history-card">
+                <img src="${item.preview}" alt="Saved QR code ${index + 1}" loading="lazy" />
+                <small class="meta-mini">${item.type.toUpperCase()} · ${new Date(item.createdAt).toLocaleString()}</small>
+                <button class="btn-light" type="button" data-history-index="${index}">Use</button>
+              </article>`,
+          )
+          .join("");
+      }
+
+      async function pushHistory(payload, options, type) {
+        try {
+          const blob = await qrCode.getRawData("png");
+          const preview = await blobToDataUrl(blob);
+          const next = [{ payload, options, type, preview, createdAt: new Date().toISOString() }, ...getHistory()]
+            .slice(0, 5);
+          localStorage.setItem(historyKey, JSON.stringify(next));
+          renderHistory();
+        } catch (error) {
+          console.warn("Unable to save QR history", error);
+        }
+      }
+
+      async function generateCode(saveToHistory = true) {
+        const payload = buildPayload();
+        if (!payload) {
+          statusEl.textContent = "Please complete the required fields for the selected QR type.";
+          return;
+        }
+
+        currentPayload = payload;
+        const options = getOptions(payload);
+
+        if (!qrCode) {
+          qrCode = new QRCodeStyling(options);
+          qrPreview.innerHTML = "";
+          qrCode.append(qrPreview);
+        } else {
+          qrCode.update(options);
+        }
+
+        statusEl.textContent = "QR code generated instantly in your browser.";
+
+        if (saveToHistory) {
+          await pushHistory(payload, options, qrType.value);
+        }
+      }
+
+      function shareCurrent(platform) {
+        if (!currentPayload) {
+          statusEl.textContent = "Generate a QR code before sharing.";
+          return;
+        }
+        const text = encodeURIComponent(`I created this QR data with MediaTools Pro: ${currentPayload}`);
+        let shareUrl = "";
+        if (platform === "whatsapp") {
+          shareUrl = `https://wa.me/?text=${text}`;
+        }
+        if (platform === "twitter") {
+          shareUrl = `https://twitter.com/intent/tweet?text=${text}`;
+        }
+        if (platform === "facebook") {
+          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentPayload)}`;
+        }
+        window.open(shareUrl, "_blank", "noopener,noreferrer");
+      }
+
+      qrType.addEventListener("change", renderFields);
+      generateBtn.addEventListener("click", () => generateCode(true));
+
+      document.getElementById("logoUpload").addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        uploadedLogo = "";
+        if (!file) {
+          return;
+        }
+        uploadedLogo = await blobToDataUrl(file);
+        statusEl.textContent = "Logo uploaded. Click Generate QR Code to apply it.";
+      });
+
+      transparentBg.addEventListener("change", () => {
+        bgColor.disabled = transparentBg.checked;
+      });
+
+      document.querySelectorAll("[data-download]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!qrCode) {
+            statusEl.textContent = "Generate a QR code before downloading.";
+            return;
+          }
+          const extension = button.getAttribute("data-download");
+          qrCode.download({ name: `qr-code-${Date.now()}`, extension });
+        });
+      });
+
+      document.querySelectorAll("[data-share]").forEach((button) => {
+        button.addEventListener("click", () => {
+          shareCurrent(button.getAttribute("data-share"));
+        });
+      });
+
+      copyBtn.addEventListener("click", async () => {
+        if (!qrCode) {
+          statusEl.textContent = "Generate a QR code before copying it.";
+          return;
+        }
+        if (!navigator.clipboard || typeof ClipboardItem === "undefined") {
+          statusEl.textContent = "Clipboard image copy is not supported in this browser.";
+          return;
+        }
+        try {
+          const blob = await qrCode.getRawData("png");
+          await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+          statusEl.textContent = "QR image copied to clipboard.";
+        } catch (error) {
+          statusEl.textContent = "Clipboard copy failed. Use download as fallback.";
+        }
+      });
+
+      historyGrid.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-history-index]");
+        if (!button) {
+          return;
+        }
+        const index = Number(button.getAttribute("data-history-index"));
+        const item = getHistory()[index];
+        if (!item) {
+          return;
+        }
+        currentPayload = item.payload;
+        qrType.value = item.type;
+        renderFields();
+        if (!qrCode) {
+          qrCode = new QRCodeStyling(item.options);
+          qrPreview.innerHTML = "";
+          qrCode.append(qrPreview);
+        } else {
+          qrCode.update(item.options);
+        }
+        statusEl.textContent = "Loaded QR code from local history.";
+      });
+
+      renderFields();
+      renderHistory();
+    </script>
   </body>
 </html>
