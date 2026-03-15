@@ -3,189 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QR Code Generator – Free Online QR Code Generator Tool | MediaTools Pro</title>
+    <title>Advanced QR Code Studio – Free Online Generator & Scanner | MediaTools Pro</title>
     <meta
       name="description"
-      content="Create customizable QR codes for URLs, text, email, phone, WiFi, vCards, and more. Download PNG, SVG, or JPG instantly in your browser."
+      content="Create advanced QR codes for URLs, text, events, payments, apps, social links, WiFi, and more. Design with gradients, frames, logos, history, scanner, and batch ZIP export in your browser."
     />
     <meta
       name="keywords"
-      content="qr code generator, qr maker, qr code with logo, wifi qr code, vcard qr code, browser qr code tool"
+      content="advanced qr code studio, qr generator, qr scanner, qr batch generator, qr with logo, qr svg pdf download"
     />
     <meta
       property="og:title"
-      content="QR Code Generator – Free Online QR Code Generator Tool | MediaTools Pro"
+      content="Advanced QR Code Studio – Free Online Generator & Scanner | MediaTools Pro"
     />
     <meta
       property="og:description"
-      content="Generate professional QR codes in your browser with style, colors, logo support, and instant downloads."
+      content="Generate, customize, scan, batch export, print, and share QR codes instantly with full browser-based privacy."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/qr-code-generator.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../css/style.css" />
     <style>
-      .qr-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-        gap: 1rem;
-      }
-
-      .qr-card {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 1rem;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-      }
-
-      .qr-controls {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.8rem;
-      }
-
-      .control-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.45rem;
-        margin-bottom: 0.85rem;
-      }
-
-      .control-group label {
-        font-weight: 600;
-        color: #1e293b;
-      }
-
-      .control-group input,
-      .control-group select,
-      .control-group textarea {
-        width: 100%;
-        border: 1px solid #cbd5e1;
-        border-radius: 10px;
-        padding: 0.62rem 0.75rem;
-        font-size: 0.95rem;
-        color: #0f172a;
-      }
-
-      .control-group textarea {
-        resize: vertical;
-        min-height: 88px;
-      }
-
-      .checkbox-line {
-        display: flex;
-        align-items: center;
-        gap: 0.55rem;
-        font-size: 0.92rem;
-        color: #334155;
-      }
-
-      .checkbox-line input {
-        width: auto;
-      }
-
-      .btn-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.6rem;
-      }
-
-      .btn-secondary {
-        border: 0;
-        background: linear-gradient(135deg, #2563eb, #7c3aed);
-        color: #fff;
-        border-radius: 10px;
-        padding: 0.65rem 0.9rem;
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      .btn-light {
-        border: 1px solid #cbd5e1;
-        background: #fff;
-        color: #0f172a;
-        border-radius: 10px;
-        padding: 0.62rem 0.84rem;
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      .qr-preview {
-        min-height: 320px;
-        border: 2px dashed #cbd5e1;
-        border-radius: 16px;
-        background: #f8fafc;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
-      }
-
-      .qr-preview > div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .status-text {
-        color: #475569;
-        font-size: 0.88rem;
-        margin: 0.5rem 0 0;
-      }
-
-      .share-row,
-      .download-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.55rem;
-        margin-top: 0.6rem;
-      }
-
-      .history-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 0.7rem;
-        margin-top: 0.6rem;
-      }
-
-      .history-card {
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 0.55rem;
-        background: #fff;
-      }
-
-      .history-card img {
-        width: 100%;
-        border-radius: 8px;
-        aspect-ratio: 1 / 1;
-        object-fit: contain;
-        background: #f8fafc;
-      }
-
-      .history-card button {
-        width: 100%;
-        margin-top: 0.45rem;
-      }
-
-      .meta-mini {
-        display: block;
-        color: #64748b;
-        font-size: 0.78rem;
-        margin-top: 0.35rem;
-      }
-
-      @media (max-width: 980px) {
-        .qr-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      @media (max-width: 640px) {
-        .qr-controls {
-          grid-template-columns: 1fr;
-        }
+      :root { color-scheme: light dark; }
+      .qr-grid { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr); gap:1rem; }
+      .qr-card { background:var(--qr-card,#fff); border:1px solid var(--qr-border,#dbe2ef); border-radius:16px; padding:1rem; box-shadow:0 8px 24px rgba(15,23,42,.07); }
+      .qr-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
+      .control-group{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.8rem}
+      .control-group label{font-weight:600;font-size:.9rem}
+      .control-group input,.control-group select,.control-group textarea{width:100%;border:1px solid var(--qr-border,#cbd5e1);background:var(--qr-input,#fff);color:var(--qr-text,#111827);border-radius:10px;padding:.58rem .72rem;font-size:.94rem}
+      .control-group textarea{resize:vertical;min-height:80px}
+      .checkbox-line{display:flex;align-items:center;gap:.5rem;font-size:.9rem;margin-bottom:.5rem}
+      .input-inline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
+      .btn-row,.download-row,.share-row{display:flex;flex-wrap:wrap;gap:.55rem}
+      .btn-secondary,.btn-light{border-radius:10px;padding:.62rem .85rem;font-weight:600;cursor:pointer}
+      .btn-secondary{border:0;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}
+      .btn-light{border:1px solid var(--qr-border,#cbd5e1);background:var(--qr-input,#fff);color:var(--qr-text,#0f172a)}
+      .qr-preview-frame{border:2px dashed var(--qr-border,#cbd5e1);border-radius:16px;background:var(--qr-preview,#f8fafc);min-height:350px;padding:1rem;display:flex;align-items:center;justify-content:center}
+      .qr-artboard{position:relative;padding:1rem;border-radius:14px;background:#fff;display:inline-flex;flex-direction:column;align-items:center;gap:.6rem}
+      .frame-text{font-weight:700;letter-spacing:.4px;font-size:.9rem;text-transform:uppercase;color:#0f172a}
+      .qr-canvas-wrap{position:relative;display:inline-flex}
+      #qrPreview{display:flex;align-items:center;justify-content:center;min-height:260px;min-width:260px}
+      #logoOverlay{position:absolute;pointer-events:none;display:none;max-width:32%;max-height:32%;object-fit:contain}
+      .status-text{font-size:.88rem;color:#475569;margin:.55rem 0 0}
+      .history-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.7rem;margin-top:.6rem}
+      .history-card{border:1px solid var(--qr-border,#dbe2ef);border-radius:12px;padding:.55rem;background:var(--qr-input,#fff)}
+      .history-card img{width:100%;aspect-ratio:1/1;object-fit:contain;background:#f8fafc;border-radius:8px}
+      .meta-mini{display:block;color:#64748b;font-size:.76rem;margin-top:.35rem}
+      .section-title{margin-top:.6rem;border-top:1px solid var(--qr-border,#e2e8f0);padding-top:.85rem}
+      @media (max-width:980px){.qr-grid{grid-template-columns:1fr}}
+      @media (max-width:640px){.qr-controls,.input-inline{grid-template-columns:1fr}}
+      @media (prefers-color-scheme: dark){
+        :root{--qr-card:#101828;--qr-border:#334155;--qr-input:#0f172a;--qr-text:#e2e8f0;--qr-preview:#0b1220}
+        .frame-text{color:#e2e8f0}
       }
     </style>
   </head>
@@ -194,114 +64,116 @@
 
     <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
-        <h1>QR Code Generator</h1>
-        <p class="meta-text">
-          Generate advanced QR codes for URLs, text, WiFi, vCards, and more with style controls, logo upload,
-          sharing, and downloads.
-        </p>
+        <h1>Advanced QR Code Studio</h1>
+        <p class="meta-text">All generation, scanning, and history storage are done locally in your browser for privacy-first QR workflows.</p>
       </section>
 
       <section class="tool-panel tool-content">
         <div class="qr-grid">
           <article class="qr-card">
-            <h2>QR Data & Settings</h2>
-
+            <h2>QR Content</h2>
             <div class="control-group">
               <label for="qrType">QR Input Type</label>
               <select id="qrType">
-                <option value="url">Website URL</option>
-                <option value="text">Plain Text</option>
-                <option value="email">Email</option>
-                <option value="phone">Phone Number</option>
-                <option value="sms">SMS Message</option>
-                <option value="vcard">Contact Card (vCard)</option>
-                <option value="wifi">WiFi Network</option>
-                <option value="location">Location (Google Maps link)</option>
+                <option value="url">Website URL</option><option value="text">Plain Text</option><option value="email">Email</option><option value="phone">Phone Number</option><option value="sms">SMS Message</option><option value="vcard">Contact Card (vCard)</option><option value="wifi">WiFi Network</option><option value="location">Location</option>
+                <option value="event">Event (Calendar)</option><option value="whatsapp">WhatsApp Chat Link</option><option value="telegram">Telegram Link</option><option value="youtube">YouTube Link</option><option value="app">App Store / Play Store</option><option value="crypto">Bitcoin/Crypto Payment</option><option value="deeplink">Custom Deep Link</option>
               </select>
             </div>
-
             <div id="dynamicFields"></div>
 
-            <h3>Appearance</h3>
+            <label class="checkbox-line"><input id="useUtm" type="checkbox" /> Add UTM tracking parameters</label>
+            <div id="utmFields" style="display:none" class="input-inline">
+              <input id="utmSource" type="text" placeholder="utm_source" />
+              <input id="utmMedium" type="text" placeholder="utm_medium" />
+              <input id="utmCampaign" type="text" placeholder="utm_campaign" />
+              <input id="utmContent" type="text" placeholder="utm_content" />
+            </div>
+
+            <h3 class="section-title">Design</h3>
             <div class="qr-controls">
-              <div class="control-group">
-                <label for="dotColor">QR Color</label>
-                <input id="dotColor" type="color" value="#111827" />
-              </div>
-              <div class="control-group">
-                <label for="bgColor">Background Color</label>
-                <input id="bgColor" type="color" value="#ffffff" />
-              </div>
-              <div class="control-group">
-                <label for="qrStyle">QR Style</label>
-                <select id="qrStyle">
-                  <option value="square">Square style</option>
-                  <option value="rounded">Rounded dots</option>
-                  <option value="dots">Circular dots</option>
-                  <option value="classy-rounded">Modern style</option>
-                </select>
-              </div>
-              <div class="control-group">
-                <label for="qrSize">QR Size</label>
-                <select id="qrSize">
-                  <option value="256">256px</option>
-                  <option value="512" selected>512px</option>
-                  <option value="1024">1024px</option>
-                </select>
-              </div>
-              <div class="control-group">
-                <label for="errorCorrection">Error Correction Level</label>
-                <select id="errorCorrection">
-                  <option value="L">Low</option>
-                  <option value="M" selected>Medium</option>
-                  <option value="Q">Quartile</option>
-                  <option value="H">High</option>
-                </select>
-              </div>
-              <div class="control-group">
-                <label for="logoUpload">Logo (center image)</label>
-                <input id="logoUpload" type="file" accept="image/*" />
-              </div>
+              <div class="control-group"><label for="dotColor">Color 1</label><input id="dotColor" type="color" value="#111827" /></div>
+              <div class="control-group"><label for="dotColor2">Color 2 (Gradient)</label><input id="dotColor2" type="color" value="#7c3aed" /></div>
+              <div class="control-group"><label for="gradientType">Gradient</label><select id="gradientType"><option value="none">Solid</option><option value="linear" selected>Linear</option><option value="radial">Radial</option></select></div>
+              <div class="control-group"><label for="gradientRotation">Gradient Angle</label><input id="gradientRotation" type="range" min="0" max="360" value="45" /></div>
+              <div class="control-group"><label for="dotStyle">Dot Shape</label><select id="dotStyle"><option value="square">Square</option><option value="rounded">Rounded</option><option value="dots">Dots</option><option value="classy">Classy</option></select></div>
+              <div class="control-group"><label for="cornerSquareStyle">Corner Style</label><select id="cornerSquareStyle"><option value="square">Square</option><option value="dot">Rounded</option><option value="extra-rounded">Extra Rounded</option></select></div>
+              <div class="control-group"><label for="cornerDotStyle">Corner Dot</label><select id="cornerDotStyle"><option value="square">Square</option><option value="dot">Rounded</option></select></div>
+              <div class="control-group"><label for="qrSize">Size</label><select id="qrSize"><option value="256">256px</option><option value="512" selected>512px</option><option value="1024">1024px</option></select></div>
+              <div class="control-group"><label for="errorCorrection">Error Correction</label><select id="errorCorrection"><option value="L">Low</option><option value="M" selected>Medium</option><option value="Q">Quartile</option><option value="H">High</option></select></div>
             </div>
 
-            <label class="checkbox-line" for="transparentBg">
-              <input id="transparentBg" type="checkbox" />
-              Transparent background
-            </label>
+            <h3 class="section-title">Background, Frame & Logo</h3>
+            <div class="qr-controls">
+              <div class="control-group"><label for="backgroundMode">Background Mode</label><select id="backgroundMode"><option value="solid">Solid Color</option><option value="transparent">Transparent</option><option value="image">Background Image</option></select></div>
+              <div class="control-group"><label for="bgColor">Background Color</label><input id="bgColor" type="color" value="#ffffff" /></div>
+              <div class="control-group"><label for="bgImageUpload">Background Image</label><input id="bgImageUpload" type="file" accept="image/*" /></div>
+              <div class="control-group"><label for="frameTemplate">Frame Template</label><select id="frameTemplate"><option value="none">None</option><option value="scan">Scan Me</option><option value="follow">Follow Me</option><option value="visit">Visit Website</option><option value="download">Download App</option><option value="custom">Custom</option></select></div>
+              <div class="control-group"><label for="frameText">Frame Text</label><input id="frameText" type="text" placeholder="SCAN ME" /></div>
+              <div class="control-group"><label for="logoUpload">Center Logo</label><input id="logoUpload" type="file" accept="image/*" /></div>
+              <div class="control-group"><label for="logoSize">Logo Size %</label><input id="logoSize" type="range" min="12" max="45" value="24" /></div>
+              <div class="control-group"><label for="logoPosX">Logo Position X %</label><input id="logoPosX" type="range" min="20" max="80" value="50" /></div>
+              <div class="control-group"><label for="logoPosY">Logo Position Y %</label><input id="logoPosY" type="range" min="20" max="80" value="50" /></div>
+              <div class="control-group"><label for="logoBgShape">Logo Background</label><select id="logoBgShape"><option value="none">None</option><option value="circle">Circle</option><option value="rounded">Rounded</option><option value="square">Square</option></select></div>
+            </div>
 
-            <div class="btn-row" style="margin-top: 0.9rem">
-              <button class="btn-secondary" type="button" id="generateBtn">Generate QR Code</button>
+            <div class="btn-row">
+              <button class="btn-secondary" type="button" id="generateBtn">Generate QR</button>
               <button class="btn-light" type="button" id="copyBtn">Copy QR Image</button>
+              <button class="btn-light" type="button" id="printBtn">Print Sheet</button>
             </div>
-            <p class="status-text" id="toolStatus">All generation happens locally in your browser.</p>
+            <p class="status-text" id="toolStatus">Studio ready. Data never leaves your browser.</p>
           </article>
 
           <article class="qr-card">
             <h2>Live Preview</h2>
-            <div id="qrPreview" class="qr-preview">
-              <p class="status-text">Your generated QR code appears here.</p>
+            <div class="qr-preview-frame" id="previewFrame">
+              <div class="qr-artboard" id="artboard">
+                <div class="frame-text" id="frameLabel" style="display:none"></div>
+                <div class="qr-canvas-wrap" id="qrCanvasWrap">
+                  <div id="qrPreview"><p class="status-text">Generate a QR code to preview.</p></div>
+                  <img id="logoOverlay" alt="Logo overlay" />
+                </div>
+              </div>
             </div>
 
-            <h3 style="margin-top: 1rem">Download</h3>
+            <h3 class="section-title">Download</h3>
             <div class="download-row">
-              <button type="button" class="btn-light" data-download="png">Download PNG</button>
-              <button type="button" class="btn-light" data-download="svg">Download SVG</button>
-              <button type="button" class="btn-light" data-download="jpeg">Download JPG</button>
+              <button type="button" class="btn-light" data-download="png">PNG</button>
+              <button type="button" class="btn-light" data-download="svg">SVG</button>
+              <button type="button" class="btn-light" data-download="jpeg">JPG</button>
+              <button type="button" class="btn-light" data-download="pdf">PDF</button>
             </div>
 
-            <h3 style="margin-top: 1rem">Share</h3>
+            <h3 class="section-title">Share</h3>
             <div class="share-row">
               <button type="button" class="btn-light" data-share="whatsapp">WhatsApp</button>
-              <button type="button" class="btn-light" data-share="twitter">Twitter</button>
               <button type="button" class="btn-light" data-share="facebook">Facebook</button>
+              <button type="button" class="btn-light" data-share="twitter">Twitter</button>
+              <button type="button" class="btn-light" data-share="telegram">Telegram</button>
             </div>
           </article>
         </div>
       </section>
 
       <section class="tool-panel tool-description">
-        <h2>Recent QR History</h2>
-        <p class="meta-text">Last 5 generated QR codes are saved only in your browser.</p>
+        <h2>Scanner, Batch, and History</h2>
+        <div class="qr-grid" style="grid-template-columns:1fr 1fr">
+          <article class="qr-card">
+            <h3>QR Code Scanner</h3>
+            <div class="btn-row"><input id="scanUpload" type="file" accept="image/*" /><button class="btn-light" type="button" id="scanCameraBtn">Use Camera</button><button class="btn-light" type="button" id="stopCameraBtn">Stop</button></div>
+            <video id="scannerVideo" autoplay playsinline style="width:100%;max-height:240px;border-radius:10px;margin-top:.7rem;display:none"></video>
+            <canvas id="scanCanvas" style="display:none"></canvas>
+            <p class="status-text" id="scanResult">Scan result will appear here.</p>
+          </article>
+          <article class="qr-card">
+            <h3>Batch QR Generator</h3>
+            <div class="control-group"><label for="batchInput">One entry per line</label><textarea id="batchInput" placeholder="https://example.com/page-1&#10;https://example.com/page-2"></textarea></div>
+            <div class="btn-row"><button class="btn-light" id="batchZipBtn" type="button">Export ZIP</button><button class="btn-light" id="batchPrintBtn" type="button">Print Batch Sheet</button></div>
+          </article>
+        </div>
+
+        <h3 style="margin-top:1rem">Recent QR History</h3>
+        <p class="meta-text">Last 10 generated QR codes are saved locally on this device.</p>
         <div id="historyGrid" class="history-grid"></div>
       </section>
     </main>
@@ -309,373 +181,263 @@
     <footer id="site-footer"></footer>
 
     <script src="https://unpkg.com/qr-code-styling@1.8.0/lib/qr-code-styling.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
     <script>
-      const historyKey = "mtpQrGeneratorHistoryV1";
-      const dynamicFields = document.getElementById("dynamicFields");
-      const qrType = document.getElementById("qrType");
-      const generateBtn = document.getElementById("generateBtn");
-      const copyBtn = document.getElementById("copyBtn");
-      const qrPreview = document.getElementById("qrPreview");
-      const statusEl = document.getElementById("toolStatus");
-      const historyGrid = document.getElementById("historyGrid");
-      const transparentBg = document.getElementById("transparentBg");
-      const bgColor = document.getElementById("bgColor");
-
+      const historyKey = "mtpQrGeneratorHistoryV2";
+      const $ = (id) => document.getElementById(id);
+      const qrType = $("qrType");
+      const dynamicFields = $("dynamicFields");
+      const qrPreview = $("qrPreview");
+      const statusEl = $("toolStatus");
+      const frameLabel = $("frameLabel");
+      const previewFrame = $("previewFrame");
+      const logoOverlay = $("logoOverlay");
+      const historyGrid = $("historyGrid");
       let qrCode;
       let currentPayload = "";
       let uploadedLogo = "";
+      let bgImageData = "";
+      let cameraStream;
+      let scanRaf;
+      const liveInputs = ["dotColor","dotColor2","gradientType","gradientRotation","dotStyle","cornerSquareStyle","cornerDotStyle","qrSize","errorCorrection","backgroundMode","bgColor","frameTemplate","frameText","logoSize","logoPosX","logoPosY","logoBgShape","useUtm","utmSource","utmMedium","utmCampaign","utmContent"];
 
       const fieldTemplates = {
-        url: `
-          <div class="control-group">
-            <label for="fieldUrl">Website URL</label>
-            <input id="fieldUrl" type="url" placeholder="https://example.com" />
-          </div>`,
-        text: `
-          <div class="control-group">
-            <label for="fieldText">Plain Text</label>
-            <textarea id="fieldText" placeholder="Enter any text..."></textarea>
-          </div>`,
-        email: `
-          <div class="control-group">
-            <label for="fieldEmail">Email Address</label>
-            <input id="fieldEmail" type="email" placeholder="you@example.com" />
-          </div>
-          <div class="control-group">
-            <label for="fieldEmailSubject">Subject (optional)</label>
-            <input id="fieldEmailSubject" type="text" placeholder="Hello" />
-          </div>
-          <div class="control-group">
-            <label for="fieldEmailBody">Message (optional)</label>
-            <textarea id="fieldEmailBody" placeholder="Write your email message..."></textarea>
-          </div>`,
-        phone: `
-          <div class="control-group">
-            <label for="fieldPhone">Phone Number</label>
-            <input id="fieldPhone" type="tel" placeholder="+12025550123" />
-          </div>`,
-        sms: `
-          <div class="control-group">
-            <label for="fieldSmsNumber">Phone Number</label>
-            <input id="fieldSmsNumber" type="tel" placeholder="+12025550123" />
-          </div>
-          <div class="control-group">
-            <label for="fieldSmsMessage">SMS Message</label>
-            <textarea id="fieldSmsMessage" placeholder="Type your SMS message..."></textarea>
-          </div>`,
-        vcard: `
-          <div class="control-group"><label for="vcName">Name</label><input id="vcName" type="text" placeholder="John Doe" /></div>
-          <div class="control-group"><label for="vcPhone">Phone</label><input id="vcPhone" type="tel" placeholder="+12025550123" /></div>
-          <div class="control-group"><label for="vcEmail">Email</label><input id="vcEmail" type="email" placeholder="john@example.com" /></div>
-          <div class="control-group"><label for="vcWebsite">Website</label><input id="vcWebsite" type="url" placeholder="https://example.com" /></div>
-          <div class="control-group"><label for="vcAddress">Address</label><textarea id="vcAddress" placeholder="Street, City, ZIP"></textarea></div>`,
-        wifi: `
-          <div class="control-group"><label for="wifiSsid">Network Name (SSID)</label><input id="wifiSsid" type="text" /></div>
-          <div class="control-group"><label for="wifiPassword">Password</label><input id="wifiPassword" type="text" /></div>
-          <div class="control-group">
-            <label for="wifiEncryption">Encryption</label>
-            <select id="wifiEncryption">
-              <option value="WPA" selected>WPA/WPA2</option>
-              <option value="WEP">WEP</option>
-              <option value="nopass">Open</option>
-            </select>
-          </div>`,
-        location: `
-          <div class="control-group">
-            <label for="locationQuery">Location</label>
-            <input id="locationQuery" type="text" placeholder="e.g. Eiffel Tower, Paris or 48.8584,2.2945" />
-          </div>`,
+        url:`<div class='control-group'><label>Website URL</label><input id='fieldUrl' type='url' placeholder='https://example.com' /></div>`,
+        text:`<div class='control-group'><label>Plain Text</label><textarea id='fieldText' placeholder='Enter text'></textarea></div>`,
+        email:`<div class='control-group'><label>Email Address</label><input id='fieldEmail' type='email' placeholder='you@example.com'/></div><div class='control-group'><label>Subject</label><input id='fieldEmailSubject' type='text'/></div><div class='control-group'><label>Message</label><textarea id='fieldEmailBody'></textarea></div>`,
+        phone:`<div class='control-group'><label>Phone Number</label><input id='fieldPhone' type='tel' placeholder='+12025550123'/></div>`,
+        sms:`<div class='control-group'><label>Phone</label><input id='fieldSmsNumber' type='tel'/></div><div class='control-group'><label>Message</label><textarea id='fieldSmsMessage'></textarea></div>`,
+        vcard:`<div class='input-inline'><input id='vcName' placeholder='Name'/><input id='vcPhone' placeholder='Phone'/><input id='vcEmail' placeholder='Email'/><input id='vcWebsite' placeholder='Website'/></div><div class='control-group'><textarea id='vcAddress' placeholder='Address'></textarea></div>`,
+        wifi:`<div class='input-inline'><input id='wifiSsid' placeholder='SSID'/><input id='wifiPassword' placeholder='Password'/><select id='wifiEncryption'><option>WPA</option><option>WEP</option><option value='nopass'>None</option></select></div>`,
+        location:`<div class='control-group'><label>Location query</label><input id='locationQuery' placeholder='Statue of Liberty, New York'/></div>`,
+        event:`<div class='input-inline'><input id='eventTitle' placeholder='Event title'/><input id='eventLocation' placeholder='Location'/><input id='eventStart' type='datetime-local'/><input id='eventEnd' type='datetime-local'/></div><div class='control-group'><textarea id='eventDescription' placeholder='Event description'></textarea></div>`,
+        whatsapp:`<div class='control-group'><label>WhatsApp number</label><input id='waNumber' placeholder='12025550123'/></div><div class='control-group'><label>Prefilled text</label><textarea id='waText'></textarea></div>`,
+        telegram:`<div class='control-group'><label>Telegram username or link</label><input id='tgValue' placeholder='username or https://t.me/username'/></div>`,
+        youtube:`<div class='control-group'><label>YouTube link</label><input id='ytUrl' type='url' placeholder='https://youtube.com/watch?v=...'/></div>`,
+        app:`<div class='control-group'><label>App URL</label><input id='appUrl' type='url' placeholder='https://apps.apple.com/... or play.google.com/...'/></div>`,
+        crypto:`<div class='input-inline'><select id='cryptoScheme'><option value='bitcoin'>Bitcoin</option><option value='ethereum'>Ethereum</option><option value='litecoin'>Litecoin</option></select><input id='cryptoAddress' placeholder='Wallet address'/></div><div class='control-group'><input id='cryptoAmount' placeholder='Amount (optional)'/></div>`,
+        deeplink:`<div class='control-group'><label>Custom deep link</label><input id='deepLink' placeholder='myapp://open/product/123'/></div>`
       };
 
-      function renderFields() {
+      function escapeWifi(v){return (v||"").replace(/([;,:\\"])/g,"\\$1");}
+      function addUtm(url){
+        if (!$("useUtm").checked) return url;
+        try { const u = new URL(url); ["source","medium","campaign","content"].forEach((k)=>{ const val=$("utm"+k[0].toUpperCase()+k.slice(1)).value.trim(); if(val)u.searchParams.set("utm_"+k,val); }); return u.toString(); } catch { return url; }
+      }
+      function dtToIcs(dt){ return dt ? new Date(dt).toISOString().replace(/[-:]/g,"").split(".")[0]+"Z" : ""; }
+
+      function renderFields(){
         dynamicFields.innerHTML = fieldTemplates[qrType.value] || fieldTemplates.text;
+        dynamicFields.querySelectorAll("input,select,textarea").forEach((el)=>el.addEventListener("input",debouncedGenerate));
       }
 
-      function normalizeUrl(urlValue) {
-        const value = urlValue.trim();
-        if (!value) {
-          return "";
-        }
-        return /^https?:\/\//i.test(value) ? value : `https://${value}`;
-      }
-
-      function buildPayload() {
+      function buildPayload(){
         const type = qrType.value;
-        if (type === "url") {
-          return normalizeUrl(document.getElementById("fieldUrl").value);
-        }
-        if (type === "text") {
-          return document.getElementById("fieldText").value.trim();
-        }
-        if (type === "email") {
-          const email = document.getElementById("fieldEmail").value.trim();
-          const subject = encodeURIComponent(document.getElementById("fieldEmailSubject").value.trim());
-          const body = encodeURIComponent(document.getElementById("fieldEmailBody").value.trim());
-          if (!email) {
-            return "";
-          }
-          const params = [];
-          if (subject) {
-            params.push(`subject=${subject}`);
-          }
-          if (body) {
-            params.push(`body=${body}`);
-          }
-          return `mailto:${email}${params.length ? `?${params.join("&")}` : ""}`;
-        }
-        if (type === "phone") {
-          const phone = document.getElementById("fieldPhone").value.trim();
-          return phone ? `tel:${phone}` : "";
-        }
-        if (type === "sms") {
-          const number = document.getElementById("fieldSmsNumber").value.trim();
-          const message = document.getElementById("fieldSmsMessage").value.trim();
-          if (!number && !message) {
-            return "";
-          }
-          return `SMSTO:${number}:${message}`;
-        }
-        if (type === "vcard") {
-          const name = document.getElementById("vcName").value.trim();
-          const phone = document.getElementById("vcPhone").value.trim();
-          const email = document.getElementById("vcEmail").value.trim();
-          const website = normalizeUrl(document.getElementById("vcWebsite").value);
-          const address = document.getElementById("vcAddress").value.trim();
-          if (!name && !phone && !email && !website && !address) {
-            return "";
-          }
-          return [
-            "BEGIN:VCARD",
-            "VERSION:3.0",
-            `FN:${name}`,
-            phone ? `TEL;TYPE=CELL:${phone}` : "",
-            email ? `EMAIL:${email}` : "",
-            website ? `URL:${website}` : "",
-            address ? `ADR:;;${address.replace(/\n/g, " ")};;;;` : "",
-            "END:VCARD",
-          ]
-            .filter(Boolean)
-            .join("\n");
-        }
-        if (type === "wifi") {
-          const ssid = document.getElementById("wifiSsid").value.trim();
-          const pass = document.getElementById("wifiPassword").value.trim();
-          const encryption = document.getElementById("wifiEncryption").value;
-          if (!ssid) {
-            return "";
-          }
-          const safeSsid = ssid.replace(/([;,:\\"])/g, "\\$1");
-          const safePass = pass.replace(/([;,:\\"])/g, "\\$1");
-          return `WIFI:T:${encryption};S:${safeSsid};P:${safePass};;`;
-        }
-        if (type === "location") {
-          const location = document.getElementById("locationQuery").value.trim();
-          return location ? `https://maps.google.com/?q=${encodeURIComponent(location)}` : "";
-        }
+        const g = (id)=>$(id)?.value?.trim() || "";
+        if(type==="url") return addUtm(g("fieldUrl"));
+        if(type==="text") return g("fieldText");
+        if(type==="email") return `mailto:${g("fieldEmail")}?subject=${encodeURIComponent(g("fieldEmailSubject"))}&body=${encodeURIComponent(g("fieldEmailBody"))}`;
+        if(type==="phone") return `tel:${g("fieldPhone")}`;
+        if(type==="sms") return `SMSTO:${g("fieldSmsNumber")}:${g("fieldSmsMessage")}`;
+        if(type==="vcard") return ["BEGIN:VCARD","VERSION:3.0",`FN:${g("vcName")}`,g("vcPhone")?`TEL:${g("vcPhone")}`:"",g("vcEmail")?`EMAIL:${g("vcEmail")}`:"",g("vcWebsite")?`URL:${g("vcWebsite")}`:"",g("vcAddress")?`ADR:;;${g("vcAddress").replace(/\n/g," ")};;;;`:"","END:VCARD"].filter(Boolean).join("\n");
+        if(type==="wifi") return `WIFI:T:${g("wifiEncryption")};S:${escapeWifi(g("wifiSsid"))};P:${escapeWifi(g("wifiPassword"))};;`;
+        if(type==="location") return `https://maps.google.com/?q=${encodeURIComponent(g("locationQuery"))}`;
+        if(type==="event") return ["BEGIN:VEVENT",`SUMMARY:${g("eventTitle")}`,`DESCRIPTION:${g("eventDescription")}`,`LOCATION:${g("eventLocation")}`,`DTSTART:${dtToIcs(g("eventStart"))}`,`DTEND:${dtToIcs(g("eventEnd"))}`,"END:VEVENT"].join("\n");
+        if(type==="whatsapp") return `https://wa.me/${g("waNumber").replace(/\D/g,"")}?text=${encodeURIComponent(g("waText"))}`;
+        if(type==="telegram") return g("tgValue").startsWith("http") ? g("tgValue") : `https://t.me/${g("tgValue").replace(/^@/,"")}`;
+        if(type==="youtube") return g("ytUrl");
+        if(type==="app") return g("appUrl");
+        if(type==="crypto") { const addr=g("cryptoAddress"); const scheme=g("cryptoScheme")||"bitcoin"; const amount=g("cryptoAmount"); return amount?`${scheme}:${addr}?amount=${encodeURIComponent(amount)}`:`${scheme}:${addr}`; }
+        if(type==="deeplink") return g("deepLink");
         return "";
       }
 
-      function getOptions(payload) {
-        const size = Number(document.getElementById("qrSize").value);
-        const backgroundColor = transparentBg.checked ? "transparent" : bgColor.value;
+      function getOptions(payload){
+        const size = Number($("qrSize").value);
+        const gradType = $("gradientType").value;
+        const dotsOptions = { type: $("dotStyle").value };
+        dotsOptions.color = $("dotColor").value;
+        if(gradType!=="none"){
+          dotsOptions.gradient = { type: gradType, rotation: Number($("gradientRotation").value) * (Math.PI/180), colorStops:[{offset:0,color:$("dotColor").value},{offset:1,color:$("dotColor2").value}] };
+          delete dotsOptions.color;
+        }
         return {
-          width: size,
-          height: size,
-          data: payload,
-          margin: 8,
-          image: uploadedLogo || undefined,
-          qrOptions: {
-            typeNumber: 0,
-            mode: "Byte",
-            errorCorrectionLevel: document.getElementById("errorCorrection").value,
-          },
-          dotsOptions: {
-            color: document.getElementById("dotColor").value,
-            type: document.getElementById("qrStyle").value,
-          },
-          backgroundOptions: {
-            color: backgroundColor,
-          },
-          imageOptions: {
-            hideBackgroundDots: true,
-            imageSize: 0.24,
-            margin: 2,
-            crossOrigin: "anonymous",
-          },
+          width:size,height:size,data:payload,margin:8,
+          qrOptions:{ errorCorrectionLevel:$("errorCorrection").value },
+          dotsOptions,
+          cornersSquareOptions:{ type: $("cornerSquareStyle").value, color: $("dotColor").value },
+          cornersDotOptions:{ type: $("cornerDotStyle").value, color: $("dotColor").value },
+          backgroundOptions:{ color: $("backgroundMode").value === "transparent" ? "transparent" : $("bgColor").value }
         };
       }
 
-      async function blobToDataUrl(blob) {
-        return await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
+      function updateFrameAndBackground(){
+        const map = {scan:"SCAN ME",follow:"FOLLOW ME",visit:"VISIT WEBSITE",download:"DOWNLOAD APP"};
+        const t = $("frameTemplate").value === "custom" ? $("frameText").value.trim() : map[$("frameTemplate").value];
+        frameLabel.style.display = t ? "block" : "none";
+        frameLabel.textContent = t || "";
+        previewFrame.style.backgroundImage = $("backgroundMode").value === "image" && bgImageData ? `url(${bgImageData})` : "none";
+        previewFrame.style.backgroundSize = "cover";
       }
 
-      function getHistory() {
-        try {
-          return JSON.parse(localStorage.getItem(historyKey) || "[]");
-        } catch (error) {
-          return [];
-        }
+      function updateLogoOverlay(){
+        if(!uploadedLogo){ logoOverlay.style.display="none"; return; }
+        const size = Number($("logoSize").value);
+        logoOverlay.src = uploadedLogo;
+        logoOverlay.style.display="block";
+        logoOverlay.style.width = `${size}%`;
+        logoOverlay.style.left = `calc(${Number($("logoPosX").value)}% - ${size/2}%)`;
+        logoOverlay.style.top = `calc(${Number($("logoPosY").value)}% - ${size/2}%)`;
+        const shape = $("logoBgShape").value;
+        logoOverlay.style.padding = shape === "none" ? "0" : "6px";
+        logoOverlay.style.background = shape === "none" ? "transparent" : "#fff";
+        logoOverlay.style.borderRadius = shape === "circle" ? "999px" : shape === "rounded" ? "10px" : shape === "square" ? "0" : "0";
       }
 
-      function renderHistory() {
+      async function blobToDataUrl(blob){ return await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(blob); }); }
+      function getHistory(){ try { return JSON.parse(localStorage.getItem(historyKey)||"[]"); } catch { return []; } }
+      function renderHistory(){
         const items = getHistory();
-        if (!items.length) {
-          historyGrid.innerHTML = '<p class="status-text">No generated QR codes yet.</p>';
-          return;
-        }
-        historyGrid.innerHTML = items
-          .map(
-            (item, index) => `
-              <article class="history-card">
-                <img src="${item.preview}" alt="Saved QR code ${index + 1}" loading="lazy" />
-                <small class="meta-mini">${item.type.toUpperCase()} · ${new Date(item.createdAt).toLocaleString()}</small>
-                <button class="btn-light" type="button" data-history-index="${index}">Use</button>
-              </article>`,
-          )
-          .join("");
+        historyGrid.innerHTML = items.length ? items.map((item,i)=>`<article class='history-card'><img src='${item.preview}' alt='QR ${i+1}'/><small class='meta-mini'>${item.type.toUpperCase()} · ${new Date(item.createdAt).toLocaleString()}</small><button class='btn-light' data-history-index='${i}'>Use</button></article>`).join("") : "<p class='status-text'>No QR history yet.</p>";
+      }
+      async function pushHistory(payload, options){
+        const blob = await qrCode.getRawData("png");
+        const preview = await blobToDataUrl(blob);
+        const next = [{payload,options,type:qrType.value,preview,createdAt:new Date().toISOString()},...getHistory()].slice(0,10);
+        localStorage.setItem(historyKey, JSON.stringify(next));
+        renderHistory();
       }
 
-      async function pushHistory(payload, options, type) {
-        try {
-          const blob = await qrCode.getRawData("png");
-          const preview = await blobToDataUrl(blob);
-          const next = [{ payload, options, type, preview, createdAt: new Date().toISOString() }, ...getHistory()]
-            .slice(0, 5);
-          localStorage.setItem(historyKey, JSON.stringify(next));
-          renderHistory();
-        } catch (error) {
-          console.warn("Unable to save QR history", error);
+      async function getComposedPngBlob(){
+        const qrBlob = await qrCode.getRawData("png");
+        const img = await createImageBitmap(qrBlob);
+        const c = document.createElement("canvas"); c.width = img.width; c.height = img.height;
+        const x = c.getContext("2d");
+        if($("backgroundMode").value === "solid"){ x.fillStyle = $("bgColor").value; x.fillRect(0,0,c.width,c.height); }
+        if($("backgroundMode").value === "image" && bgImageData){ const bg = await createImageBitmap(await (await fetch(bgImageData)).blob()); x.drawImage(bg,0,0,c.width,c.height); }
+        x.drawImage(img,0,0);
+        if(uploadedLogo){
+          const logo = await createImageBitmap(await (await fetch(uploadedLogo)).blob());
+          const size = c.width * (Number($("logoSize").value)/100);
+          const lx = c.width * (Number($("logoPosX").value)/100) - size/2;
+          const ly = c.height * (Number($("logoPosY").value)/100) - size/2;
+          const shape=$("logoBgShape").value;
+          if(shape!=="none"){
+            x.fillStyle="#fff";
+            if(shape==="circle"){ x.beginPath(); x.arc(lx+size/2,ly+size/2,size*0.58,0,Math.PI*2); x.fill(); }
+            else if(shape==="rounded"){ x.beginPath(); x.roundRect(lx-size*0.08,ly-size*0.08,size*1.16,size*1.16,16); x.fill(); }
+            else x.fillRect(lx-size*0.08,ly-size*0.08,size*1.16,size*1.16);
+          }
+          x.drawImage(logo,lx,ly,size,size);
         }
+        return await new Promise((res)=>c.toBlob(res,"image/png"));
       }
 
-      async function generateCode(saveToHistory = true) {
+      async function generateCode(save = true){
         const payload = buildPayload();
-        if (!payload) {
-          statusEl.textContent = "Please complete the required fields for the selected QR type.";
-          return;
-        }
-
+        if(!payload){ statusEl.textContent = "Please complete required content fields."; return; }
         currentPayload = payload;
         const options = getOptions(payload);
-
-        if (!qrCode) {
-          qrCode = new QRCodeStyling(options);
-          qrPreview.innerHTML = "";
-          qrCode.append(qrPreview);
-        } else {
-          qrCode.update(options);
-        }
-
-        statusEl.textContent = "QR code generated instantly in your browser.";
-
-        if (saveToHistory) {
-          await pushHistory(payload, options, qrType.value);
-        }
+        if(!qrCode){ qrCode = new QRCodeStyling(options); qrPreview.innerHTML=""; qrCode.append(qrPreview); }
+        else qrCode.update(options);
+        updateFrameAndBackground(); updateLogoOverlay();
+        statusEl.textContent = "QR generated instantly (local browser mode).";
+        if(save) await pushHistory(payload, options);
       }
 
-      function shareCurrent(platform) {
-        if (!currentPayload) {
-          statusEl.textContent = "Generate a QR code before sharing.";
-          return;
-        }
-        const text = encodeURIComponent(`I created this QR data with MediaTools Pro: ${currentPayload}`);
-        let shareUrl = "";
-        if (platform === "whatsapp") {
-          shareUrl = `https://wa.me/?text=${text}`;
-        }
-        if (platform === "twitter") {
-          shareUrl = `https://twitter.com/intent/tweet?text=${text}`;
-        }
-        if (platform === "facebook") {
-          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentPayload)}`;
-        }
-        window.open(shareUrl, "_blank", "noopener,noreferrer");
+      let timer;
+      const debouncedGenerate = () => { clearTimeout(timer); timer = setTimeout(()=>generateCode(false), 180); };
+      function shareCurrent(platform){ if(!currentPayload) return; const txt=encodeURIComponent(`QR content: ${currentPayload}`); const enc=encodeURIComponent(currentPayload); const map={whatsapp:`https://wa.me/?text=${txt}`,facebook:`https://www.facebook.com/sharer/sharer.php?u=${enc}`,twitter:`https://twitter.com/intent/tweet?text=${txt}`,telegram:`https://t.me/share/url?url=${enc}&text=${txt}`}; window.open(map[platform],"_blank","noopener,noreferrer"); }
+
+      async function scanImageFile(file){
+        const bmp = await createImageBitmap(file); const c=$("scanCanvas"); c.width=bmp.width; c.height=bmp.height; const ctx=c.getContext("2d"); ctx.drawImage(bmp,0,0); const data=ctx.getImageData(0,0,c.width,c.height); const r=jsQR(data.data,c.width,c.height); $("scanResult").textContent = r ? `Decoded: ${r.data}` : "No QR code detected.";
       }
-
-      qrType.addEventListener("change", renderFields);
-      generateBtn.addEventListener("click", () => generateCode(true));
-
-      document.getElementById("logoUpload").addEventListener("change", async (event) => {
-        const file = event.target.files[0];
-        uploadedLogo = "";
-        if (!file) {
-          return;
-        }
-        uploadedLogo = await blobToDataUrl(file);
-        statusEl.textContent = "Logo uploaded. Click Generate QR Code to apply it.";
-      });
-
-      transparentBg.addEventListener("change", () => {
-        bgColor.disabled = transparentBg.checked;
-      });
-
-      document.querySelectorAll("[data-download]").forEach((button) => {
-        button.addEventListener("click", () => {
-          if (!qrCode) {
-            statusEl.textContent = "Generate a QR code before downloading.";
-            return;
-          }
-          const extension = button.getAttribute("data-download");
-          qrCode.download({ name: `qr-code-${Date.now()}`, extension });
-        });
-      });
-
-      document.querySelectorAll("[data-share]").forEach((button) => {
-        button.addEventListener("click", () => {
-          shareCurrent(button.getAttribute("data-share"));
-        });
-      });
-
-      copyBtn.addEventListener("click", async () => {
-        if (!qrCode) {
-          statusEl.textContent = "Generate a QR code before copying it.";
-          return;
-        }
-        if (!navigator.clipboard || typeof ClipboardItem === "undefined") {
-          statusEl.textContent = "Clipboard image copy is not supported in this browser.";
-          return;
-        }
+      async function startCameraScan(){
         try {
-          const blob = await qrCode.getRawData("png");
-          await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-          statusEl.textContent = "QR image copied to clipboard.";
-        } catch (error) {
-          statusEl.textContent = "Clipboard copy failed. Use download as fallback.";
-        }
-      });
+          cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+          const video = $("scannerVideo"); video.style.display="block"; video.srcObject = cameraStream;
+          const loop = () => {
+            if(!cameraStream) return;
+            const c=$("scanCanvas"), ctx=c.getContext("2d");
+            if(video.videoWidth){ c.width=video.videoWidth; c.height=video.videoHeight; ctx.drawImage(video,0,0,c.width,c.height); const img=ctx.getImageData(0,0,c.width,c.height); const res=jsQR(img.data,c.width,c.height); if(res) $("scanResult").textContent = `Decoded: ${res.data}`; }
+            scanRaf = requestAnimationFrame(loop);
+          }; loop();
+        } catch { $("scanResult").textContent = "Camera access failed. Use image upload scanner."; }
+      }
+      function stopCamera(){ if(scanRaf) cancelAnimationFrame(scanRaf); scanRaf = null; if(cameraStream){ cameraStream.getTracks().forEach((t)=>t.stop()); cameraStream=null; } $("scannerVideo").style.display="none"; }
 
-      historyGrid.addEventListener("click", (event) => {
-        const button = event.target.closest("button[data-history-index]");
-        if (!button) {
-          return;
+      async function buildBatchImages(){
+        const lines = $("batchInput").value.split(/\n+/).map((v)=>v.trim()).filter(Boolean);
+        if(!lines.length) throw new Error("Add at least one batch entry.");
+        const size = Number($("qrSize").value);
+        const images = [];
+        for (let i=0;i<lines.length;i++){
+          const temp = new QRCodeStyling({ ...getOptions(lines[i]), width:size, height:size, data:lines[i] });
+          const blob = await temp.getRawData("png"); images.push({ name:`qr-${i+1}.png`, blob, value:lines[i] });
         }
-        const index = Number(button.getAttribute("data-history-index"));
-        const item = getHistory()[index];
-        if (!item) {
-          return;
+        return images;
+      }
+
+      async function printImages(images){
+        const html = images.map((it)=>`<div style='break-inside:avoid;display:inline-block;margin:12px;text-align:center'><img src='${URL.createObjectURL(it.blob)}' style='width:180px;height:180px'/><div style='max-width:180px;word-break:break-all;font-size:12px'>${it.value}</div></div>`).join("");
+        const w = window.open("","_blank"); w.document.write(`<html><body>${html}<script>window.onload=()=>window.print()<\/script></body></html>`); w.document.close();
+      }
+
+      qrType.addEventListener("change",()=>{ renderFields(); generateCode(false); });
+      $("useUtm").addEventListener("change",()=>{ $("utmFields").style.display = $("useUtm").checked ? "grid" : "none"; generateCode(false); });
+      $("generateBtn").addEventListener("click",()=>generateCode(true));
+      liveInputs.forEach((id)=>$(id).addEventListener("input",debouncedGenerate));
+      document.querySelectorAll("[data-share]").forEach((b)=>b.addEventListener("click",()=>shareCurrent(b.dataset.share)));
+
+      $("logoUpload").addEventListener("change", async (e)=>{ const f=e.target.files[0]; if(!f)return; uploadedLogo=await blobToDataUrl(f); updateLogoOverlay(); generateCode(false); });
+      $("bgImageUpload").addEventListener("change", async (e)=>{ const f=e.target.files[0]; if(!f)return; bgImageData=await blobToDataUrl(f); updateFrameAndBackground(); generateCode(false); });
+
+      document.querySelectorAll("[data-download]").forEach((button)=>button.addEventListener("click", async ()=>{
+        if(!qrCode) return;
+        const ext = button.dataset.download;
+        if(ext === "svg") return qrCode.download({ name:`qr-${Date.now()}`, extension:"svg" });
+        if(ext === "jpeg") return qrCode.download({ name:`qr-${Date.now()}`, extension:"jpeg" });
+        if(ext === "pdf"){
+          const png = await getComposedPngBlob(); const url=await blobToDataUrl(png);
+          const { jsPDF } = window.jspdf; const pdf = new jsPDF({ orientation:"portrait", unit:"px", format:[600,700] });
+          pdf.text(frameLabel.textContent || "QR Code", 40, 40); pdf.addImage(url, "PNG", 50, 70, 500, 500); pdf.save(`qr-${Date.now()}.pdf`); return;
         }
+        const blob = await getComposedPngBlob(); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`qr-${Date.now()}.png`; a.click(); URL.revokeObjectURL(a.href);
+      }));
+
+      $("copyBtn").addEventListener("click", async ()=>{
+        if(!qrCode || !navigator.clipboard || typeof ClipboardItem === "undefined") return;
+        try { const blob = await getComposedPngBlob(); await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]); statusEl.textContent = "QR image copied to clipboard."; } catch { statusEl.textContent = "Clipboard copy unavailable in this browser."; }
+      });
+      $("printBtn").addEventListener("click", async ()=>{
+        if(!qrCode) return;
+        const blob = await getComposedPngBlob();
+        await printImages([{ blob, value: currentPayload }]);
+      });
+      $("batchZipBtn").addEventListener("click", async ()=>{
+        try { const images = await buildBatchImages(); const zip = new JSZip(); images.forEach((i)=>zip.file(i.name, i.blob)); const content = await zip.generateAsync({type:"blob"}); const a=document.createElement("a"); a.href=URL.createObjectURL(content); a.download=`qr-batch-${Date.now()}.zip`; a.click(); URL.revokeObjectURL(a.href); }
+        catch(err){ statusEl.textContent = err.message; }
+      });
+      $("batchPrintBtn").addEventListener("click", async ()=>{ try { const images = await buildBatchImages(); await printImages(images); } catch(err){ statusEl.textContent = err.message; } });
+
+      $("scanUpload").addEventListener("change", (e)=>{ const f=e.target.files[0]; if(f) scanImageFile(f); });
+      $("scanCameraBtn").addEventListener("click", startCameraScan);
+      $("stopCameraBtn").addEventListener("click", stopCamera);
+
+      historyGrid.addEventListener("click", (event)=>{
+        const b = event.target.closest("button[data-history-index]"); if(!b) return;
+        const item = getHistory()[Number(b.dataset.historyIndex)]; if(!item) return;
         currentPayload = item.payload;
-        qrType.value = item.type;
-        renderFields();
-        if (!qrCode) {
-          qrCode = new QRCodeStyling(item.options);
-          qrPreview.innerHTML = "";
-          qrCode.append(qrPreview);
-        } else {
-          qrCode.update(item.options);
-        }
-        statusEl.textContent = "Loaded QR code from local history.";
+        if(!qrCode){ qrCode = new QRCodeStyling(item.options); qrPreview.innerHTML=""; qrCode.append(qrPreview); }
+        else qrCode.update(item.options);
+        statusEl.textContent = "Loaded QR from local history.";
       });
 
-      renderFields();
-      renderHistory();
+      renderFields(); renderHistory();
     </script>
   </body>
 </html>
