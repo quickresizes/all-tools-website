@@ -54,6 +54,7 @@
   const inputs = {
     addTextLayer: document.getElementById("add-text-layer"),
     addMovingTextLayer: document.getElementById("add-moving-text-layer"),
+    duplicateLayer: document.getElementById("duplicate-layer"),
     layerText: document.getElementById("layer-text"),
     fontSize: document.getElementById("font-size"),
     fontFamily: document.getElementById("font-family"),
@@ -85,7 +86,12 @@
     randomMeme: document.getElementById("random-meme-btn"),
     sizePreset: document.getElementById("size-preset"),
     format: document.getElementById("download-format"),
-    download: document.getElementById("download-meme")
+    download: document.getElementById("download-meme"),
+    watermarkEnabled: document.getElementById("watermark-enabled"),
+    watermarkText: document.getElementById("watermark-text"),
+    watermarkOpacity: document.getElementById("watermark-opacity"),
+    beforeAfterToggle: document.getElementById("before-after-toggle"),
+    beforeAfterSplit: document.getElementById("before-after-split")
   };
 
   const state = {
@@ -98,6 +104,8 @@
     category: "All",
     trending: [],
     needsRender: true,
+    beforeAfter: { enabled: false, split: 50 },
+    watermark: { enabled: false, text: "Made with Meme Studio", opacity: 55 },
     imageEdits: {
       brightness: 100,
       contrast: 100,
@@ -354,17 +362,7 @@
     requestRender();
   };
 
-  const drawBaseImage = () => {
-    if (!state.image) {
-      ctx.fillStyle = "#111827";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#cbd5e1";
-      ctx.font = "700 38px Poppins, sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("Upload an image/GIF or select a meme template", canvas.width / 2, canvas.height / 2);
-      return;
-    }
-
+  const drawImageWithEdits = (applyEdits = true) => {
     const { brightness, contrast, saturation, blur, rotate, flipX, flipY, cropX, cropY, cropW, cropH } = state.imageEdits;
     const sx = (cropX / 100) * state.image.width;
     const sy = (cropY / 100) * state.image.height;
@@ -372,7 +370,7 @@
     const sh = Math.max(1, (cropH / 100) * state.image.height);
 
     ctx.save();
-    ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) blur(${blur}px)`;
+    ctx.filter = applyEdits ? `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) blur(${blur}px)` : "none";
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate((rotate * Math.PI) / 180);
     ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1);
@@ -387,6 +385,41 @@
     ctx.drawImage(state.image, sx, sy, sw, sh, -drawW / 2, -drawH / 2, drawW, drawH);
     ctx.restore();
     ctx.filter = "none";
+  };
+
+  const drawBaseImage = () => {
+    if (!state.image) {
+      ctx.fillStyle = "#111827";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "700 38px Poppins, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Upload an image/GIF or select a meme template", canvas.width / 2, canvas.height / 2);
+      return;
+    }
+
+    if (!state.beforeAfter.enabled) {
+      drawImageWithEdits(true);
+      return;
+    }
+
+    drawImageWithEdits(false);
+    const splitX = (state.beforeAfter.split / 100) * canvas.width;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(splitX, 0, canvas.width - splitX, canvas.height);
+    ctx.clip();
+    drawImageWithEdits(true);
+    ctx.restore();
+
+    ctx.save();
+    ctx.strokeStyle = "#22d3ee";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(splitX, 0);
+    ctx.lineTo(splitX, canvas.height);
+    ctx.stroke();
+    ctx.restore();
   };
 
   const drawLayer = (layer) => {
@@ -455,6 +488,21 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBaseImage();
     state.layers.forEach(drawLayer);
+    if (state.watermark.enabled && state.watermark.text.trim()) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0.1, Math.min(1, state.watermark.opacity / 100));
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = "rgba(0,0,0,0.7)";
+      ctx.lineWidth = 4;
+      ctx.font = `700 ${Math.max(16, Math.round(canvas.width * 0.028))}px Poppins, sans-serif`;
+      ctx.textAlign = "right";
+      ctx.textBaseline = "bottom";
+      const tx = canvas.width - 18;
+      const ty = canvas.height - 14;
+      ctx.strokeText(state.watermark.text.trim(), tx, ty);
+      ctx.fillText(state.watermark.text.trim(), tx, ty);
+      ctx.restore();
+    }
     requestAnimationFrame(render);
   };
 
@@ -498,6 +546,21 @@
     requestRender();
   };
   const handlePointerUp = () => { isDragging = false; dragLayerId = null; };
+
+
+  const duplicateSelectedLayer = () => {
+    const layer = getLayerById(state.selectedLayerId);
+    if (!layer) return;
+    const clone = { ...layer };
+    clone.id = makeId();
+    clone.x = Math.min(0.95, clone.x + 0.04);
+    clone.y = Math.min(0.95, clone.y + 0.04);
+    state.layers.push(clone);
+    state.selectedLayerId = clone.id;
+    hydrateLayerControls();
+    renderLayerList();
+    requestRender();
+  };
 
   const buildCaption = () => {
     const openers = ["When", "POV:", "Me after", "Nobody:", "Meanwhile", "Breaking:"];
@@ -641,6 +704,8 @@
     renderLayerList();
   });
 
+  inputs.duplicateLayer.addEventListener("click", duplicateSelectedLayer);
+
   inputs.deleteLayer.addEventListener("click", () => {
     if (!state.selectedLayerId) return;
     state.layers = state.layers.filter((layer) => layer.id !== state.selectedLayerId);
@@ -716,6 +781,7 @@
     dropzone.addEventListener(eventName, (e) => { e.preventDefault(); dropzone.classList.remove("active"); });
   });
   dropzone.addEventListener("drop", (e) => handleFile(e.dataTransfer.files?.[0]));
+  dropzone.addEventListener("click", () => uploadInput.click());
 
   templateSelect.addEventListener("change", async (e) => {
     const template = templates.find((item) => item.name === e.target.value);
@@ -737,6 +803,12 @@
   canvas.addEventListener("pointermove", handlePointerMove);
   canvas.addEventListener("pointerup", handlePointerUp);
   canvas.addEventListener("pointerleave", handlePointerUp);
+
+  inputs.watermarkEnabled.addEventListener("change", (e) => { state.watermark.enabled = e.target.checked; requestRender(); });
+  inputs.watermarkText.addEventListener("input", (e) => { state.watermark.text = e.target.value; requestRender(); });
+  inputs.watermarkOpacity.addEventListener("input", (e) => { state.watermark.opacity = Number.parseInt(e.target.value, 10); requestRender(); });
+  inputs.beforeAfterToggle.addEventListener("change", (e) => { state.beforeAfter.enabled = e.target.checked; requestRender(); });
+  inputs.beforeAfterSplit.addEventListener("input", (e) => { state.beforeAfter.split = Number.parseInt(e.target.value, 10); requestRender(); });
 
   setupCategoryFilter();
   renderTemplateSelect();

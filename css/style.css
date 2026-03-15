@@ -945,6 +945,23 @@ a {
   align-content: start;
 }
 
+.before-after-controls {
+  width: min(100%, 760px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border-color, #d9d9ef);
+  border-radius: 10px;
+  background: var(--surface-bg, #fff);
+}
+
+.before-after-controls input[type="range"] {
+  max-width: 240px;
+}
+
 #meme-canvas {
   width: min(100%, 760px);
   max-height: 75vh;

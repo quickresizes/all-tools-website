@@ -30,7 +30,7 @@
             <label for="gif-sticker-upload" class="btn">Upload GIF Sticker</label>
             <input id="gif-sticker-upload" type="file" accept=".gif,image/gif" hidden />
             <button type="button" id="random-meme-btn" class="btn">🎲 Random Meme</button>
-            <button type="button" id="ai-caption-btn" class="btn">🤖 Caption Generator</button>
+            <button type="button" id="ai-caption-btn" class="btn">🤖 Generate Meme Caption</button>
           </div>
           <div class="toolbar-group">
             <label for="template-search">Find template</label>
@@ -55,6 +55,7 @@
             <h2>Layers</h2>
             <button id="add-text-layer" class="btn" type="button">Add Text Layer</button>
             <button id="add-moving-text-layer" class="btn" type="button">Add Moving GIF Text</button>
+            <button id="duplicate-layer" class="btn" type="button">Duplicate Selected Layer</button>
             <div id="layer-list" class="layer-list"></div>
 
             <h3>Text & Layer Style</h3>
@@ -91,6 +92,13 @@
             <label><input id="uppercase-toggle" type="checkbox" checked /> Uppercase text</label>
             <button id="delete-layer" type="button" class="btn btn-danger">Delete Selected Layer</button>
 
+            <h3>Watermark</h3>
+            <label><input id="watermark-enabled" type="checkbox" /> Add watermark</label>
+            <label>Watermark text
+              <input id="watermark-text" class="text-input" type="text" value="Made with Meme Studio" />
+            </label>
+            <label>Watermark opacity <input id="watermark-opacity" type="range" min="10" max="100" value="55" /></label>
+
             <h3>Stickers & Emojis</h3>
             <div id="sticker-panel" class="sticker-panel"></div>
             <h3>GIF Stickers</h3>
@@ -118,6 +126,10 @@
           </aside>
 
           <div class="meme-canvas-area">
+            <div class="before-after-controls">
+              <label><input id="before-after-toggle" type="checkbox" /> Before/After Compare</label>
+              <label>Split % <input id="before-after-split" type="range" min="0" max="100" value="50" /></label>
+            </div>
             <canvas id="meme-canvas" width="1080" height="1080" aria-label="Meme preview canvas"></canvas>
             <p id="meme-status" class="meta-text">Upload an image or choose a template to start.</p>
             <div id="caption-suggestions" class="caption-suggestions"></div>
