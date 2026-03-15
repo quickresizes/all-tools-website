@@ -964,7 +964,8 @@ a {
 .layer-list,
 .caption-suggestions,
 .history-grid,
-.sticker-panel {
+.sticker-panel,
+.trending-list {
   display: grid;
   gap: 0.5rem;
 }
@@ -997,6 +998,11 @@ a {
 
 .sticker-panel {
   grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.trending-list {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  width: 100%;
 }
 
 .sticker-btn {
