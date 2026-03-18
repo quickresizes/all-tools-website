@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Watermark Adder – Free Online Watermark Adder Tool | MediaTools Pro</title>
-    <meta name="description" content="Add text or image watermarks to protect your media files. Use this free online watermark adder at MediaTools Pro." />
-    <meta name="keywords" content="watermark adder, watermark adder online, free watermark adder, media tools pro, watermark, adder, online tool" />
-    <meta property="og:title" content="Watermark Adder – Free Online Watermark Adder Tool | MediaTools Pro" />
-    <meta property="og:description" content="Add text or image watermarks to protect your media files. Use this free online watermark adder at MediaTools Pro." />
+    <title>Watermark Adder – Free Online Image Watermark Tool | MediaTools Pro</title>
+    <meta name="description" content="Add professional text or logo watermarks to JPG, PNG, and WebP images in your browser. Batch process files, preview live changes, compare before and after, and download individually or as a ZIP." />
+    <meta name="keywords" content="watermark adder, image watermark tool, add logo to image, text watermark, batch watermark, browser watermark tool, MediaTools Pro" />
+    <meta property="og:title" content="Watermark Adder – Free Online Image Watermark Tool | MediaTools Pro" />
+    <meta property="og:description" content="Apply text or image watermarks locally in your browser with live preview, batch export, ZIP download, and privacy-first processing." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/watermark-adder.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
@@ -16,53 +16,251 @@
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>Watermark Adder</h1>
-        <p class="meta-text">Add text or image watermarks to protect your media files.</p>
+        <p class="meta-text">Upload one or many images, add a polished text or logo watermark, preview changes live, and export everything privately in your browser.</p>
       </section>
 
-      <section class="tool-panel tool-content">
+      <section class="tool-panel tool-content watermark-tool">
         <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
+        <p class="meta-text">Supports JPG, JPEG, PNG, and WebP files. All processing stays on your device with no server uploads.</p>
 
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
-          <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
-          </div>
-          <button class="btn" type="button">Process Now</button>
+        <div class="watermark-workspace">
+          <div class="watermark-sidebar">
+            <div class="upload-box watermark-dropzone" id="watermark-dropzone" tabindex="0" role="button" aria-controls="watermark-file-upload">
+              <label for="watermark-file-upload">Upload images</label>
+              <input id="watermark-file-upload" class="file-input" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple />
+              <p class="meta-text">Drag and drop files here or browse from your device.</p>
+            </div>
 
+            <div class="page-card watermark-file-panel">
+              <div class="watermark-section-header">
+                <h3>Batch queue</h3>
+                <span id="watermark-file-count" class="watermark-chip">0 files</span>
+              </div>
+              <div id="watermark-file-list" class="watermark-file-list" aria-live="polite"></div>
+            </div>
+
+            <div class="page-card watermark-controls-panel">
+              <div class="watermark-section-header">
+                <h3>Watermark controls</h3>
+                <div class="button-row compact-row">
+                  <button id="watermark-reset-button" class="btn btn-secondary" type="button">Reset</button>
+                </div>
+              </div>
+
+              <div class="watermark-control-grid">
+                <div>
+                  <label for="watermark-mode">Watermark type</label>
+                  <select id="watermark-mode" class="select-input">
+                    <option value="text">Text watermark</option>
+                    <option value="image">Image watermark</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="watermark-position">Anchor position</label>
+                  <select id="watermark-position" class="select-input">
+                    <option value="top-left">Top Left</option>
+                    <option value="top-right">Top Right</option>
+                    <option value="center">Center</option>
+                    <option value="bottom-left">Bottom Left</option>
+                    <option value="bottom-right" selected>Bottom Right</option>
+                    <option value="custom">Free drag</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="watermark-toggle-row">
+                <label class="watermark-switch">
+                  <input id="watermark-tile-toggle" type="checkbox" />
+                  <span>Tile watermark across image</span>
+                </label>
+                <label class="watermark-switch">
+                  <input id="watermark-shadow-toggle" type="checkbox" checked />
+                  <span>Enable shadow</span>
+                </label>
+              </div>
+
+              <div id="watermark-text-controls" class="watermark-mode-panel">
+                <div>
+                  <label for="watermark-text">Watermark text</label>
+                  <input id="watermark-text" class="text-input" type="text" value="© MediaTools Pro" maxlength="80" />
+                </div>
+                <div class="watermark-control-grid">
+                  <div>
+                    <label for="watermark-font-family">Font family</label>
+                    <select id="watermark-font-family" class="select-input">
+                      <option value="Inter, Arial, sans-serif">Inter</option>
+                      <option value="Arial, sans-serif">Arial</option>
+                      <option value="Georgia, serif">Georgia</option>
+                      <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                      <option value="'Courier New', monospace">Courier New</option>
+                      <option value="'Times New Roman', serif">Times New Roman</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="watermark-font-size">Font size (px)</label>
+                    <input id="watermark-font-size" class="text-input" type="number" min="12" max="300" value="48" />
+                  </div>
+                  <div>
+                    <label for="watermark-text-color">Text color</label>
+                    <input id="watermark-text-color" class="watermark-color-input" type="color" value="#ffffff" />
+                  </div>
+                  <div>
+                    <label for="watermark-outline-color">Outline color</label>
+                    <input id="watermark-outline-color" class="watermark-color-input" type="color" value="#0f172a" />
+                  </div>
+                  <div>
+                    <label for="watermark-outline-size">Outline size (px)</label>
+                    <input id="watermark-outline-size" class="text-input" type="number" min="0" max="24" value="2" />
+                  </div>
+                  <div>
+                    <label for="watermark-letter-spacing">Letter spacing (px)</label>
+                    <input id="watermark-letter-spacing" class="text-input" type="number" min="-4" max="40" value="2" step="0.5" />
+                  </div>
+                </div>
+              </div>
+
+              <div id="watermark-image-controls" class="watermark-mode-panel" hidden>
+                <div class="upload-box watermark-logo-upload">
+                  <label for="watermark-logo-upload">Upload logo image</label>
+                  <input id="watermark-logo-upload" class="file-input" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" />
+                  <p class="meta-text">Transparent PNG works best, but JPG and WebP logos are supported too.</p>
+                </div>
+                <div class="watermark-control-grid">
+                  <div>
+                    <label for="watermark-logo-scale">Logo width (%)</label>
+                    <input id="watermark-logo-scale" class="text-input" type="number" min="5" max="100" value="22" />
+                  </div>
+                  <div>
+                    <label for="watermark-logo-padding">Logo padding (px)</label>
+                    <input id="watermark-logo-padding" class="text-input" type="number" min="0" max="240" value="24" />
+                  </div>
+                </div>
+                <p id="watermark-logo-status" class="meta-text">Upload a logo to enable image watermark mode.</p>
+              </div>
+
+              <div class="watermark-control-grid">
+                <div>
+                  <label for="watermark-opacity">Opacity <span id="watermark-opacity-value">70%</span></label>
+                  <input id="watermark-opacity" class="watermark-range" type="range" min="0" max="100" value="70" />
+                </div>
+                <div>
+                  <label for="watermark-rotation">Rotation <span id="watermark-rotation-value">-20°</span></label>
+                  <input id="watermark-rotation" class="watermark-range" type="range" min="-180" max="180" value="-20" />
+                </div>
+                <div>
+                  <label for="watermark-shadow-blur">Shadow blur</label>
+                  <input id="watermark-shadow-blur" class="text-input" type="number" min="0" max="40" value="8" />
+                </div>
+                <div>
+                  <label for="watermark-padding">Outer padding (px)</label>
+                  <input id="watermark-padding" class="text-input" type="number" min="0" max="240" value="32" />
+                </div>
+                <div>
+                  <label for="watermark-offset-x">Fine offset X (px)</label>
+                  <input id="watermark-offset-x" class="text-input" type="number" min="-2000" max="2000" value="0" />
+                </div>
+                <div>
+                  <label for="watermark-offset-y">Fine offset Y (px)</label>
+                  <input id="watermark-offset-y" class="text-input" type="number" min="-2000" max="2000" value="0" />
+                </div>
+              </div>
+
+              <div class="page-card watermark-privacy-note">
+                <h3>Privacy first</h3>
+                <p class="meta-text">Your images never leave the browser. Rendering, previews, and downloads are handled locally with HTML5 canvas.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="watermark-preview-stack">
+            <div class="page-card watermark-preview-panel">
+              <div class="watermark-section-header">
+                <h3>Live preview</h3>
+                <div class="button-row compact-row">
+                  <button id="watermark-fit-button" class="btn btn-secondary" type="button">Fit</button>
+                  <button id="watermark-zoom-out" class="btn btn-secondary" type="button">−</button>
+                  <span id="watermark-zoom-label" class="watermark-chip">100%</span>
+                  <button id="watermark-zoom-in" class="btn btn-secondary" type="button">+</button>
+                </div>
+              </div>
+              <p class="meta-text">Drag the watermark directly on the preview canvas for custom placement.</p>
+              <div id="watermark-preview-shell" class="watermark-preview-shell">
+                <canvas id="watermark-preview-canvas" class="watermark-editor-canvas" aria-label="Watermark editor preview"></canvas>
+                <div id="watermark-preview-placeholder" class="watermark-preview-placeholder">Upload images to start previewing your watermark.</div>
+              </div>
+              <div class="watermark-preview-footer">
+                <p id="watermark-message" class="meta-text" role="status" aria-live="polite">Ready when you are.</p>
+                <p id="watermark-selection-summary" class="meta-text">No file selected.</p>
+              </div>
+            </div>
+
+            <div class="before-after-grid watermark-compare-grid">
+              <div class="preview-card">
+                <h3>Before</h3>
+                <canvas id="watermark-before-canvas" class="preview-canvas" aria-label="Original image comparison"></canvas>
+              </div>
+              <div class="preview-card">
+                <h3>After</h3>
+                <canvas id="watermark-after-canvas" class="preview-canvas" aria-label="Watermarked image comparison"></canvas>
+              </div>
+            </div>
+
+            <div class="page-card watermark-output-panel">
+              <div class="watermark-section-header">
+                <h3>Export settings</h3>
+                <span class="watermark-chip">Browser only</span>
+              </div>
+              <div class="watermark-control-grid">
+                <div>
+                  <label for="watermark-output-format">Output format</label>
+                  <select id="watermark-output-format" class="select-input">
+                    <option value="png">PNG</option>
+                    <option value="jpeg">JPG</option>
+                    <option value="webp">WEBP</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="watermark-output-quality">Image quality</label>
+                  <select id="watermark-output-quality" class="select-input">
+                    <option value="0.72">Low</option>
+                    <option value="0.86" selected>Medium</option>
+                    <option value="0.95">High</option>
+                  </select>
+                </div>
+              </div>
+              <div class="button-row tool-actions">
+                <button id="watermark-download-current" class="btn" type="button" disabled>Download current image</button>
+                <button id="watermark-download-zip" class="btn btn-secondary" type="button" disabled>Download all as ZIP</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>About this tool</h2>
-        <p>Watermark Adder is designed to help you work faster with dependable results. Add text or image watermarks to protect your media files.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>Watermark Adder is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
+        <p>Watermark Adder is built for creators, agencies, sellers, and teams that need dependable branding protection without desktop software.</p>
+        <p>The workflow is optimized for quick batch processing, polished text styling, and logo placement with live browser previews and flexible exports.</p>
       </section>
 
       <section class="tool-panel tool-description">
         <h2>Features</h2>
         <ul>
-          <li>Focused workflow for watermark adder tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
+          <li>Text and logo watermark modes with real-time canvas rendering.</li>
+          <li>Batch processing for multiple uploaded images with ZIP export.</li>
+          <li>Preset placement plus free drag positioning on the preview.</li>
+          <li>Before-and-after comparison canvases and responsive mobile layout.</li>
+          <li>Fully local processing for fast, privacy-focused image editing.</li>
         </ul>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script src="../js/watermark-adder.js"></script>
   </body>
 </html>
