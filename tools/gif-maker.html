@@ -4,10 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GIF Maker – Free Online GIF Maker Tool | MediaTools Pro</title>
-    <meta name="description" content="Create GIFs from images in seconds for social and marketing use. Use this free online gif maker at MediaTools Pro." />
-    <meta name="keywords" content="gif maker, gif maker online, free gif maker, media tools pro, gif, maker, online tool" />
+    <meta
+      name="description"
+      content="Build polished GIFs from multiple images with timeline editing, text overlays, stickers, effects, and browser-based export."
+    />
+    <meta
+      name="keywords"
+      content="gif maker, animated gif creator, online gif editor, browser gif maker, image to gif, mediatools pro"
+    />
     <meta property="og:title" content="GIF Maker – Free Online GIF Maker Tool | MediaTools Pro" />
-    <meta property="og:description" content="Create GIFs from images in seconds for social and marketing use. Use this free online gif maker at MediaTools Pro." />
+    <meta
+      property="og:description"
+      content="Create GIFs locally in your browser with frame editing, drag-and-drop uploads, text overlays, stickers, transitions, and quality controls."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mediatoolspro.com/tools/gif-maker.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
@@ -16,53 +25,322 @@
   <body data-base-path="../">
     <header id="site-header"></header>
 
-<main class="page-main tool-container container">
+    <main class="page-main tool-container container">
       <section class="tool-panel tool-header">
         <h1>GIF Maker</h1>
-        <p class="meta-text">Create GIFs from images in seconds for social and marketing use.</p>
+        <p class="meta-text">
+          Create optimized, professional GIFs fully in your browser. Upload frames, edit each image, add text and
+          stickers, preview instantly, and export without sending files to any server.
+        </p>
       </section>
 
-      <section class="tool-panel tool-content">
-        <h2>Tool Interface</h2>
-          <p class="meta-text">Upload your file, choose settings, and click the action button.</p>
-
-          <div class="upload-box">
-          <label for="file-upload">Upload your file</label>
-          <input id="file-upload" class="file-input" type="file" />
-          </div>
+      <section class="tool-panel tool-content gif-maker-tool" id="gif-maker-app">
+        <div class="gif-intro-row">
           <div>
-          <label for="format-select">Select option</label>
-          <select id="format-select" class="select-input">
-          <option>Default</option>
-          <option>High Quality</option>
-          <option>Small Size</option>
-          </select>
+            <h2>Build your GIF</h2>
+            <p class="meta-text">
+              Works with JPG, JPEG, PNG, and WEBP images. Drag, reorder, edit, preview, and export locally.
+            </p>
           </div>
-          <button class="btn" type="button">Process Now</button>
+          <div class="privacy-pill">🔒 100% local browser processing</div>
+        </div>
 
+        <div class="gif-upload-grid">
+          <label class="upload-box gif-dropzone" id="gif-dropzone" for="gif-upload">
+            <span class="dropzone-icon">🖼️</span>
+            <strong>Upload or drop images</strong>
+            <span>Supports bulk JPG, JPEG, PNG, and WEBP uploads.</span>
+            <input
+              id="gif-upload"
+              class="file-input visually-hidden"
+              type="file"
+              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+              multiple
+            />
+          </label>
+
+          <div class="upload-box url-import-box">
+            <label for="gif-url-input">Import image from URL</label>
+            <div class="inline-form">
+              <input id="gif-url-input" class="text-input" type="url" placeholder="https://example.com/frame.webp" />
+              <button id="gif-url-import" type="button" class="btn">Add URL</button>
+            </div>
+            <p class="meta-text">Tip: remote servers must allow cross-origin image access for browser import.</p>
+          </div>
+        </div>
+
+        <p id="gif-status" class="meta-text gif-status">Upload images to begin.</p>
+
+        <div class="gif-workspace">
+          <aside class="gif-sidebar">
+            <section class="gif-card">
+              <h3>Frame controls</h3>
+              <div class="control-grid two-col">
+                <label>
+                  Global speed
+                  <input id="global-speed" type="range" min="25" max="300" value="100" />
+                </label>
+                <label>
+                  Apply all durations (ms)
+                  <input id="global-duration" class="text-input" type="number" min="20" step="10" value="400" />
+                </label>
+              </div>
+              <div class="button-row">
+                <button id="apply-duration-all" type="button" class="btn">Apply to All</button>
+                <button id="reverse-frames" type="button" class="btn btn-secondary">Reverse Order</button>
+              </div>
+            </section>
+
+            <section class="gif-card">
+              <h3>Selected frame editor</h3>
+              <div class="control-grid two-col compact-labels">
+                <label>
+                  Duration (ms)
+                  <input id="frame-duration" class="text-input" type="number" min="20" step="10" value="400" />
+                </label>
+                <label>
+                  Rotation
+                  <input id="frame-rotation" type="range" min="-180" max="180" value="0" />
+                </label>
+                <label>
+                  Crop X %
+                  <input id="frame-crop-x" type="range" min="0" max="90" value="0" />
+                </label>
+                <label>
+                  Crop Y %
+                  <input id="frame-crop-y" type="range" min="0" max="90" value="0" />
+                </label>
+                <label>
+                  Crop W %
+                  <input id="frame-crop-width" type="range" min="10" max="100" value="100" />
+                </label>
+                <label>
+                  Crop H %
+                  <input id="frame-crop-height" type="range" min="10" max="100" value="100" />
+                </label>
+                <label>
+                  Brightness
+                  <input id="frame-brightness" type="range" min="50" max="150" value="100" />
+                </label>
+                <label>
+                  Contrast
+                  <input id="frame-contrast" type="range" min="50" max="150" value="100" />
+                </label>
+                <label>
+                  Saturation
+                  <input id="frame-saturation" type="range" min="0" max="200" value="100" />
+                </label>
+              </div>
+              <div class="button-row">
+                <button id="flip-horizontal" type="button" class="btn btn-secondary">Flip H</button>
+                <button id="flip-vertical" type="button" class="btn btn-secondary">Flip V</button>
+                <button id="reset-frame-edits" type="button" class="btn btn-secondary">Reset Frame</button>
+              </div>
+            </section>
+
+            <section class="gif-card">
+              <h3>Overlays</h3>
+              <div class="button-row">
+                <button id="add-text-layer" type="button" class="btn">Add Text</button>
+                <button id="add-sticker-layer" type="button" class="btn btn-secondary">Add Sticker</button>
+              </div>
+              <div id="layer-list" class="layer-list"></div>
+              <div class="control-grid compact-labels">
+                <label>
+                  Layer type
+                  <input id="layer-type" class="text-input" type="text" value="Text" readonly />
+                </label>
+                <label>
+                  Target
+                  <select id="layer-target" class="select-input">
+                    <option value="all">All frames</option>
+                    <option value="current">Current frame only</option>
+                  </select>
+                </label>
+                <label>
+                  Content
+                  <input id="layer-content" class="text-input" type="text" placeholder="Enter text or emoji" />
+                </label>
+                <label>
+                  Font
+                  <select id="layer-font" class="select-input">
+                    <option value="Inter">Inter</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Impact">Impact</option>
+                    <option value="Courier New">Courier New</option>
+                  </select>
+                </label>
+                <label>
+                  Color
+                  <input id="layer-color" type="color" value="#ffffff" />
+                </label>
+                <label>
+                  Outline
+                  <input id="layer-outline-color" type="color" value="#111827" />
+                </label>
+                <label>
+                  Size
+                  <input id="layer-size" type="range" min="14" max="180" value="48" />
+                </label>
+                <label>
+                  Outline width
+                  <input id="layer-outline-width" type="range" min="0" max="16" value="4" />
+                </label>
+                <label>
+                  Shadow
+                  <input id="layer-shadow" type="range" min="0" max="24" value="8" />
+                </label>
+                <label>
+                  Rotation
+                  <input id="layer-rotation" type="range" min="-180" max="180" value="0" />
+                </label>
+                <label>
+                  Scale
+                  <input id="layer-scale" type="range" min="30" max="220" value="100" />
+                </label>
+              </div>
+              <div class="emoji-sticker-row" id="sticker-presets" aria-label="Sticker presets"></div>
+              <div class="button-row">
+                <button id="duplicate-layer" type="button" class="btn btn-secondary">Duplicate Layer</button>
+                <button id="delete-layer" type="button" class="btn btn-danger">Delete Layer</button>
+              </div>
+              <p class="meta-text">Tip: drag text and sticker layers directly on the preview canvas.</p>
+            </section>
+          </aside>
+
+          <section class="gif-preview-panel">
+            <div class="gif-preview-header">
+              <div>
+                <h3>Live preview</h3>
+                <p class="meta-text">Playback uses your frame order, timing, transitions, and overlays.</p>
+              </div>
+              <div class="button-row">
+                <button id="preview-toggle" type="button" class="btn">Pause</button>
+                <label class="toggle-label"><input id="preview-loop" type="checkbox" checked /> Loop preview</label>
+              </div>
+            </div>
+            <div class="gif-canvas-shell">
+              <canvas id="gif-preview-canvas" width="960" height="540" aria-label="GIF preview canvas"></canvas>
+            </div>
+            <div class="preview-stats" id="preview-stats">No frames loaded yet.</div>
+            <div class="preview-scrubber-row">
+              <label for="preview-scrubber">Timeline</label>
+              <input id="preview-scrubber" type="range" min="0" max="0" value="0" />
+            </div>
+          </section>
+
+          <aside class="gif-sidebar">
+            <section class="gif-card">
+              <h3>Output settings</h3>
+              <div class="control-grid compact-labels">
+                <label>
+                  Resolution preset
+                  <select id="resolution-preset" class="select-input">
+                    <option value="original">Original</option>
+                    <option value="720p">720p</option>
+                    <option value="480p">480p</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </label>
+                <label>
+                  Width
+                  <input id="output-width" class="text-input" type="number" min="64" step="2" value="960" />
+                </label>
+                <label>
+                  Height
+                  <input id="output-height" class="text-input" type="number" min="64" step="2" value="540" />
+                </label>
+                <label class="toggle-label checkbox-label">
+                  <input id="lock-aspect-ratio" type="checkbox" checked /> Maintain aspect ratio
+                </label>
+                <label>
+                  Quality
+                  <select id="quality-level" class="select-input">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </label>
+                <label>
+                  Loop mode
+                  <select id="loop-mode" class="select-input">
+                    <option value="infinite">Infinite</option>
+                    <option value="custom">Custom count</option>
+                  </select>
+                </label>
+                <label>
+                  Loop count
+                  <input id="loop-count" class="text-input" type="number" min="1" step="1" value="3" />
+                </label>
+                <label>
+                  Transition
+                  <select id="transition-type" class="select-input">
+                    <option value="none">None</option>
+                    <option value="fade">Fade</option>
+                    <option value="slide">Slide</option>
+                  </select>
+                </label>
+                <label>
+                  Transition strength
+                  <input id="transition-steps" type="range" min="1" max="6" value="2" />
+                </label>
+              </div>
+            </section>
+
+            <section class="gif-card">
+              <h3>Export</h3>
+              <div class="button-row export-actions">
+                <button id="generate-gif" type="button" class="btn">Generate GIF</button>
+                <a id="download-gif" class="btn btn-secondary" download="animated.gif" hidden>Download GIF</a>
+              </div>
+              <div class="progress-shell" aria-live="polite">
+                <div id="gif-progress-bar" class="progress-bar"></div>
+              </div>
+              <p id="gif-progress-text" class="meta-text">Ready to generate.</p>
+              <div class="export-summary" id="export-summary">
+                <p><strong>Optimization tips:</strong> lower resolution, shorter duration, and low quality reduce file size.</p>
+              </div>
+            </section>
+
+            <section class="gif-card">
+              <h3>Frame timeline</h3>
+              <p class="meta-text">Drag frames to reorder. Use the controls on each card to delete or duplicate.</p>
+              <div id="frame-list" class="frame-list" aria-live="polite"></div>
+            </section>
+          </aside>
+        </div>
       </section>
 
       <section class="tool-panel tool-description">
-        <h2>About this tool</h2>
-        <p>GIF Maker is designed to help you work faster with dependable results. Create GIFs from images in seconds for social and marketing use.</p>
-        <p>This tool is useful when you need a straightforward workflow without installing extra software. It keeps the process simple, so you can focus on completing your project quickly.</p>
-        <p>GIF Maker is a great fit for creators, marketers, students, and business teams who need professional output with minimal effort.</p>
-      </section>
-
-      <section class="tool-panel tool-description">
-        <h2>Features</h2>
+        <h2>What this GIF Maker includes</h2>
         <ul>
-          <li>Focused workflow for gif maker tasks.</li>
-          <li>Clean, beginner-friendly interface.</li>
-          <li>Fast processing designed for daily use.</li>
-          <li>Works smoothly on desktop and mobile browsers.</li>
-          <li>Built with privacy-first, browser-based interactions.</li>
+          <li>Multi-image upload, drag-and-drop importing, and URL-based frame import.</li>
+          <li>Per-frame timing, crop, rotation, flip, brightness, contrast, and saturation controls.</li>
+          <li>Multiple text layers and emoji stickers with drag positioning, outline, shadow, scaling, and rotation.</li>
+          <li>Real-time preview with looping, play/pause controls, reverse order, and transitions.</li>
+          <li>Client-side GIF export with resolution presets, quality tuning, and loop count options.</li>
         </ul>
+      </section>
+
+      <section class="tool-panel tool-description">
+        <h2>Privacy and performance</h2>
+        <p>
+          This tool is designed for GitHub Pages and other static hosting platforms. Image editing and GIF rendering happen
+          locally in your browser using HTML, CSS, and JavaScript.
+        </p>
+        <p>
+          Your source images are not uploaded to MediaTools Pro servers, which makes the workflow fast, private, and easy
+          to use on desktop and mobile devices.
+        </p>
       </section>
     </main>
     <footer id="site-footer"></footer>
 
-<script src="../js/layout.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.js"></script>
+    <script src="../js/gif-maker.js"></script>
   </body>
 </html>
